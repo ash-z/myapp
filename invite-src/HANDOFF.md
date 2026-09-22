@@ -25,7 +25,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - No algorithmic line-art or posterised portraits (tried twice, rejected).
 
 ## Screens
-Invite (the sea) · Us (photo deck) · Events (wedding + reception tickets; Wedding/Reception switch, swipe on phones, side by side on wide screens) · RSVP · Blessings.
+Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 Tab taps bloom the next screen open from the tab (View Transitions API; a quick veil where unsupported; a plain jump for reduced motion).
 Each screen's top edge is a row of temple arches, and content drifts in staggered.
 

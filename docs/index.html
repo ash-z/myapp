@@ -137,7 +137,7 @@ button{font:inherit;color:inherit}
 }
 .js:not(.ui) .tabs{transform:translateY(140%)}
 .tabs-in{
-  pointer-events:auto;display:grid;grid-template-columns:repeat(5,1fr);
+  pointer-events:auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
   width:min(520px,100%);height:var(--tab-h);padding:5px;gap:2px;
   border:1px solid var(--rule);border-radius:24px;
   background:color-mix(in srgb,var(--surface) 86%,transparent);
@@ -147,10 +147,10 @@ button{font:inherit;color:inherit}
 .tabs a{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   border-radius:19px;text-decoration:none;color:var(--muted);
-  font-weight:500;font-size:10.5px;letter-spacing:.02em;
+  font-weight:500;font-size:10px;letter-spacing:0;white-space:nowrap;
   transition:background .25s ease,color .25s ease;
 }
-.tabs a svg{width:21px;height:21px;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.tabs a svg{width:20px;height:20px;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
 .tabs a[aria-current="true"]{color:var(--ink);background:var(--card)}
 .tabs a[aria-current="true"] svg{color:var(--gold);transform:translateY(-1px) scale(1.08)}
 
@@ -281,17 +281,6 @@ button{font:inherit;color:inherit}
 .seg button[aria-selected="true"]{color:var(--bg)}
 .seg-pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--gold);
   transform:translateX(calc(var(--seg,0) * 100%));transition:transform .45s cubic-bezier(.3,1.25,.5,1)}
-.tickets{
-  display:grid;grid-auto-flow:column;grid-auto-columns:min(84vw,400px);gap:16px;
-  overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;
-  margin-inline:-20px;padding:6px calc((100% + 40px - min(84vw,400px)) / 2) 26px;
-}
-.tickets::-webkit-scrollbar{display:none}
-.tickets .ticket{width:100%;scroll-snap-align:center}
-@media (min-width:900px){
-  #seg{display:none}
-  .tickets{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,400px));justify-content:center;gap:28px;overflow:visible;margin-inline:0;padding:6px 0 26px}
-}
 .t-top{padding:26px 26px 22px}
 .t-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .t-city{font-weight:500;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
@@ -317,7 +306,6 @@ button{font:inherit;color:inherit}
 .t-count div{text-align:center}
 .t-count b{display:block;font-weight:400;font-variant-numeric:tabular-nums;font-size:clamp(22px,6.2vw,28px);line-height:1;color:var(--ink)}
 .t-count span{display:block;margin-top:6px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.t-count.short{display:block;text-align:center;font-family:"Marcellus",Georgia,serif;font-size:17px;letter-spacing:.06em}
 .t-count .past{grid-column:1/-1;text-align:center;font-family:"Marcellus",Georgia,serif;font-size:16px}
 .t-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
 .t-foil{
@@ -548,19 +536,13 @@ button{font:inherit;color:inherit}
     </div>
   </section>
 
-  <section class="screen alt" id="events" aria-labelledby="evH">
+  <section class="screen alt" id="wedding" aria-labelledby="wedH">
     <div class="wrap">
       <div class="head reveal">
-        <span class="eyebrow telugu">వివాహ వివరాలు</span>
-        <h2 id="evH">The celebrations</h2>
+        <span class="eyebrow telugu">వివాహ ముహూర్తం</span>
+        <h2 id="wedH">The wedding</h2>
       </div>
-      <div class="seg reveal" id="seg" role="tablist" aria-label="Choose an event">
-        <span class="seg-pill" aria-hidden="true"></span>
-        <button role="tab" aria-selected="true" aria-controls="tickets">Wedding</button>
-        <button role="tab" aria-selected="false" aria-controls="tickets">Reception</button>
-      </div>
-      <div class="tickets reveal" id="tickets">
-        <article class="ticket" data-tilt aria-label="The wedding">
+      <article class="ticket reveal" data-tilt>
         <div class="t-top">
           <div class="t-row"><span class="t-city">Visakhapatnam</span><span class="t-tag telugu">వివాహం</span></div>
           <div class="t-when">
@@ -572,7 +554,7 @@ button{font:inherit;color:inherit}
         <div class="t-bot">
           <p class="t-venue">Hotel Ambica Sea Green</p>
           <p class="t-addr">Beach Road, Visakhapatnam, Andhra Pradesh</p>
-          <div class="t-count" data-countdown="2026-10-29T19:29:00+05:30" data-mode="full" data-past="Married on 29 October 2026" aria-label="Time until the muhurtam">
+          <div class="t-count" data-countdown="2026-10-29T19:29:00+05:30" data-past="Married on 29 October 2026" aria-label="Time until the muhurtam">
             <div><b data-u="d">—</b><span>Days</span></div>
             <div><b data-u="h">—</b><span>Hours</span></div>
             <div><b data-u="m">—</b><span>Mins</span></div>
@@ -591,7 +573,16 @@ button{font:inherit;color:inherit}
         </div>
         <span class="t-foil" aria-hidden="true"></span>
       </article>
-        <article class="ticket" data-tilt aria-label="The reception">
+    </div>
+  </section>
+
+  <section class="screen" id="reception" aria-labelledby="recH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">ఆశీర్వచనం</span>
+        <h2 id="recH">The reception</h2>
+      </div>
+      <article class="ticket reveal" data-tilt>
         <div class="t-top">
           <div class="t-row"><span class="t-city">Hyderabad</span><span class="t-tag telugu">ఆశీర్వచనం</span></div>
           <div class="t-when">
@@ -603,7 +594,12 @@ button{font:inherit;color:inherit}
         <div class="t-bot">
           <p class="t-venue">Hotel Tulip Grand</p>
           <p class="t-addr">Annojiguda, Hyderabad</p>
-          <p class="t-count short" data-countdown="2026-11-01T11:00:00+05:30" data-mode="short" data-past="Thank you for celebrating with us">&nbsp;</p>
+          <div class="t-count" data-countdown="2026-11-01T11:00:00+05:30" data-past="Thank you for celebrating with us" aria-label="Time until the reception">
+            <div><b data-u="d">—</b><span>Days</span></div>
+            <div><b data-u="h">—</b><span>Hours</span></div>
+            <div><b data-u="m">—</b><span>Mins</span></div>
+            <div><b data-u="s">—</b><span>Secs</span></div>
+          </div>
           <div class="t-btns">
             <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20Tulip%20Grand%20Annojiguda%20Hyderabad">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -617,12 +613,11 @@ button{font:inherit;color:inherit}
         </div>
         <span class="t-foil" aria-hidden="true"></span>
       </article>
-      </div>
       <p class="note reveal">Travel and stay details for outstation guests will follow closer to the date.</p>
     </div>
   </section>
 
-  <section class="screen" id="rsvp" aria-labelledby="rsvpH">
+  <section class="screen alt" id="rsvp" aria-labelledby="rsvpH">
     <div class="wrap">
       <div class="head reveal">
         <span class="eyebrow telugu">మీ రాక</span>
@@ -695,7 +690,7 @@ button{font:inherit;color:inherit}
     </div>
   </section>
 
-  <section class="screen alt" id="blessings" aria-labelledby="blsH">
+  <section class="screen" id="blessings" aria-labelledby="blsH">
     <div class="wrap">
       <div class="head reveal">
         <span class="eyebrow telugu">పెద్దలు</span>
@@ -746,9 +741,13 @@ button{font:inherit;color:inherit}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>
       Us
     </a>
-    <a href="#events">
+    <a href="#wedding">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c2 3 3 4.4 3 6.3a3 3 0 0 1-6 0C9 7.4 10 6 12 3Z"/><path d="M4 14h16c-.6 3.8-3.8 6-8 6s-7.4-2.2-8-6Z"/></svg>
-      Events
+      Wedding
+    </a>
+    <a href="#reception">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>
+      Reception
     </a>
     <a href="#rsvp">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7.5 12l3 3 6-6"/></svg>
@@ -5310,40 +5309,6 @@ function goTo(t, from){
   $$('.screen').forEach(function(s){ io.observe(s); });
 })();
 
-/* =============== EVENTS — swipe between the two tickets =============== */
-(function eventTickets(){
-  var strip = $('#tickets'), seg = $('#seg');
-  if(!strip || !seg) return;
-  var tabs = [].slice.call(seg.querySelectorAll('button'));
-  var cards = [].slice.call(strip.querySelectorAll('.ticket'));
-  var current = 0;
-  function mark(i){
-    if(i === current) return;
-    current = i;
-    seg.style.setProperty('--seg', i);
-    tabs.forEach(function(b, k){ b.setAttribute('aria-selected', String(k === i)); });
-  }
-  function show(i){
-    var c = cards[i];
-    strip.scrollTo({ left: c.offsetLeft - (strip.clientWidth - c.clientWidth)/2, behavior: reduced ? 'auto' : 'smooth' });
-    mark(i); buzz(6);
-  }
-  tabs.forEach(function(b, i){ b.addEventListener('click', function(){ show(i); }); });
-  var pend = false;
-  strip.addEventListener('scroll', function(){
-    if(pend) return; pend = true;
-    requestAnimationFrame(function(){
-      pend = false;
-      var mid = strip.scrollLeft + strip.clientWidth/2, best = 0, dist = 1e9;
-      cards.forEach(function(c, i){
-        var d = Math.abs(c.offsetLeft + c.clientWidth/2 - mid);
-        if(d < dist){ dist = d; best = i; }
-      });
-      mark(best);
-    });
-  }, { passive:true });
-})();
-
 /* ===================================================================
    THE DECK — swipe, tap, or arrow-key through the photographs.
    Her card lands with a burst of marigold; his arrives quietly.
@@ -5465,18 +5430,14 @@ function goTo(t, from){
     els.forEach(function(o){
       var el = o.el, diff = o.t - now;
       if(diff <= 0){
-        if(!el.dataset.done){ el.dataset.done = '1'; el.classList.remove('short'); el.innerHTML = '<span class="past">' + el.dataset.past + '</span>'; }
+        if(!el.dataset.done){ el.dataset.done = '1'; el.innerHTML = '<span class="past">' + el.dataset.past + '</span>'; }
         return;
       }
       var s = Math.floor(diff/1000), d = Math.floor(s/86400);
-      if(el.dataset.mode === 'full'){
-        el.querySelector('[data-u="d"]').textContent = d;
-        el.querySelector('[data-u="h"]').textContent = pad(Math.floor(s%86400/3600));
-        el.querySelector('[data-u="m"]').textContent = pad(Math.floor(s%3600/60));
-        el.querySelector('[data-u="s"]').textContent = pad(s%60);
-      } else {
-        el.textContent = d === 0 ? 'Today' : 'In ' + d + (d === 1 ? ' day' : ' days');
-      }
+      el.querySelector('[data-u="d"]').textContent = d;
+      el.querySelector('[data-u="h"]').textContent = pad(Math.floor(s%86400/3600));
+      el.querySelector('[data-u="m"]').textContent = pad(Math.floor(s%3600/60));
+      el.querySelector('[data-u="s"]').textContent = pad(s%60);
     });
   }
   tick(); setInterval(tick, 1000);

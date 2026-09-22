@@ -323,40 +323,6 @@ function goTo(t, from){
   $$('.screen').forEach(function(s){ io.observe(s); });
 })();
 
-/* =============== EVENTS — swipe between the two tickets =============== */
-(function eventTickets(){
-  var strip = $('#tickets'), seg = $('#seg');
-  if(!strip || !seg) return;
-  var tabs = [].slice.call(seg.querySelectorAll('button'));
-  var cards = [].slice.call(strip.querySelectorAll('.ticket'));
-  var current = 0;
-  function mark(i){
-    if(i === current) return;
-    current = i;
-    seg.style.setProperty('--seg', i);
-    tabs.forEach(function(b, k){ b.setAttribute('aria-selected', String(k === i)); });
-  }
-  function show(i){
-    var c = cards[i];
-    strip.scrollTo({ left: c.offsetLeft - (strip.clientWidth - c.clientWidth)/2, behavior: reduced ? 'auto' : 'smooth' });
-    mark(i); buzz(6);
-  }
-  tabs.forEach(function(b, i){ b.addEventListener('click', function(){ show(i); }); });
-  var pend = false;
-  strip.addEventListener('scroll', function(){
-    if(pend) return; pend = true;
-    requestAnimationFrame(function(){
-      pend = false;
-      var mid = strip.scrollLeft + strip.clientWidth/2, best = 0, dist = 1e9;
-      cards.forEach(function(c, i){
-        var d = Math.abs(c.offsetLeft + c.clientWidth/2 - mid);
-        if(d < dist){ dist = d; best = i; }
-      });
-      mark(best);
-    });
-  }, { passive:true });
-})();
-
 /* ===================================================================
    THE DECK — swipe, tap, or arrow-key through the photographs.
    Her card lands with a burst of marigold; his arrives quietly.
@@ -478,18 +444,14 @@ function goTo(t, from){
     els.forEach(function(o){
       var el = o.el, diff = o.t - now;
       if(diff <= 0){
-        if(!el.dataset.done){ el.dataset.done = '1'; el.classList.remove('short'); el.innerHTML = '<span class="past">' + el.dataset.past + '</span>'; }
+        if(!el.dataset.done){ el.dataset.done = '1'; el.innerHTML = '<span class="past">' + el.dataset.past + '</span>'; }
         return;
       }
       var s = Math.floor(diff/1000), d = Math.floor(s/86400);
-      if(el.dataset.mode === 'full'){
-        el.querySelector('[data-u="d"]').textContent = d;
-        el.querySelector('[data-u="h"]').textContent = pad(Math.floor(s%86400/3600));
-        el.querySelector('[data-u="m"]').textContent = pad(Math.floor(s%3600/60));
-        el.querySelector('[data-u="s"]').textContent = pad(s%60);
-      } else {
-        el.textContent = d === 0 ? 'Today' : 'In ' + d + (d === 1 ? ' day' : ' days');
-      }
+      el.querySelector('[data-u="d"]').textContent = d;
+      el.querySelector('[data-u="h"]').textContent = pad(Math.floor(s%86400/3600));
+      el.querySelector('[data-u="m"]').textContent = pad(Math.floor(s%3600/60));
+      el.querySelector('[data-u="s"]').textContent = pad(s%60);
     });
   }
   tick(); setInterval(tick, 1000);
