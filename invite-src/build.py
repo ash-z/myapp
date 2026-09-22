@@ -18,11 +18,24 @@ subprocess.run(["npx", "esbuild", "three-entry.js", "--bundle", "--minify", "--f
                 "--global-name=THREE", "--outfile=build/three.min.js", "--legal-comments=none"],
                cwd=here, check=True)
 
-style = (here / "style.html").read_text()
-body  = (here / "body.html").read_text()
+import base64, re
+
+def inline_art(text):
+    """Replace {{art:name}} with the art/name.webp file as a data URI."""
+    def sub(m):
+        data = (here / "art" / f"{m.group(1)}.webp").read_bytes()
+        return "data:image/webp;base64," + base64.b64encode(data).decode()
+    return re.sub(r"\{\{art:([a-z0-9-]+)\}\}", sub, text)
+
+style = inline_art((here / "style.html").read_text())
+body  = inline_art((here / "body.html").read_text())
 app   = (here / "app.js").read_text()
 three = (build / "three.min.js").read_text()
-tail  = "\n<script>" + three + "</script>\n<script>" + app + "</script>\n"
+used  = sorted(set(re.findall(r'data-art="([a-z0-9-]+)"', body)))
+art   = "var ART={" + ",".join(
+    f'"{n}":"data:image/webp;base64,' + base64.b64encode((here / "art" / f"{n}.webp").read_bytes()).decode() + '"'
+    for n in used) + "};"
+tail  = "\n<script>" + art + "</script>\n<script>" + three + "</script>\n<script>" + app + "</script>\n"
 
 url  = "https://ash-z.github.io/myapp/"
 name = "Sai Susmita weds Ashish"

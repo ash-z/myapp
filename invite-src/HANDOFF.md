@@ -46,24 +46,30 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
 
-## Next: the illustrated art layer (Canva)
-The couple wants illustrated art **throughout** the invitation, in the spirit of their engagement invitations (Canva designs `DAHTZLG9LZ4`, `DAHTZPuwew0`). Selected pieces, all in their Canva account:
+## Illustrations (from the couple's Canva)
+All art lives in `art/` (WebP for the build, PNG lossless masters) and is embedded once in the page as `window.ART`;
+every `<img data-art="name">` shares it. Ganesha is a CSS mask (`--ganesha-img`) so it takes the theme colour.
 
-| Piece | Canva design | Placement |
-|---|---|---|
-| Bride & groom facing each other under a carved mandapam | `DAHV9AW397E` | opening screen and/or "The two of them" |
-| Alt couple, frontal, mango-leaf canopy (has AI gibberish text bottom-left — remove) | `DAHV9A5pn-k` | alternate |
-| Toranam with brass bells, golden peacock, diya with sprig | `DAHV9HvKffw` | toranam atop the opening screen + section heads; peacocks beside the seal and on blessings; diya accents |
-| Rich marigold toranam, gopuram | `DAHV9PFUJZw` | gopuram on the wedding ticket (its bride figure is unusable: braid turns into peacock feathers) |
-| Floral corner sprigs | `DAHV9DV2IEw` | reception ticket, section corners |
-| Junk to delete | `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4` | — |
+| Art | Used on |
+|---|---|
+| `toranam` (mango leaves, marigold, jasmine, brass bells) | top of the opening screen, the sea, and Blessings; Ganesha hangs in its centre gap |
+| `ganesha` (line art; Canva stock element "lord ganesha", from the engagement invitation) | centre of the toranam on the opening screen and the sea |
+| `couple` (bride and groom holding hands) | opening screen, in front of the kolam; the "together" photo card until a photo arrives |
+| `gopuram` | rising from the wedding ticket |
+| `corner-left`, `corner-right` | opening screen bottom corners; reception ticket top corners (flipped) |
+| `diya` (with sprig) | RSVP card corner |
+| `peacock` | Blessings, a facing pair |
 
-How to pull them in:
-1. The session needs network access to `export-download.canva.com` (and `canva.com`, `media.canva.com`, `design.canva.ai`). Exports are served from `export-download.canva.com`; without it only 376px thumbnails come through, which are too small.
-2. Export each as PNG at width ~2400 (`transparent_background: true` if the account has Canva Pro).
-3. Without transparency, key out the flat ivory background in PIL (soft alpha by distance from the background colour), then crop each element by connected-component bounding boxes.
-4. Save optimised PNG/WebP files under `docs/art/` and reference them by path; GitHub Pages serves them and they load lazily. For the artifact build, inline them as data URIs.
-5. Use the art as part of the invitation's design only — do not offer the raw pieces as standalone downloads (Canva content licence).
+**How they were extracted** (this environment blocks Canva's download host, `export-download.canva.com`):
+each illustration was placed alone on a solid magenta page in a workbench copy (`DAHV9YJ2Iq0`) of the art sheets, each
+page copied out as its own one-page design (Canva only stores previews for page 1), and the stored preview's S3 copy
+downloaded. `art_process.py urls.json` keys out the magenta (unmixing it from soft edges), stitches tiles (the couple
+is 2 tiles, the toranam 3) and trims. The source images are small (the peacock is 277×540), so the previews lose nothing.
+The toranam's big centre flower lived in its sheet's background image, so the garland has a gap — that is where Ganesha sits.
+
+Licensing: the Ganesha is Canva stock content, used inside this design. Don't offer any piece as a standalone download.
+Canva designs created along the way (safe to delete once happy): the workbench `DAHV9YJ2Iq0` and its 11 one-page copies;
+also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 
 ## Open items
 - Real photos: attach 3 (Susmita, Ashish, together), 4:5 portrait; set `CONFIG.photos[i].src`.

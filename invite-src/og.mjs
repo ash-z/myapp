@@ -20,7 +20,17 @@ for (let attempt = 1; attempt <= 4 && !ok; attempt++){
   console.log('attempt', attempt, 'fonts loaded:', ok);
 }
 if (!ok) { console.error('Fonts never loaded; refusing to write a fallback-font preview.'); process.exit(1); }
-await p.addStyleTag({ content:'.open-btn,.pal{display:none!important}' });
+// a wide composition for link previews: the couple on the left, names on the right
+await p.addStyleTag({ content:`
+  .open-btn,.pal,.sp-corner{display:none!important}
+  .sp-inner{display:grid!important;grid-template-columns:auto auto;column-gap:64px;row-gap:12px;align-items:center;justify-items:center;max-width:none!important;padding-top:104px!important}
+  .sp-inner .seal{grid-column:1;grid-row:1/5;width:220px!important;margin:26px 0 0!important}
+  .sp-inner .invocation{grid-column:2;grid-row:1}
+  .sp-inner .eyebrow{grid-column:2;grid-row:2}
+  .sp-names{grid-column:2;grid-row:3}
+  .sp-date{grid-column:2;grid-row:4}
+  .crown .toranam{width:820px!important}
+  .crown .ganesha{width:56px!important;top:22px!important}` });
 await p.waitForTimeout(2400);
 await p.screenshot({ path: out });
 await b.close();

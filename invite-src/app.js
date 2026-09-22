@@ -20,6 +20,13 @@ var CONFIG = {
   shareText: "Sai Susmita weds Ashish — Thursday, 29 October 2026, Visakhapatnam."
 };
 
+/* illustrations are embedded once (window.ART, written by build.py) and
+   shared by every <img data-art="name"> that shows them */
+[].slice.call(document.querySelectorAll('img[data-art]')).forEach(function(img){
+  var src = window.ART && window.ART[img.dataset.art];
+  if(src) img.src = src;
+});
+
 var reduced = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 var T = window.THREE;
 var root = document.documentElement;
@@ -434,7 +441,9 @@ var pager = (function(){
     ['.ph', '.soon'].forEach(function(s){ var n = face.querySelector(s); if(n) n.remove(); });
   });
 
-  var order = cards.map(function(c, i){ return i; });
+  // until photographs arrive, lead with the illustrated card of the two of them
+  var anyPhoto = CONFIG.photos.some(function(p){ return p && p.src; });
+  var order = anyPhoto ? [0, 1, 2] : [2, 0, 1];
   var TILT = [-1.5, 4.5, -5];
   var SPRING = 'transform .6s cubic-bezier(.2,.85,.25,1.12)';
   function pose(pos){ return 'translate3d(0,' + (pos*14) + 'px,0) scale(' + (1 - pos*0.055) + ') rotate(' + TILT[pos] + 'deg)'; }

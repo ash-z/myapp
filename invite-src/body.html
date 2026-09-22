@@ -1,9 +1,12 @@
 <script>(function(){var d=document.documentElement;d.classList.add('js');var s=null;try{s=sessionStorage.getItem('sa-opened')}catch(e){}if(location.hash||s){d.classList.add('ui','opened')}else{d.classList.add('locked')}})();</script>
 
 <div class="splash" id="splash" role="dialog" aria-label="Wedding invitation">
+  <div class="crown"><img class="toranam" data-art="toranam" alt="" aria-hidden="true" decoding="async"><span class="ganesha" role="img" aria-label="Lord Ganesha"></span></div>
+  <img class="sp-corner sp-corner-l" data-art="corner-left" alt="" aria-hidden="true" decoding="async">
+  <img class="sp-corner sp-corner-r" data-art="corner-right" alt="" aria-hidden="true" decoding="async">
   <div class="sp-inner">
     <p class="invocation telugu sp-a">॥ శ్రీ గణేశాయ నమః ॥</p>
-    <button class="seal sp-a" id="seal" tabindex="-1" aria-hidden="true"><span class="mono">S&thinsp;·&thinsp;A</span></button>
+    <button class="seal sp-a" id="seal" tabindex="-1" aria-hidden="true"><img class="couple" data-art="couple" alt="" decoding="async"></button>
     <p class="eyebrow telugu sp-a">శుభలేఖ</p>
     <h2 class="sp-names sp-a"><span class="n">Sai Susmita</span><span class="amp">&amp;</span><span class="n">Ashish</span></h2>
     <p class="sp-date sp-a">29 · 10 · 2026</p>
@@ -20,6 +23,7 @@
 
   <section class="screen hero" id="home" aria-label="Invitation">
     <canvas id="bay" aria-hidden="true"></canvas>
+    <div class="crown"><img class="toranam" data-art="toranam" alt="" aria-hidden="true" decoding="async"><span class="ganesha" role="img" aria-label="Lord Ganesha"></span></div>
     <div class="plate">
       <p class="invocation telugu">॥ శ్రీ గణేశాయ నమః ॥</p>
       <div class="hero-eyebrow"><i></i><span class="eyebrow telugu">శుభలేఖ</span><i></i></div>
@@ -58,7 +62,7 @@
           </figure>
           <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
             <div class="card-in"><div class="card-face">
-              <div class="ph ph-both" aria-hidden="true"><span class="ph-mono">S&thinsp;&amp;&thinsp;A</span></div>
+              <div class="ph ph-both" aria-hidden="true"><img class="ph-art" data-art="couple" alt="" decoding="async"></div>
               <figcaption class="cap"><span class="cap-name">Susmita &amp; Ashish</span></figcaption>
               <span class="soon">Photo coming soon</span>
             </div></div>
@@ -85,7 +89,8 @@
         <span class="eyebrow telugu">వివాహ ముహూర్తం</span>
         <h2 id="wedH">The wedding</h2>
       </div>
-      <article class="ticket reveal" data-tilt>
+      <article class="ticket reveal crowned" data-tilt>
+        <img class="t-gopuram" data-art="gopuram" alt="" aria-hidden="true" decoding="async">
         <div class="t-top">
           <div class="t-row"><span class="t-city">Visakhapatnam</span><span class="t-tag telugu">వివాహం</span></div>
           <div class="t-when">
@@ -126,6 +131,8 @@
         <h2 id="recH">The reception</h2>
       </div>
       <article class="ticket reveal" data-tilt>
+        <img class="t-flora t-flora-l" data-art="corner-left" alt="" aria-hidden="true" decoding="async">
+        <img class="t-flora t-flora-r" data-art="corner-right" alt="" aria-hidden="true" decoding="async">
         <div class="t-top">
           <div class="t-row"><span class="t-city">Hyderabad</span><span class="t-tag telugu">ఆశీర్వచనం</span></div>
           <div class="t-when">
@@ -167,6 +174,7 @@
         <h2 id="rsvpH">Will you be there?</h2>
       </div>
       <div class="rsvp-card reveal" id="rsvpCard">
+        <img class="card-diya" data-art="diya" alt="" aria-hidden="true" decoding="async">
         <form class="rsvp-form" id="rsvpForm" novalidate>
           <label class="fld" for="rsvpName">
             <span class="lbl">Your full name</span>
@@ -234,6 +242,7 @@
   </section>
 
   <section class="screen" id="blessings" aria-labelledby="blsH">
+    <div class="crown crown-page" aria-hidden="true"><img class="toranam" data-art="toranam" alt="" aria-hidden="true" decoding="async"></div>
     <div class="wrap">
       <div class="head reveal">
         <span class="eyebrow telugu">పెద్దలు</span>
@@ -255,6 +264,10 @@
         <p class="blessing">We ask for your presence, and for your blessings.</p>
         <p class="sig telugu">సాయి సుస్మిత &amp; ఆశిష్</p>
         <p class="sig-en">Sai Susmita &amp; Ashish</p>
+        <div class="peacocks" aria-hidden="true">
+          <img class="pk pk-l" data-art="peacock" alt="" decoding="async">
+          <img class="pk pk-r" data-art="peacock" alt="" decoding="async">
+        </div>
         <div class="acts">
           <button class="btn solid" id="shower">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M7 4v2M12 3v3M17 4v2M5 10v2M10 9v2M15 9v2M19 10v2M8 15v2M13 14v2M17 15v2"/></svg>
