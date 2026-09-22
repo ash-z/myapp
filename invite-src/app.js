@@ -294,7 +294,7 @@ var pager = (function(){
   function idx(id){ for(var i = 0; i < pages.length; i++){ if(pages[i].id === id) return i; } return -1; }
   function atTop(p){ return p.scrollTop <= 1; }
   function atEnd(p){ return p.scrollTop + p.clientHeight >= p.scrollHeight - 2; }
-  function locked(){ return root.classList.contains('locked'); }
+  function locked(){ return root.classList.contains('locked') || root.classList.contains('sheet-open'); }
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
   function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
@@ -419,7 +419,50 @@ var pager = (function(){
     else if(!typing && k === 'End'){ e.preventDefault(); go(pages.length - 1, 'scroll'); }
   });
 
+  // a link to #rsvp (or any page) while the invitation is open turns to that page
+  addEventListener('hashchange', function(){
+    var i = idx(location.hash.slice(1));
+    if(i >= 0 && i !== cur) go(i, 'scroll');
+  });
+
   return { go:go, current:function(){ return pages[cur].id; } };
+})();
+
+/* ===================================================================
+   FIT — every page fits one screen and never scrolls. When a page's
+   content is taller than the screen (a small phone), it is scaled down
+   as a whole, like a slide, until it fits. Below a floor (a phone held
+   sideways) the page is allowed to scroll instead of shrinking further.
+   =================================================================== */
+var refit = (function(){
+  var items = [], MIN = 0.62, pending = false;
+  $$('.screen:not(.hero)').forEach(function(p){
+    var wrap = p.querySelector(':scope > .wrap');
+    if(!wrap) return;
+    var box = document.createElement('div'), inner = document.createElement('div');
+    box.className = 'fit-box'; inner.className = 'fit-inner';
+    p.insertBefore(box, wrap); box.appendChild(inner); inner.appendChild(wrap);
+    items.push({ p:p, box:box, inner:inner });
+  });
+  function fit(it){
+    var cs = getComputedStyle(it.p);
+    var avail = it.p.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    var h = it.inner.offsetHeight;                           // layout height, unaffected by the scale
+    var s = (avail > 0 && h > avail) ? Math.max(MIN, avail / h) : 1;
+    it.inner.style.transform = s < 1 ? 'scale(' + s.toFixed(4) + ')' : '';
+    it.box.style.height = s < 1 ? (h * s).toFixed(1) + 'px' : '';
+    it.p.classList.toggle('overflowing', h * s > avail + 1);
+  }
+  function all(){ pending = false; items.forEach(fit); }
+  function soon(){ if(!pending){ pending = true; requestAnimationFrame(all); } }
+  if('ResizeObserver' in window){
+    var ro = new ResizeObserver(soon);                        // content changes (RSVP states) and screen changes
+    items.forEach(function(it){ ro.observe(it.inner); ro.observe(it.p); });
+  }
+  addEventListener('resize', soon);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(soon);
+  all();
+  return soon;
 })();
 
 /* ===================================================================
@@ -572,7 +615,8 @@ var pager = (function(){
   var endpoint = CONFIG.rsvp && CONFIG.rsvp.endpoint;
   var nameI = $('#rsvpName'), hp = $('#rsvpHp'), send = $('#rsvpSend'), msg = $('#rsvpMsg');
   var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dList = $('#doneList'), dSub = $('#doneSub');
-  var coming = $('#coming'), seg = $('#comingSeg'), cntW = $('#cntW'), cntR = $('#cntR');
+  var link = $('#comingBtn'), linkText = $('#comingBtnText'), sheet = $('#comingSheet'), scrim = $('#sheetScrim');
+  var seg = $('#comingSeg'), cntW = $('#cntW'), cntR = $('#cntR');
   var cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
   var KEY = 'sa-rsvp2', SUMKEY = 'sa-rsvp2-sum';
   var EVENTS = [
@@ -616,9 +660,14 @@ var pager = (function(){
 
   // guest lists, one per event
   function renderList(){
-    if(!summary || !summary.ok || !summary.wedding){ coming.hidden = true; return; }
+    if(!summary || !summary.ok || !summary.wedding){ link.hidden = true; return; }
     var W = summary.wedding, R = summary.reception;
-    coming.hidden = !(W.people > 0 || R.people > 0);
+    link.hidden = !(W.people > 0 || R.people > 0);
+    var lead = W.people > 0 ? W : R, where = W.people > 0 ? 'the wedding' : 'the reception';
+    linkText.innerHTML = '';
+    var bn = document.createElement('b'); bn.textContent = lead.people;
+    linkText.appendChild(bn);
+    linkText.appendChild(document.createTextNode(' coming to ' + where + ' \u00b7 See who'));
     cntW.textContent = W.people; cntR.textContent = R.people;
     var side = summary[showing];
     cN.textContent = side.people;
@@ -643,6 +692,25 @@ var pager = (function(){
       renderList(); buzz(5);
     });
   });
+
+  function openSheet(){
+    root.classList.add('sheet-open');
+    scrim.hidden = false; sheet.hidden = false;
+    requestAnimationFrame(function(){ scrim.classList.add('on'); sheet.classList.add('on'); });
+    try{ $('#sheetClose').focus({ preventScroll:true }); }catch(e){}
+    buzz(6);
+  }
+  function closeSheet(){
+    if(sheet.hidden) return;
+    root.classList.remove('sheet-open');
+    scrim.classList.remove('on'); sheet.classList.remove('on');
+    setTimeout(function(){ scrim.hidden = true; sheet.hidden = true; }, 450);
+    try{ link.focus({ preventScroll:true }); }catch(e){}
+  }
+  link.addEventListener('click', openSheet);
+  $('#sheetClose').addEventListener('click', closeSheet);
+  scrim.addEventListener('click', closeSheet);
+  addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSheet(); });
 
   function showDone(r, fresh){
     form.hidden = true; done.hidden = false;

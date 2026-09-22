@@ -229,15 +229,11 @@
           </div>
         </div>
       </div>
-      <div class="coming reveal" id="coming" hidden>
-        <div class="seg" id="comingSeg" role="tablist" aria-label="Guest list">
-          <span class="seg-pill" aria-hidden="true"></span>
-          <button role="tab" aria-selected="true" aria-controls="comingList">Wedding &middot; <span id="cntW">0</span></button>
-          <button role="tab" aria-selected="false" aria-controls="comingList">Reception &middot; <span id="cntR">0</span></button>
-        </div>
-        <p class="coming-count"><b id="comingN">0</b> <span id="comingL">guests are coming</span></p>
-        <ul class="coming-list" id="comingList"></ul>
-      </div>
+      <button class="coming-link reveal" id="comingBtn" type="button" hidden aria-haspopup="dialog" aria-controls="comingSheet">
+        <span class="coming-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span id="comingBtnText">See who&rsquo;s coming</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   </section>
 
@@ -264,11 +260,10 @@
         <p class="blessing">We ask for your presence, and for your blessings.</p>
         <p class="sig telugu">సాయి సుస్మిత &amp; ఆశిష్</p>
         <p class="sig-en">Sai Susmita &amp; Ashish</p>
-        <div class="peacocks" aria-hidden="true">
-          <img class="pk pk-l" data-art="peacock" alt="" decoding="async">
-          <img class="pk pk-r" data-art="peacock" alt="" decoding="async">
-        </div>
-        <div class="acts">
+
+        <div class="acts-row">
+          <img class="pk pk-l" data-art="peacock" alt="" aria-hidden="true" decoding="async">
+          <div class="acts">
           <button class="btn solid" id="shower">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M7 4v2M12 3v3M17 4v2M5 10v2M10 9v2M15 9v2M19 10v2M8 15v2M13 14v2M17 15v2"/></svg>
             Shower akshintalu
@@ -277,11 +272,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
             Share invitation
           </button>
+          </div>
+          <img class="pk pk-r" data-art="peacock" alt="" aria-hidden="true" decoding="async">
         </div>
         <p class="akshi"><span class="telugu">అక్షింతలు</span> &mdash; the turmeric rice guests shower on the couple as a blessing.</p>
         <p class="shower-note" id="showerNote" aria-live="polite"></p>
       </div>
-      <p class="foot">29 . 10 . 2026 &nbsp;&middot;&nbsp; Visakhapatnam &nbsp;&middot;&nbsp; 01 . 11 . 2026 &nbsp;&middot;&nbsp; Hyderabad</p>
     </div>
   </section>
 
@@ -316,5 +312,22 @@
   </div>
 </nav>
 
+<div class="sheet-scrim" id="sheetScrim" hidden></div>
+<div class="sheet" id="comingSheet" role="dialog" aria-modal="true" aria-labelledby="sheetH" hidden>
+  <div class="sheet-grip" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <h3 id="sheetH">Who&rsquo;s coming</h3>
+    <button class="sheet-close" id="sheetClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="seg" id="comingSeg" role="tablist" aria-label="Guest list">
+    <span class="seg-pill" aria-hidden="true"></span>
+    <button role="tab" aria-selected="true" aria-controls="comingList">Wedding &middot; <span id="cntW">0</span></button>
+    <button role="tab" aria-selected="false" aria-controls="comingList">Reception &middot; <span id="cntR">0</span></button>
+  </div>
+  <p class="coming-count"><b id="comingN">0</b> <span id="comingL">guests are coming</span></p>
+  <ul class="coming-list" id="comingList"></ul>
+</div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="edge" id="edge" aria-hidden="true"></div>

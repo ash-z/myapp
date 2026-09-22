@@ -28,7 +28,11 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 The invitation is a **pager**: pages are stacked full-screen layers and only the active one shows (`.js` styles; without JS it degrades to one scrolling document).
 - Scroll, swipe or arrow keys / Page Up/Down / Space at a page's edge turn the page. The next page rises under a row of temple arches with a gold line riding the edge (line and mask are driven from the same thread so they never drift); going back runs downward.
-- A page taller than the screen scrolls inside itself first; only a fresh gesture from its end turns the page. Backing up into a long page lands on its end.
+- **Pages never scroll.** Every page fits one screen: layouts are compact, and the FIT module in app.js scales a page's
+  content as a whole (like a slide) when a small phone can't fit it — measured: no scaling on 390×844, 412×915, 430×932;
+  79–87% on 375×667 and 360×640. Below 62% (a phone held sideways) the page scrolls rather than shrinking further.
+- The RSVP guest list opens in a bottom sheet ("See who's coming"), the one place that scrolls; page turns pause while it's open.
+- A link to `#rsvp` (or any page id) while the invitation is open turns to that page.
 - One trackpad flick turns at most one page: input during a turn, and until it has been quiet for 250ms after it, is swallowed.
 - Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
