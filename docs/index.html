@@ -289,7 +289,7 @@ button{font:inherit;color:inherit}
 .tickets::-webkit-scrollbar{display:none}
 .tickets .ticket{width:100%;scroll-snap-align:center}
 @media (min-width:900px){
-  .seg{display:none}
+  #seg{display:none}
   .tickets{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,400px));justify-content:center;gap:28px;overflow:visible;margin-inline:0;padding:6px 0 26px}
 }
 .t-top{padding:26px 26px 22px}
@@ -361,7 +361,7 @@ button{font:inherit;color:inherit}
   position:relative;width:min(100%,440px);margin:0 auto;padding:26px 24px 24px;border-radius:24px;
   background:var(--surface);box-shadow:var(--shadow),inset 0 0 0 1px var(--rule);
 }
-.rsvp-form{display:grid;gap:20px}
+.rsvp-form{display:grid;gap:16px}
 .fld{display:grid;gap:9px;margin:0;padding:0;border:0;min-width:0}
 .lbl{padding:0;font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .fld input[type="text"]{
@@ -372,22 +372,23 @@ button{font:inherit;color:inherit}
 .fld input[type="text"]::placeholder{color:var(--muted);opacity:.7}
 .fld input[type="text"]:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--card)}
 .fld input[aria-invalid="true"]{border-color:var(--accent)}
-.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.chip{position:relative;cursor:pointer}
-.chip input{position:absolute;opacity:0;width:1px;height:1px}
-.chip-in{
-  display:grid;gap:2px;height:100%;padding:13px 14px 13px 40px;border-radius:14px;position:relative;
-  border:1px solid var(--rule);background:var(--bg);transition:border-color .2s,background .2s,transform .12s;
-}
-.chip-in b{font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:16px}
-.chip-in small{font-size:11.5px;color:var(--muted);line-height:1.35}
-.chip-in svg{position:absolute;left:12px;top:15px;width:18px;height:18px;padding:2px;border-radius:50%;
-  border:1px solid var(--rule);fill:none;stroke:transparent;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:all .2s}
-.chip input:checked + .chip-in{border-color:var(--gold);background:var(--card)}
-.chip input:checked + .chip-in svg{background:var(--gold);border-color:var(--gold);stroke:var(--bg)}
-.chip input:focus-visible + .chip-in{outline:2px solid var(--gold);outline-offset:2px}
-.chip:active .chip-in{transform:scale(.98)}
-.stepper{display:flex;align-items:center;gap:6px;width:max-content;padding:4px;border:1px solid var(--rule);border-radius:999px;background:var(--bg)}
+.ev-rsvp{margin:0;padding:16px;border:1px solid var(--rule);border-radius:18px;background:var(--bg);display:grid;gap:14px;min-width:0}
+.ev-head{float:left;width:100%;display:grid;gap:1px;padding:0}  /* float lifts the legend off the fieldset border */
+.ev-head b{font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:19px}
+.ev-head small{font-size:12px;color:var(--muted)}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pill{position:relative;cursor:pointer}
+.pill input{position:absolute;opacity:0;width:1px;height:1px}
+.pill span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px;border-radius:12px;text-align:center;
+  border:1px solid var(--rule);background:var(--surface);font-weight:500;font-size:13.5px;color:var(--muted);
+  transition:background .2s,color .2s,border-color .2s,transform .12s}
+.pill input:checked + span{border-color:var(--gold);background:var(--gold);color:var(--bg)}
+.pill input[value="no"]:checked + span{background:var(--card);color:var(--ink)}
+.pill input:focus-visible + span{outline:2px solid var(--gold);outline-offset:2px}
+.pill:active span{transform:scale(.97)}
+.ev-party{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ev-rsvp.missing{border-color:var(--accent)}
+.stepper{display:flex;align-items:center;gap:6px;width:max-content;padding:4px;border:1px solid var(--rule);border-radius:999px;background:var(--surface)}
 .stepper button{width:42px;height:42px;border:0;border-radius:50%;background:var(--card);color:var(--gold);font-size:22px;line-height:1;cursor:pointer}
 .stepper button:disabled{opacity:.35;cursor:default}
 .stepper output{min-width:42px;text-align:center;font-family:"Marcellus",Georgia,serif;font-size:22px;font-variant-numeric:tabular-nums}
@@ -406,9 +407,17 @@ button{font:inherit;color:inherit}
 .rsvp-done.lit .done-flame{animation:ignite .9s cubic-bezier(.3,1.5,.5,1) both,flicker 2.6s ease-in-out .9s infinite}
 @keyframes ignite{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
 .done-title{margin:0;font-family:"Italiana",Georgia,serif;font-size:clamp(28px,7.4vw,36px);letter-spacing:.03em}
-.done-sub{margin:0 0 16px;font-size:14.5px;color:var(--muted);max-width:26em}
+.done-sub{margin:0 0 6px;font-size:14.5px;color:var(--muted);max-width:26em}
+.done-list{list-style:none;margin:6px 0 18px;padding:0;width:100%;display:grid;gap:8px}
+.done-list li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 16px;border-radius:14px;background:var(--card);text-align:left}
+.done-list b{font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:16px}
+.done-list b small{display:block;font-family:"Karla",sans-serif;font-size:11.5px;color:var(--muted)}
+.done-list span{font-size:14px;white-space:nowrap}
+.done-list li.no span{color:var(--muted)}
 .rsvp-done .rsvp-acts{width:100%}
 .coming{margin:clamp(30px,5vh,44px) auto 0;max-width:640px;text-align:center}
+.coming .seg{margin-bottom:16px}
+.coming .seg button{letter-spacing:.12em}
 .coming-count{margin:0 0 14px;font-family:"Marcellus",Georgia,serif;font-size:16px;color:var(--muted)}
 .coming-count b{font-family:"Italiana",Georgia,serif;font-weight:400;font-size:34px;color:var(--gold);vertical-align:-3px;margin-right:4px}
 .coming-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
@@ -625,26 +634,38 @@ button{font:inherit;color:inherit}
             <span class="lbl">Your full name</span>
             <input id="rsvpName" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required placeholder="First and last name">
           </label>
-          <fieldset class="fld">
-            <legend class="lbl">Joining us for</legend>
-            <div class="chips">
-              <label class="chip"><input type="checkbox" id="rsvpW"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Wedding</b><small>Thu 29 Oct &middot; Visakhapatnam</small></span></label>
-              <label class="chip"><input type="checkbox" id="rsvpR"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Reception</b><small>Sun 1 Nov &middot; Hyderabad</small></span></label>
+          <fieldset class="ev-rsvp" id="ev-wedding">
+            <legend class="ev-head"><b>Wedding</b><small>Thu 29 Oct &middot; 7:29 PM &middot; Visakhapatnam</small></legend>
+            <div class="yn">
+              <label class="pill"><input type="radio" name="wedding" value="yes"><span>Attending</span></label>
+              <label class="pill"><input type="radio" name="wedding" value="no"><span>Can&rsquo;t make it</span></label>
+            </div>
+            <div class="ev-party" hidden>
+              <span class="lbl" id="weddingPartyL">How many of you</span>
+              <div class="stepper" role="group" aria-labelledby="weddingPartyL">
+                <button type="button" data-d="-1" aria-label="One fewer for the wedding">&minus;</button>
+                <output aria-live="polite">1</output>
+                <button type="button" data-d="1" aria-label="One more for the wedding">+</button>
+              </div>
             </div>
           </fieldset>
-          <div class="fld">
-            <span class="lbl" id="partyL">How many of you</span>
-            <div class="stepper" role="group" aria-labelledby="partyL">
-              <button type="button" id="partyMinus" aria-label="One fewer">&minus;</button>
-              <output id="partyN" aria-live="polite">1</output>
-              <button type="button" id="partyPlus" aria-label="One more">+</button>
+          <fieldset class="ev-rsvp" id="ev-reception">
+            <legend class="ev-head"><b>Reception</b><small>Sun 1 Nov &middot; 11:00 AM &middot; Hyderabad</small></legend>
+            <div class="yn">
+              <label class="pill"><input type="radio" name="reception" value="yes"><span>Attending</span></label>
+              <label class="pill"><input type="radio" name="reception" value="no"><span>Can&rsquo;t make it</span></label>
             </div>
-          </div>
+            <div class="ev-party" hidden>
+              <span class="lbl" id="receptionPartyL">How many of you</span>
+              <div class="stepper" role="group" aria-labelledby="receptionPartyL">
+                <button type="button" data-d="-1" aria-label="One fewer for the reception">&minus;</button>
+                <output aria-live="polite">1</output>
+                <button type="button" data-d="1" aria-label="One more for the reception">+</button>
+              </div>
+            </div>
+          </fieldset>
           <input class="hp" type="text" name="website" id="rsvpHp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div class="rsvp-acts">
-            <button type="submit" class="btn solid" id="rsvpYes">Count me in</button>
-            <button type="button" class="btn ghost" id="rsvpNo">Sorry, can&rsquo;t make it</button>
-          </div>
+          <button type="submit" class="btn solid" id="rsvpSend">Send RSVP</button>
           <p class="rsvp-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
         </form>
         <div class="rsvp-done" id="rsvpDone" hidden>
@@ -654,7 +675,8 @@ button{font:inherit;color:inherit}
             <path class="done-rim" d="M2 36h56"/>
           </svg>
           <p class="done-title" id="doneTitle">Thank you</p>
-          <p class="done-sub" id="doneSub"></p>
+          <ul class="done-list" id="doneList"></ul>
+          <p class="done-sub" id="doneSub" hidden></p>
           <div class="rsvp-acts">
             <button type="button" class="btn" id="rsvpEdit">Change my RSVP</button>
             <button type="button" class="btn ghost" id="rsvpAnother">RSVP for someone else</button>
@@ -662,6 +684,11 @@ button{font:inherit;color:inherit}
         </div>
       </div>
       <div class="coming reveal" id="coming" hidden>
+        <div class="seg" id="comingSeg" role="tablist" aria-label="Guest list">
+          <span class="seg-pill" aria-hidden="true"></span>
+          <button role="tab" aria-selected="true" aria-controls="comingList">Wedding &middot; <span id="cntW">0</span></button>
+          <button role="tab" aria-selected="false" aria-controls="comingList">Reception &middot; <span id="cntR">0</span></button>
+        </div>
         <p class="coming-count"><b id="comingN">0</b> <span id="comingL">guests are coming</span></p>
         <ul class="coming-list" id="comingList"></ul>
       </div>
@@ -5456,23 +5483,26 @@ function goTo(t, from){
 })();
 
 /* ===================================================================
-   RSVP — a guest adds their full name, picks the events and how many
-   are coming. Responses land in the couple's Google Sheet; the page
-   shows who's coming (first name + initial, shortened by the sheet's
-   script, so full names never leave it). Each phone keeps a token, so
-   answering again updates the same row instead of adding a new one.
+   RSVP — one full name, then a separate answer for the wedding and the
+   reception, each with its own party size. Responses land in the
+   couple's Google Sheet; the page shows a guest list per event (first
+   name + initial only — the sheet's script shortens them, so full names
+   never leave it). Each phone keeps a token, so answering again updates
+   the same row instead of adding a new one.
    =================================================================== */
 (function rsvp(){
   var form = $('#rsvpForm'); if(!form) return;
   var endpoint = CONFIG.rsvp && CONFIG.rsvp.endpoint;
-  var nameI = $('#rsvpName'), cW = $('#rsvpW'), cR = $('#rsvpR'), hp = $('#rsvpHp');
-  var minus = $('#partyMinus'), plus = $('#partyPlus'), out = $('#partyN');
-  var yes = $('#rsvpYes'), no = $('#rsvpNo'), msg = $('#rsvpMsg');
-  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dSub = $('#doneSub');
-  var edit = $('#rsvpEdit'), another = $('#rsvpAnother');
-  var coming = $('#coming'), cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
-  var KEY = 'sa-rsvp', SUMKEY = 'sa-rsvp-sum';
-  var party = 1, mine = null;
+  var nameI = $('#rsvpName'), hp = $('#rsvpHp'), send = $('#rsvpSend'), msg = $('#rsvpMsg');
+  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dList = $('#doneList'), dSub = $('#doneSub');
+  var coming = $('#coming'), seg = $('#comingSeg'), cntW = $('#cntW'), cntR = $('#cntR');
+  var cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
+  var KEY = 'sa-rsvp2', SUMKEY = 'sa-rsvp2-sum';
+  var EVENTS = [
+    { key:'wedding',   label:'Wedding',   when:'Thu 29 Oct · Visakhapatnam' },
+    { key:'reception', label:'Reception', when:'Sun 1 Nov · Hyderabad' }
+  ];
+  var mine = null, summary = null, showing = 'wedding';
 
   function load(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
   function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
@@ -5482,54 +5512,90 @@ function goTo(t, from){
   }
   function first(n){ return String(n).trim().split(/\s+/)[0]; }
   function say(t, soft){ msg.textContent = t || ''; msg.classList.toggle('soft', !!soft); }
-  function setParty(n){
-    party = Math.max(1, Math.min(10, n));
-    out.textContent = party;
-    minus.disabled = party <= 1; plus.disabled = party >= 10;
-  }
-  minus.addEventListener('click', function(){ setParty(party - 1); buzz(5); });
-  plus.addEventListener('click',  function(){ setParty(party + 1); buzz(5); });
-  setParty(1);
 
-  function renderList(sum){
-    if(!sum || !sum.ok){ coming.hidden = true; return; }
-    coming.hidden = !(sum.people > 0);
-    cN.textContent = sum.people;
-    cL.textContent = sum.people === 1 ? 'guest is coming' : 'guests are coming';
+  // one controller per event block: yes/no + its own party size
+  var blocks = {};
+  EVENTS.forEach(function(ev){
+    var box = document.getElementById('ev-' + ev.key);
+    var radios = [].slice.call(box.querySelectorAll('input[type="radio"]'));
+    var partyRow = box.querySelector('.ev-party'), out = box.querySelector('output');
+    var btns = [].slice.call(partyRow.querySelectorAll('button'));
+    var b = { box:box, party:1 };
+    b.answer = function(){ var r = radios.filter(function(x){ return x.checked; })[0]; return r ? r.value === 'yes' : null; };
+    b.setParty = function(n){
+      b.party = Math.max(1, Math.min(10, n)); out.textContent = b.party;
+      btns[0].disabled = b.party <= 1; btns[1].disabled = b.party >= 10;
+    };
+    b.sync = function(){ partyRow.hidden = b.answer() !== true; box.classList.remove('missing'); };
+    b.set = function(ans, party){
+      radios.forEach(function(x){ x.checked = ans === null ? false : x.value === (ans ? 'yes' : 'no'); });
+      b.setParty(party || 1); b.sync();
+    };
+    radios.forEach(function(x){ x.addEventListener('change', function(){ b.sync(); buzz(5); }); });
+    btns.forEach(function(x){ x.addEventListener('click', function(){ b.setParty(b.party + (+x.dataset.d)); buzz(5); }); });
+    b.set(null, 1);
+    blocks[ev.key] = b;
+  });
+
+  // guest lists, one per event
+  function renderList(){
+    if(!summary || !summary.ok || !summary.wedding){ coming.hidden = true; return; }
+    var W = summary.wedding, R = summary.reception;
+    coming.hidden = !(W.people > 0 || R.people > 0);
+    cntW.textContent = W.people; cntR.textContent = R.people;
+    var side = summary[showing];
+    cN.textContent = side.people;
+    cL.textContent = (side.people === 1 ? 'guest is coming to the ' : 'guests are coming to the ') + showing;
     list.textContent = '';
-    (sum.guests || []).forEach(function(g, i){
+    side.guests.forEach(function(g, i){
       var li = document.createElement('li');
       li.style.setProperty('--i', Math.min(i, 30));
-      var dot = document.createElement('i'); li.appendChild(dot);
+      li.appendChild(document.createElement('i'));
       li.appendChild(document.createTextNode(g.name));
       if(g.party > 1){ var sm = document.createElement('small'); sm.textContent = '+' + (g.party - 1); li.appendChild(sm); }
-      if(mine && mine.coming && g.name === mine.short) li.classList.add('you');
+      if(mine && mine[showing] && mine[showing].coming && g.name === mine.short) li.classList.add('you');
       list.appendChild(li);
     });
   }
+  var segBtns = [].slice.call(seg.querySelectorAll('button'));
+  segBtns.forEach(function(btn, i){
+    btn.addEventListener('click', function(){
+      showing = EVENTS[i].key;
+      seg.style.setProperty('--seg', i);
+      segBtns.forEach(function(x, k){ x.setAttribute('aria-selected', String(k === i)); });
+      renderList(); buzz(5);
+    });
+  });
+
   function showDone(r, fresh){
     form.hidden = true; done.hidden = false;
-    var who = first(r.name);
-    if(r.coming){
-      var ev = r.w && r.r ? 'the wedding and the reception' : r.w ? 'the wedding' : 'the reception';
-      dTitle.textContent = 'Thank you, ' + who;
-      dSub.textContent = 'We’ll see you at ' + ev + (r.party > 1 ? ' — ' + r.party + ' of you.' : '.');
-    } else {
-      dTitle.textContent = 'Thank you, ' + who;
-      dSub.textContent = 'We\u2019ve noted that you can\u2019t make it.';
-    }
-    done.classList.toggle('lit', !!r.coming);
-    if(fresh && r.coming && !reduced){
-      var b = done.getBoundingClientRect();
-      fx.burst(b.left + b.width/2, b.top + 30, 30, 'petal');
+    dTitle.textContent = 'Thank you, ' + first(r.name);
+    dList.textContent = '';
+    var any = false;
+    EVENTS.forEach(function(ev){
+      var a = r[ev.key], li = document.createElement('li'), bEl = document.createElement('b'),
+          sm = document.createElement('small'), sp = document.createElement('span');
+      bEl.textContent = ev.label; sm.textContent = ev.when; bEl.appendChild(sm);
+      if(a.coming){ any = true; sp.textContent = a.party > 1 ? 'Attending · ' + a.party + ' of you' : 'Attending'; }
+      else { li.className = 'no'; sp.textContent = 'Can’t make it'; }
+      li.appendChild(bEl); li.appendChild(sp); dList.appendChild(li);
+    });
+    dSub.hidden = any;
+    dSub.textContent = any ? '' : 'We’ve noted that you can’t make it.';
+    done.classList.toggle('lit', any);
+    if(fresh && any && !reduced){
+      var bx = done.getBoundingClientRect();
+      fx.burst(bx.left + bx.width/2, bx.top + 30, 30, 'petal');
       buzz([10, 60, 10]);
     }
   }
   function showForm(r){
     done.hidden = true; form.hidden = false;
     nameI.value = r ? r.name : '';
-    cW.checked = r ? !!r.w : false; cR.checked = r ? !!r.r : false;
-    setParty(r && r.party ? r.party : 1);
+    EVENTS.forEach(function(ev){
+      var a = r && r[ev.key];
+      blocks[ev.key].set(a ? a.coming : null, a && a.party ? a.party : 1);
+    });
     nameI.removeAttribute('aria-invalid'); say('');
   }
 
@@ -5540,44 +5606,51 @@ function goTo(t, from){
       .then(function(res){ return res.json(); })
       .finally(function(){ clearTimeout(timer); });
   }
-  function submit(isComing){
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
     var name = nameI.value.replace(/\s+/g, ' ').trim();
     if(name.length < 2 || name.split(' ').length < 2){
       nameI.setAttribute('aria-invalid', 'true'); nameI.focus();
       say('Please add your full name — first and last.'); return;
     }
     nameI.removeAttribute('aria-invalid');
-    if(isComing && !cW.checked && !cR.checked){ say('Pick the wedding, the reception, or both.'); return; }
+    var missing = EVENTS.filter(function(ev){ return blocks[ev.key].answer() === null; });
+    if(missing.length){
+      missing.forEach(function(ev){ blocks[ev.key].box.classList.add('missing'); });
+      say(missing.length === 2 ? 'Let us know for the wedding and the reception.' : 'Let us know for the ' + missing[0].key + ' too.');
+      return;
+    }
     if(!endpoint){ say('RSVPs open very soon — please check back.', true); return; }
 
     var tok = (mine && mine.token) || token();
-    var body = { token:tok, name:name, coming:isComing, wedding:isComing && cW.checked,
-                 reception:isComing && cR.checked, party:isComing ? party : 0, website:hp.value };
-    var btn = isComing ? yes : no;
-    btn.setAttribute('aria-busy', 'true'); say('Sending…', true);
+    var body = { token:tok, name:name, website:hp.value };
+    EVENTS.forEach(function(ev){
+      var b = blocks[ev.key], yes = b.answer() === true;
+      body[ev.key] = { coming:yes, party: yes ? b.party : 0 };
+    });
+    send.setAttribute('aria-busy', 'true'); say('Sending…', true);
     post(body).then(function(sum){
-      btn.removeAttribute('aria-busy');
-      if(!sum || !sum.ok){ say(sum && sum.error === 'pick an event' ? 'Pick the wedding, the reception, or both.' : 'That didn’t go through — please try again.'); return; }
-      mine = { token:tok, name:name, coming:isComing, w:body.wedding, r:body.reception, party:body.party, short:sum.you || '' };
+      send.removeAttribute('aria-busy');
+      if(!sum || !sum.ok){ say(sum && sum.error === 'answer both' ? 'Let us know for the wedding and the reception.' : 'That didn’t go through — please try again.'); return; }
+      mine = { token:tok, name:name, wedding:body.wedding, reception:body.reception, short:sum.you || '' };
+      summary = sum;
       save(KEY, mine); save(SUMKEY, sum);
-      say(''); showDone(mine, true); renderList(sum);
+      say(''); showDone(mine, true); renderList();
     }).catch(function(){
-      btn.removeAttribute('aria-busy');
+      send.removeAttribute('aria-busy');
       say('Couldn’t reach the RSVP list — check your connection and try again.');
     });
-  }
-  form.addEventListener('submit', function(e){ e.preventDefault(); submit(true); });
-  no.addEventListener('click', function(){ submit(false); });
-  edit.addEventListener('click', function(){ showForm(mine); nameI.focus(); });
-  another.addEventListener('click', function(){ mine = null; try{ localStorage.removeItem(KEY); }catch(e){} showForm(null); nameI.focus(); });
+  });
+  $('#rsvpEdit').addEventListener('click', function(){ showForm(mine); nameI.focus(); });
+  $('#rsvpAnother').addEventListener('click', function(){ mine = null; try{ localStorage.removeItem(KEY); }catch(e){} showForm(null); nameI.focus(); });
 
   mine = load(KEY);
-  if(mine && mine.name) showDone(mine, false);
-  renderList(load(SUMKEY));
+  if(mine && mine.name && mine.wedding && mine.reception) showDone(mine, false); else mine = null;
+  summary = load(SUMKEY); renderList();
   if(endpoint){
     setTimeout(function(){
       fetch(endpoint).then(function(r){ return r.json(); })
-        .then(function(sum){ if(sum && sum.ok){ save(SUMKEY, sum); renderList(sum); } })
+        .then(function(sum){ if(sum && sum.ok && sum.wedding){ summary = sum; save(SUMKEY, sum); renderList(); } })
         .catch(function(){});
     }, 1200);
   }

@@ -165,26 +165,38 @@
             <span class="lbl">Your full name</span>
             <input id="rsvpName" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required placeholder="First and last name">
           </label>
-          <fieldset class="fld">
-            <legend class="lbl">Joining us for</legend>
-            <div class="chips">
-              <label class="chip"><input type="checkbox" id="rsvpW"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Wedding</b><small>Thu 29 Oct &middot; Visakhapatnam</small></span></label>
-              <label class="chip"><input type="checkbox" id="rsvpR"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Reception</b><small>Sun 1 Nov &middot; Hyderabad</small></span></label>
+          <fieldset class="ev-rsvp" id="ev-wedding">
+            <legend class="ev-head"><b>Wedding</b><small>Thu 29 Oct &middot; 7:29 PM &middot; Visakhapatnam</small></legend>
+            <div class="yn">
+              <label class="pill"><input type="radio" name="wedding" value="yes"><span>Attending</span></label>
+              <label class="pill"><input type="radio" name="wedding" value="no"><span>Can&rsquo;t make it</span></label>
+            </div>
+            <div class="ev-party" hidden>
+              <span class="lbl" id="weddingPartyL">How many of you</span>
+              <div class="stepper" role="group" aria-labelledby="weddingPartyL">
+                <button type="button" data-d="-1" aria-label="One fewer for the wedding">&minus;</button>
+                <output aria-live="polite">1</output>
+                <button type="button" data-d="1" aria-label="One more for the wedding">+</button>
+              </div>
             </div>
           </fieldset>
-          <div class="fld">
-            <span class="lbl" id="partyL">How many of you</span>
-            <div class="stepper" role="group" aria-labelledby="partyL">
-              <button type="button" id="partyMinus" aria-label="One fewer">&minus;</button>
-              <output id="partyN" aria-live="polite">1</output>
-              <button type="button" id="partyPlus" aria-label="One more">+</button>
+          <fieldset class="ev-rsvp" id="ev-reception">
+            <legend class="ev-head"><b>Reception</b><small>Sun 1 Nov &middot; 11:00 AM &middot; Hyderabad</small></legend>
+            <div class="yn">
+              <label class="pill"><input type="radio" name="reception" value="yes"><span>Attending</span></label>
+              <label class="pill"><input type="radio" name="reception" value="no"><span>Can&rsquo;t make it</span></label>
             </div>
-          </div>
+            <div class="ev-party" hidden>
+              <span class="lbl" id="receptionPartyL">How many of you</span>
+              <div class="stepper" role="group" aria-labelledby="receptionPartyL">
+                <button type="button" data-d="-1" aria-label="One fewer for the reception">&minus;</button>
+                <output aria-live="polite">1</output>
+                <button type="button" data-d="1" aria-label="One more for the reception">+</button>
+              </div>
+            </div>
+          </fieldset>
           <input class="hp" type="text" name="website" id="rsvpHp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div class="rsvp-acts">
-            <button type="submit" class="btn solid" id="rsvpYes">Count me in</button>
-            <button type="button" class="btn ghost" id="rsvpNo">Sorry, can&rsquo;t make it</button>
-          </div>
+          <button type="submit" class="btn solid" id="rsvpSend">Send RSVP</button>
           <p class="rsvp-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
         </form>
         <div class="rsvp-done" id="rsvpDone" hidden>
@@ -194,7 +206,8 @@
             <path class="done-rim" d="M2 36h56"/>
           </svg>
           <p class="done-title" id="doneTitle">Thank you</p>
-          <p class="done-sub" id="doneSub"></p>
+          <ul class="done-list" id="doneList"></ul>
+          <p class="done-sub" id="doneSub" hidden></p>
           <div class="rsvp-acts">
             <button type="button" class="btn" id="rsvpEdit">Change my RSVP</button>
             <button type="button" class="btn ghost" id="rsvpAnother">RSVP for someone else</button>
@@ -202,6 +215,11 @@
         </div>
       </div>
       <div class="coming reveal" id="coming" hidden>
+        <div class="seg" id="comingSeg" role="tablist" aria-label="Guest list">
+          <span class="seg-pill" aria-hidden="true"></span>
+          <button role="tab" aria-selected="true" aria-controls="comingList">Wedding &middot; <span id="cntW">0</span></button>
+          <button role="tab" aria-selected="false" aria-controls="comingList">Reception &middot; <span id="cntR">0</span></button>
+        </div>
         <p class="coming-count"><b id="comingN">0</b> <span id="comingL">guests are coming</span></p>
         <ul class="coming-list" id="comingList"></ul>
       </div>

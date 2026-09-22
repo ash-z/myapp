@@ -32,7 +32,9 @@ Each screen's top edge is a row of temple arches, and content drifts in staggere
 ## RSVP
 `rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.
 Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.
-- Guests give a full name (first + last required), events, party size (1–10); "can't make it" records a No.
+- Guests give a full name (first + last required), then answer the wedding and the reception separately: Attending / Can't make it, with a separate party size (1–10) for each. Both must be answered.
+- Sheet columns: Updated, Token, Full name, Wedding, Wedding guests, Reception, Reception guests.
+- The page shows a guest list per event (Wedding / Reception switch) with its own head count.
 - Each phone keeps a token in localStorage; answering again updates the same sheet row.
 - The page only ever receives "First L." names and a head count; full names stay in the sheet.
 - Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.

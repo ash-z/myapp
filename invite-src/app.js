@@ -496,23 +496,26 @@ function goTo(t, from){
 })();
 
 /* ===================================================================
-   RSVP — a guest adds their full name, picks the events and how many
-   are coming. Responses land in the couple's Google Sheet; the page
-   shows who's coming (first name + initial, shortened by the sheet's
-   script, so full names never leave it). Each phone keeps a token, so
-   answering again updates the same row instead of adding a new one.
+   RSVP — one full name, then a separate answer for the wedding and the
+   reception, each with its own party size. Responses land in the
+   couple's Google Sheet; the page shows a guest list per event (first
+   name + initial only — the sheet's script shortens them, so full names
+   never leave it). Each phone keeps a token, so answering again updates
+   the same row instead of adding a new one.
    =================================================================== */
 (function rsvp(){
   var form = $('#rsvpForm'); if(!form) return;
   var endpoint = CONFIG.rsvp && CONFIG.rsvp.endpoint;
-  var nameI = $('#rsvpName'), cW = $('#rsvpW'), cR = $('#rsvpR'), hp = $('#rsvpHp');
-  var minus = $('#partyMinus'), plus = $('#partyPlus'), out = $('#partyN');
-  var yes = $('#rsvpYes'), no = $('#rsvpNo'), msg = $('#rsvpMsg');
-  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dSub = $('#doneSub');
-  var edit = $('#rsvpEdit'), another = $('#rsvpAnother');
-  var coming = $('#coming'), cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
-  var KEY = 'sa-rsvp', SUMKEY = 'sa-rsvp-sum';
-  var party = 1, mine = null;
+  var nameI = $('#rsvpName'), hp = $('#rsvpHp'), send = $('#rsvpSend'), msg = $('#rsvpMsg');
+  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dList = $('#doneList'), dSub = $('#doneSub');
+  var coming = $('#coming'), seg = $('#comingSeg'), cntW = $('#cntW'), cntR = $('#cntR');
+  var cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
+  var KEY = 'sa-rsvp2', SUMKEY = 'sa-rsvp2-sum';
+  var EVENTS = [
+    { key:'wedding',   label:'Wedding',   when:'Thu 29 Oct · Visakhapatnam' },
+    { key:'reception', label:'Reception', when:'Sun 1 Nov · Hyderabad' }
+  ];
+  var mine = null, summary = null, showing = 'wedding';
 
   function load(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
   function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
@@ -522,54 +525,90 @@ function goTo(t, from){
   }
   function first(n){ return String(n).trim().split(/\s+/)[0]; }
   function say(t, soft){ msg.textContent = t || ''; msg.classList.toggle('soft', !!soft); }
-  function setParty(n){
-    party = Math.max(1, Math.min(10, n));
-    out.textContent = party;
-    minus.disabled = party <= 1; plus.disabled = party >= 10;
-  }
-  minus.addEventListener('click', function(){ setParty(party - 1); buzz(5); });
-  plus.addEventListener('click',  function(){ setParty(party + 1); buzz(5); });
-  setParty(1);
 
-  function renderList(sum){
-    if(!sum || !sum.ok){ coming.hidden = true; return; }
-    coming.hidden = !(sum.people > 0);
-    cN.textContent = sum.people;
-    cL.textContent = sum.people === 1 ? 'guest is coming' : 'guests are coming';
+  // one controller per event block: yes/no + its own party size
+  var blocks = {};
+  EVENTS.forEach(function(ev){
+    var box = document.getElementById('ev-' + ev.key);
+    var radios = [].slice.call(box.querySelectorAll('input[type="radio"]'));
+    var partyRow = box.querySelector('.ev-party'), out = box.querySelector('output');
+    var btns = [].slice.call(partyRow.querySelectorAll('button'));
+    var b = { box:box, party:1 };
+    b.answer = function(){ var r = radios.filter(function(x){ return x.checked; })[0]; return r ? r.value === 'yes' : null; };
+    b.setParty = function(n){
+      b.party = Math.max(1, Math.min(10, n)); out.textContent = b.party;
+      btns[0].disabled = b.party <= 1; btns[1].disabled = b.party >= 10;
+    };
+    b.sync = function(){ partyRow.hidden = b.answer() !== true; box.classList.remove('missing'); };
+    b.set = function(ans, party){
+      radios.forEach(function(x){ x.checked = ans === null ? false : x.value === (ans ? 'yes' : 'no'); });
+      b.setParty(party || 1); b.sync();
+    };
+    radios.forEach(function(x){ x.addEventListener('change', function(){ b.sync(); buzz(5); }); });
+    btns.forEach(function(x){ x.addEventListener('click', function(){ b.setParty(b.party + (+x.dataset.d)); buzz(5); }); });
+    b.set(null, 1);
+    blocks[ev.key] = b;
+  });
+
+  // guest lists, one per event
+  function renderList(){
+    if(!summary || !summary.ok || !summary.wedding){ coming.hidden = true; return; }
+    var W = summary.wedding, R = summary.reception;
+    coming.hidden = !(W.people > 0 || R.people > 0);
+    cntW.textContent = W.people; cntR.textContent = R.people;
+    var side = summary[showing];
+    cN.textContent = side.people;
+    cL.textContent = (side.people === 1 ? 'guest is coming to the ' : 'guests are coming to the ') + showing;
     list.textContent = '';
-    (sum.guests || []).forEach(function(g, i){
+    side.guests.forEach(function(g, i){
       var li = document.createElement('li');
       li.style.setProperty('--i', Math.min(i, 30));
-      var dot = document.createElement('i'); li.appendChild(dot);
+      li.appendChild(document.createElement('i'));
       li.appendChild(document.createTextNode(g.name));
       if(g.party > 1){ var sm = document.createElement('small'); sm.textContent = '+' + (g.party - 1); li.appendChild(sm); }
-      if(mine && mine.coming && g.name === mine.short) li.classList.add('you');
+      if(mine && mine[showing] && mine[showing].coming && g.name === mine.short) li.classList.add('you');
       list.appendChild(li);
     });
   }
+  var segBtns = [].slice.call(seg.querySelectorAll('button'));
+  segBtns.forEach(function(btn, i){
+    btn.addEventListener('click', function(){
+      showing = EVENTS[i].key;
+      seg.style.setProperty('--seg', i);
+      segBtns.forEach(function(x, k){ x.setAttribute('aria-selected', String(k === i)); });
+      renderList(); buzz(5);
+    });
+  });
+
   function showDone(r, fresh){
     form.hidden = true; done.hidden = false;
-    var who = first(r.name);
-    if(r.coming){
-      var ev = r.w && r.r ? 'the wedding and the reception' : r.w ? 'the wedding' : 'the reception';
-      dTitle.textContent = 'Thank you, ' + who;
-      dSub.textContent = 'We’ll see you at ' + ev + (r.party > 1 ? ' — ' + r.party + ' of you.' : '.');
-    } else {
-      dTitle.textContent = 'Thank you, ' + who;
-      dSub.textContent = 'We\u2019ve noted that you can\u2019t make it.';
-    }
-    done.classList.toggle('lit', !!r.coming);
-    if(fresh && r.coming && !reduced){
-      var b = done.getBoundingClientRect();
-      fx.burst(b.left + b.width/2, b.top + 30, 30, 'petal');
+    dTitle.textContent = 'Thank you, ' + first(r.name);
+    dList.textContent = '';
+    var any = false;
+    EVENTS.forEach(function(ev){
+      var a = r[ev.key], li = document.createElement('li'), bEl = document.createElement('b'),
+          sm = document.createElement('small'), sp = document.createElement('span');
+      bEl.textContent = ev.label; sm.textContent = ev.when; bEl.appendChild(sm);
+      if(a.coming){ any = true; sp.textContent = a.party > 1 ? 'Attending · ' + a.party + ' of you' : 'Attending'; }
+      else { li.className = 'no'; sp.textContent = 'Can’t make it'; }
+      li.appendChild(bEl); li.appendChild(sp); dList.appendChild(li);
+    });
+    dSub.hidden = any;
+    dSub.textContent = any ? '' : 'We’ve noted that you can’t make it.';
+    done.classList.toggle('lit', any);
+    if(fresh && any && !reduced){
+      var bx = done.getBoundingClientRect();
+      fx.burst(bx.left + bx.width/2, bx.top + 30, 30, 'petal');
       buzz([10, 60, 10]);
     }
   }
   function showForm(r){
     done.hidden = true; form.hidden = false;
     nameI.value = r ? r.name : '';
-    cW.checked = r ? !!r.w : false; cR.checked = r ? !!r.r : false;
-    setParty(r && r.party ? r.party : 1);
+    EVENTS.forEach(function(ev){
+      var a = r && r[ev.key];
+      blocks[ev.key].set(a ? a.coming : null, a && a.party ? a.party : 1);
+    });
     nameI.removeAttribute('aria-invalid'); say('');
   }
 
@@ -580,44 +619,51 @@ function goTo(t, from){
       .then(function(res){ return res.json(); })
       .finally(function(){ clearTimeout(timer); });
   }
-  function submit(isComing){
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
     var name = nameI.value.replace(/\s+/g, ' ').trim();
     if(name.length < 2 || name.split(' ').length < 2){
       nameI.setAttribute('aria-invalid', 'true'); nameI.focus();
       say('Please add your full name — first and last.'); return;
     }
     nameI.removeAttribute('aria-invalid');
-    if(isComing && !cW.checked && !cR.checked){ say('Pick the wedding, the reception, or both.'); return; }
+    var missing = EVENTS.filter(function(ev){ return blocks[ev.key].answer() === null; });
+    if(missing.length){
+      missing.forEach(function(ev){ blocks[ev.key].box.classList.add('missing'); });
+      say(missing.length === 2 ? 'Let us know for the wedding and the reception.' : 'Let us know for the ' + missing[0].key + ' too.');
+      return;
+    }
     if(!endpoint){ say('RSVPs open very soon — please check back.', true); return; }
 
     var tok = (mine && mine.token) || token();
-    var body = { token:tok, name:name, coming:isComing, wedding:isComing && cW.checked,
-                 reception:isComing && cR.checked, party:isComing ? party : 0, website:hp.value };
-    var btn = isComing ? yes : no;
-    btn.setAttribute('aria-busy', 'true'); say('Sending…', true);
+    var body = { token:tok, name:name, website:hp.value };
+    EVENTS.forEach(function(ev){
+      var b = blocks[ev.key], yes = b.answer() === true;
+      body[ev.key] = { coming:yes, party: yes ? b.party : 0 };
+    });
+    send.setAttribute('aria-busy', 'true'); say('Sending…', true);
     post(body).then(function(sum){
-      btn.removeAttribute('aria-busy');
-      if(!sum || !sum.ok){ say(sum && sum.error === 'pick an event' ? 'Pick the wedding, the reception, or both.' : 'That didn’t go through — please try again.'); return; }
-      mine = { token:tok, name:name, coming:isComing, w:body.wedding, r:body.reception, party:body.party, short:sum.you || '' };
+      send.removeAttribute('aria-busy');
+      if(!sum || !sum.ok){ say(sum && sum.error === 'answer both' ? 'Let us know for the wedding and the reception.' : 'That didn’t go through — please try again.'); return; }
+      mine = { token:tok, name:name, wedding:body.wedding, reception:body.reception, short:sum.you || '' };
+      summary = sum;
       save(KEY, mine); save(SUMKEY, sum);
-      say(''); showDone(mine, true); renderList(sum);
+      say(''); showDone(mine, true); renderList();
     }).catch(function(){
-      btn.removeAttribute('aria-busy');
+      send.removeAttribute('aria-busy');
       say('Couldn’t reach the RSVP list — check your connection and try again.');
     });
-  }
-  form.addEventListener('submit', function(e){ e.preventDefault(); submit(true); });
-  no.addEventListener('click', function(){ submit(false); });
-  edit.addEventListener('click', function(){ showForm(mine); nameI.focus(); });
-  another.addEventListener('click', function(){ mine = null; try{ localStorage.removeItem(KEY); }catch(e){} showForm(null); nameI.focus(); });
+  });
+  $('#rsvpEdit').addEventListener('click', function(){ showForm(mine); nameI.focus(); });
+  $('#rsvpAnother').addEventListener('click', function(){ mine = null; try{ localStorage.removeItem(KEY); }catch(e){} showForm(null); nameI.focus(); });
 
   mine = load(KEY);
-  if(mine && mine.name) showDone(mine, false);
-  renderList(load(SUMKEY));
+  if(mine && mine.name && mine.wedding && mine.reception) showDone(mine, false); else mine = null;
+  summary = load(SUMKEY); renderList();
   if(endpoint){
     setTimeout(function(){
       fetch(endpoint).then(function(r){ return r.json(); })
-        .then(function(sum){ if(sum && sum.ok){ save(SUMKEY, sum); renderList(sum); } })
+        .then(function(sum){ if(sum && sum.ok && sum.wedding){ summary = sum; save(SUMKEY, sum); renderList(); } })
         .catch(function(){});
     }, 1200);
   }

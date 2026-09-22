@@ -5,12 +5,13 @@
  * the RSVPs, then Deploy -> New deployment -> Web app
  * (Execute as: Me, Who has access: Anyone). See SETUP.md.
  *
- * The sheet keeps each guest's full name. What the invitation receives back
- * is only a count and "First L." names, so full names never leave the sheet.
+ * Each guest answers the wedding and the reception separately, with a party
+ * size for each. The sheet keeps full names; the invitation only receives
+ * per-event counts and "First L." names, so full names never leave the sheet.
  */
 
 var SHEET = 'RSVPs';
-var HEADERS = ['Updated', 'Token', 'Full name', 'Coming', 'Wedding', 'Reception', 'Party size'];
+var HEADERS = ['Updated', 'Token', 'Full name', 'Wedding', 'Wedding guests', 'Reception', 'Reception guests'];
 
 function sheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -34,20 +35,22 @@ function short_(name) {
   return parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.' : parts[0];
 }
 
-function summary_(sh) {
+/** Who is coming to one event: column `col` holds Yes/No, `col + 1` the party size. */
+function side_(rows, col) {
   var guests = [], people = 0;
-  rows_(sh).forEach(function (r) {
-    if (r[3] !== 'Yes') return;
-    var n = Number(r[6]) || 1;
+  rows.forEach(function (r) {
+    if (r[col] !== 'Yes') return;
+    var n = Number(r[col + 1]) || 1;
     people += n;
     guests.push({ name: short_(r[2]), party: n, t: new Date(r[0]).getTime() });
   });
   guests.sort(function (a, b) { return b.t - a.t; });
-  return {
-    ok: true,
-    people: people,
-    guests: guests.map(function (g) { return { name: g.name, party: g.party }; })
-  };
+  return { people: people, guests: guests.map(function (g) { return { name: g.name, party: g.party }; }) };
+}
+
+function summary_(sh) {
+  var rows = rows_(sh);
+  return { ok: true, wedding: side_(rows, 3), reception: side_(rows, 5) };
 }
 
 function json_(o) {
@@ -71,15 +74,13 @@ function doPost(e) {
     if (!/^[A-Za-z0-9-]{8,48}$/.test(token) || name.length < 2) return json_({ ok: false, error: 'invalid' });
     if (/^[=+\-@]/.test(name)) name = "'" + name;                                // never let a name become a formula
 
-    var coming = d.coming === true;
-    var wedding = coming && d.wedding === true;
-    var reception = coming && d.reception === true;
-    if (coming && !wedding && !reception) return json_({ ok: false, error: 'pick an event' });
-    var party = coming ? Math.min(10, Math.max(1, parseInt(d.party, 10) || 1)) : 0;
+    var w = d.wedding || {}, r = d.reception || {};
+    if (typeof w.coming !== 'boolean' || typeof r.coming !== 'boolean') return json_({ ok: false, error: 'answer both' });
+    var party = function (x) { return x.coming ? Math.min(10, Math.max(1, parseInt(x.party, 10) || 1)) : 0; };
 
     var sh = sheet_();
-    var row = [new Date(), token, name, coming ? 'Yes' : 'No', wedding ? 'Yes' : 'No', reception ? 'Yes' : 'No', party];
-    var tokens = rows_(sh).map(function (r) { return r[1]; });
+    var row = [new Date(), token, name, w.coming ? 'Yes' : 'No', party(w), r.coming ? 'Yes' : 'No', party(r)];
+    var tokens = rows_(sh).map(function (existing) { return existing[1]; });
     var i = tokens.indexOf(token);
     if (i >= 0) sh.getRange(i + 2, 1, 1, row.length).setValues([row]);         // same phone answering again
     else sh.appendRow(row);
