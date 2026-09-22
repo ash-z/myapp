@@ -26,8 +26,13 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
-Tab taps bloom the next screen open from the tab (View Transitions API; a quick veil where unsupported; a plain jump for reduced motion).
-Each screen's top edge is a row of temple arches, and content drifts in staggered.
+The invitation is a **pager**: pages are stacked full-screen layers and only the active one shows (`.js` styles; without JS it degrades to one scrolling document).
+- Scroll, swipe or arrow keys / Page Up/Down / Space at a page's edge turn the page. The next page rises under a row of temple arches with a gold line riding the edge (line and mask are driven from the same thread so they never drift); going back runs downward.
+- A page taller than the screen scrolls inside itself first; only a fresh gesture from its end turns the page. Backing up into a long page lands on its end.
+- One trackpad flick turns at most one page: input during a turn, and until it has been quiet for 250ms after it, is swallowed.
+- Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
+- Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
+- Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 
 ## RSVP
 `rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.

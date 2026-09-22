@@ -399,24 +399,62 @@ button{font:inherit;color:inherit}
 .coming-list li small{font-size:11.5px;color:var(--muted)}
 .coming-list li.you{border-color:var(--gold)}
 
-/* ============ SCREEN TRANSITIONS ============
-   A tab tap blooms the next screen open from the tab itself, with a
-   feathered edge; the screen being left sinks back a little.        */
+/* ============ PAGES ============
+   With JavaScript the invitation is a stack of full-screen pages; only
+   the active one shows, and each scrolls inside itself if it's taller
+   than the screen. Without JavaScript it stays one scrolling document. */
+.js #app{position:fixed;inset:0;overflow:hidden}
+.js .screen{
+  position:absolute;inset:0;min-height:0;height:100%;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
+  justify-content:flex-start;visibility:hidden;scroll-snap-align:none;
+}
+.js .screen > .wrap{margin-block:auto}
+.js .screen:focus{outline:none}
+.js .screen::before{display:none}
+.js .hero{overflow:hidden;justify-content:center}
+.js .screen.is-active{visibility:visible;z-index:1}
+.js .screen.leave{visibility:visible;z-index:2}
+.js .screen.enter{visibility:visible;z-index:3}
+
+/* ============ PAGE TRANSITIONS ============
+   Scrolling: the next page rises under a row of temple arches (a gold
+   line rides the edge) while the old page lifts away; going back runs
+   the other way. A tab tap blooms the page open from the tab.        */
+@property --wh{syntax:"<length>";inherits:false;initial-value:0px}
 @property --ir{syntax:"<length>";inherits:false;initial-value:0px}
-.tabs{view-transition-name:tabs}
-.pal{view-transition-name:pal}
-#fx{view-transition-name:fx}
-::view-transition-group(tabs),::view-transition-group(pal),::view-transition-group(fx){z-index:10}
-::view-transition-old(root){animation:recede .82s cubic-bezier(.65,0,.25,1) both}
-::view-transition-new(root){
-  animation:bloom .82s cubic-bezier(.65,0,.25,1) both;
+@property --ey{syntax:"<length>";inherits:false;initial-value:0px}
+.screen.wipe-down{
+  -webkit-mask:linear-gradient(#000,#000) 0 100%/100% var(--wh) no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M0 22V15C0 8.5 5.5 5 12.5 5c3.5 0 6.5-1.4 9.5-5 3 3.6 6 5 9.5 5C38.5 5 44 8.5 44 15v7Z'/%3E%3C/svg%3E") 0 calc(100% - var(--wh))/44px 22px repeat-x;
+          mask:linear-gradient(#000,#000) 0 100%/100% var(--wh) no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M0 22V15C0 8.5 5.5 5 12.5 5c3.5 0 6.5-1.4 9.5-5 3 3.6 6 5 9.5 5C38.5 5 44 8.5 44 15v7Z'/%3E%3C/svg%3E") 0 calc(100% - var(--wh))/44px 22px repeat-x;
+  animation:wipe .95s cubic-bezier(.72,0,.18,1) both;
+}
+.screen.wipe-up{
+  -webkit-mask:linear-gradient(#000,#000) 0 0/100% var(--wh) no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath transform='matrix(1 0 0 -1 0 22)' d='M0 22V15C0 8.5 5.5 5 12.5 5c3.5 0 6.5-1.4 9.5-5 3 3.6 6 5 9.5 5C38.5 5 44 8.5 44 15v7Z'/%3E%3C/svg%3E") 0 var(--wh)/44px 22px repeat-x;
+          mask:linear-gradient(#000,#000) 0 0/100% var(--wh) no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath transform='matrix(1 0 0 -1 0 22)' d='M0 22V15C0 8.5 5.5 5 12.5 5c3.5 0 6.5-1.4 9.5-5 3 3.6 6 5 9.5 5C38.5 5 44 8.5 44 15v7Z'/%3E%3C/svg%3E") 0 var(--wh)/44px 22px repeat-x;
+  animation:wipe .95s cubic-bezier(.72,0,.18,1) both;
+}
+@keyframes wipe{from{--wh:0px}to{--wh:calc(var(--ph,100vh) + 24px)}}
+.screen.leave-down{animation:lift .95s cubic-bezier(.72,0,.18,1) both}
+.screen.leave-up{animation:sink .95s cubic-bezier(.72,0,.18,1) both}
+@keyframes lift{to{transform:translateY(-9%) scale(.96);opacity:.3;filter:saturate(.8)}}
+@keyframes sink{to{transform:translateY(9%) scale(.96);opacity:.3;filter:saturate(.8)}}
+.screen.bloom{
   -webkit-mask-image:radial-gradient(circle at var(--vx,50%) var(--vy,90%),#000 calc(var(--ir) - 90px),transparent var(--ir));
           mask-image:radial-gradient(circle at var(--vx,50%) var(--vy,90%),#000 calc(var(--ir) - 90px),transparent var(--ir));
+  animation:bloom .85s cubic-bezier(.65,0,.25,1) both;
 }
 @keyframes bloom{from{--ir:0px}to{--ir:var(--vr,150vmax)}}
-@keyframes recede{to{transform:scale(.94);opacity:.45;filter:saturate(.8)}}
-.veil{position:fixed;inset:0;z-index:70;pointer-events:none;background:var(--bg);opacity:0;transition:opacity .22s ease}
-.veil.on{opacity:1}
+.screen.leave-bloom{animation:recede .85s cubic-bezier(.65,0,.25,1) both}
+@keyframes recede{to{transform:scale(.94);opacity:.4;filter:saturate(.8)}}
+/* the gold line is positioned from a custom property animated on the same thread as the
+   page mask, so line and arched edge move in the same frame */
+.edge{position:fixed;left:0;right:0;top:0;height:22px;z-index:65;pointer-events:none;opacity:0;background-size:44px 22px;background-repeat:repeat-x;transform:translateY(var(--ey))}
+.edge.run-down{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath fill='none' stroke='%23C99A45' stroke-width='1.4' d='M0 15.5C0 9 5.5 5.5 12.5 5.5c3.5 0 6.5-1.4 9.5-4.5 3 3.1 6 4.5 9.5 4.5 7 0 12.5 3.5 12.5 10'/%3E%3C/svg%3E");animation:edge-up .95s cubic-bezier(.72,0,.18,1) both,edge-fade .95s linear both}
+.edge.run-up{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath fill='none' stroke='%23C99A45' stroke-width='1.4' transform='matrix(1 0 0 -1 0 22)' d='M0 15.5C0 9 5.5 5.5 12.5 5.5c3.5 0 6.5-1.4 9.5-4.5 3 3.1 6 4.5 9.5 4.5 7 0 12.5 3.5 12.5 10'/%3E%3C/svg%3E");animation:edge-down .95s cubic-bezier(.72,0,.18,1) both,edge-fade .95s linear both}
+@keyframes edge-up{from{--ey:calc(var(--ph,100vh) - 22px)}to{--ey:-46px}}
+@keyframes edge-down{from{--ey:0px}to{--ey:calc(var(--ph,100vh) + 24px)}}
+@keyframes edge-fade{0%,86%{opacity:1}100%{opacity:0}}
 
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:60;pointer-events:none}
 
@@ -430,6 +468,7 @@ button{font:inherit;color:inherit}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
+  .screen,.edge{animation:none!important}
   .coming-list li,.done-flame{animation:none!important}
 }
 </style>

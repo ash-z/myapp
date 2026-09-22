@@ -263,10 +263,14 @@ function buildSeal(host){
 })();
 
 /* ===================================================================
-   TAB BAR + SCREEN TRANSITIONS
-   A tap blooms the next screen open from the tab itself; its content
-   then drifts in piece by piece. Browsers without view transitions
-   get a quick veil instead; reduced motion jumps straight there.
+   PAGER — the invitation moves a page at a time. Scrolling, swiping or
+   the arrow keys at a page's edge carry you to the next page, which
+   rises in under a row of temple arches while the old one lifts away.
+   A page taller than the screen scrolls inside itself first, and only a
+   fresh gesture at its end turns the page. A tab tap blooms its page
+   open from the tab instead. Other modules listen for:
+     pagechange {id, from}  — a transition has started
+     pagesettle {id}        — the page is in place
    =================================================================== */
 function replay(screen){
   var items = [].slice.call(screen.querySelectorAll('.reveal'));
@@ -275,52 +279,140 @@ function replay(screen){
   requestAnimationFrame(function(){ items.forEach(function(n){ n.classList.add('in'); }); });
   setTimeout(function(){ items.forEach(function(n){ n.style.removeProperty('--rd'); }); }, 1800);
 }
-function jumpTo(t){
-  var prev = root.style.scrollBehavior;
-  root.style.scrollBehavior = 'auto';
-  window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY);
-  root.style.scrollBehavior = prev;
-}
-function goTo(t, from){
-  if(!t) return;
-  if(reduced){ jumpTo(t); return; }
-  var r = from ? from.getBoundingClientRect() : null;
-  var x = r ? r.left + r.width/2 : innerWidth/2;
-  var y = r ? r.top + r.height/2 : innerHeight - 50;
-  if(document.startViewTransition){
-    root.style.setProperty('--vx', x + 'px');
-    root.style.setProperty('--vy', y + 'px');
-    root.style.setProperty('--vr', (Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 110) + 'px');
-    try{
-      document.startViewTransition(function(){ jumpTo(t); replay(t); });
-    }catch(e){ jumpTo(t); replay(t); }
-    fx.burst(x, y - 10, 14, 'petal');
-    return;
-  }
-  var veil = $('#veil');
-  if(!veil){ jumpTo(t); replay(t); return; }
-  veil.classList.add('on');
-  setTimeout(function(){ jumpTo(t); replay(t); veil.classList.remove('on'); }, 230);
-}
 
-(function tabbar(){
-  var links = $$('.tabs a');
-  links.forEach(function(a){
-    a.addEventListener('click', function(e){
+var pager = (function(){
+  var pages = $$('.screen'), links = $$('.tabs a'), edge = $('#edge');
+  var cur = 0, busy = false, DUR = 950, quietUntil = 0;
+
+  function idx(id){ for(var i = 0; i < pages.length; i++){ if(pages[i].id === id) return i; } return -1; }
+  function atTop(p){ return p.scrollTop <= 1; }
+  function atEnd(p){ return p.scrollTop + p.clientHeight >= p.scrollHeight - 2; }
+  function locked(){ return root.classList.contains('locked'); }
+  function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
+  function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); }
+  function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
+  addEventListener('resize', setPh); setPh();
+
+  pages.forEach(function(p){ p.setAttribute('tabindex', '-1'); });
+  cur = Math.max(0, idx(location.hash.slice(1)));
+  pages[cur].classList.add('is-active');
+  mark(cur);
+
+  function settle(i){
+    pages.forEach(function(p, k){ p.classList.toggle('is-active', k === i); });
+    try{ pages[i].focus({ preventScroll:true }); }catch(e){}
+    emit('pagesettle', { id:pages[i].id });
+  }
+
+  function go(i, mode, from){
+    if(busy || locked() || i < 0 || i >= pages.length || i === cur) return;
+    var out = pages[cur], inn = pages[i], down = i > cur;
+    busy = true;
+    // arriving from below starts at the top; backing up into a long page lands on its end
+    inn.scrollTop = (mode === 'scroll' && !down) ? inn.scrollHeight : 0;
+    cur = i; mark(i);
+    try{ history.replaceState(null, '', '#' + inn.id); }catch(e){}
+    emit('pagechange', { id:inn.id, from:out.id });
+    buzz(6);
+    if(reduced){ settle(i); busy = false; return; }
+
+    var enter, leave;
+    if(mode === 'bloom'){
+      var r = from ? from.getBoundingClientRect() : null;
+      var x = r ? r.left + r.width/2 : innerWidth/2, y = r ? r.top + r.height/2 : innerHeight - 50;
+      inn.style.setProperty('--vx', x + 'px');
+      inn.style.setProperty('--vy', y + 'px');
+      inn.style.setProperty('--vr', (Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 110) + 'px');
+      enter = 'bloom'; leave = 'leave-bloom';
+      fx.burst(x, y - 10, 14, 'petal');
+    } else {
+      enter = down ? 'wipe-down' : 'wipe-up'; leave = down ? 'leave-down' : 'leave-up';
+      if(edge){ edge.className = 'edge'; void edge.offsetWidth; edge.className = 'edge ' + (down ? 'run-down' : 'run-up'); }
+    }
+    inn.classList.add('enter', enter);
+    out.classList.add('leave', leave);
+    replay(inn);
+    setTimeout(function(){
+      out.classList.remove('leave', leave);
+      inn.classList.remove('enter', enter);
+      if(edge) edge.className = 'edge';
+      settle(i);
+      busy = false;
+      quietUntil = performance.now() + 250;
+    }, DUR);
+  }
+  function step(d){ go(cur + d, 'scroll'); }
+
+  // tabs: bloom from the tab; tapping the tab you're on scrolls its page back to the top
+  links.forEach(function(l){
+    l.addEventListener('click', function(e){
       e.preventDefault();
-      goTo(document.getElementById(a.hash.slice(1)), a);
-      try{ history.replaceState(null, '', a.hash); }catch(err){}
-      buzz(6);
+      var i = idx(l.hash.slice(1));
+      if(i === cur){ pages[cur].scrollTo({ top:0, behavior: reduced ? 'auto' : 'smooth' }); return; }
+      go(i, 'bloom', l);
     });
   });
-  if(!('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){
-      if(!e.isIntersecting) return;
-      links.forEach(function(a){ a.setAttribute('aria-current', String(a.hash === '#' + e.target.id)); });
-    });
-  }, { rootMargin:'-48% 0px -48% 0px' });
-  $$('.screen').forEach(function(s){ io.observe(s); });
+
+  // wheel / trackpad: one gesture turns at most one page. Input during a
+  // turn, and any that keeps arriving within 250ms of the last (trackpad
+  // momentum), is swallowed; a new gesture has to start after a pause. A
+  // scroll that reaches the end of a long page stops there, and only a fresh
+  // gesture from the end turns it. Wheel input anywhere (over the tab bar,
+  // say) moves the page underneath.
+  var lastWheel = 0, acc = 0, burstTop = false, burstEnd = false;
+  addEventListener('wheel', function(e){
+    if(locked()) return;
+    var now = performance.now(), p = pages[cur], dy = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+    if(!dy) return;
+    if(busy || now < quietUntil){
+      e.preventDefault(); lastWheel = now;
+      if(!busy) quietUntil = now + 250;
+      return;
+    }
+    if(now - lastWheel > 220){ acc = 0; burstTop = atTop(p); burstEnd = atEnd(p); }
+    lastWheel = now;
+    var down = dy > 0;
+    if(down ? !atEnd(p) : !atTop(p)){                        // the page still has room to scroll
+      if(!p.contains(e.target)){ e.preventDefault(); p.scrollBy(0, dy); }
+      return;
+    }
+    e.preventDefault();
+    if(!(down ? burstEnd : burstTop)) return;
+    acc += Math.abs(dy);
+    if(acc > 30){ acc = -1e9; step(down ? 1 : -1); }
+  }, { passive:false });
+
+  // touch: a mostly vertical swipe that began at the page's edge
+  var ts = null;
+  addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ ts = null; return; }
+    var t = e.touches[0], p = pages[cur];
+    ts = { x:t.clientX, y:t.clientY, t:performance.now(), top:atTop(p), end:atEnd(p) };
+  }, { passive:true });
+  addEventListener('touchend', function(e){
+    if(!ts || busy || locked()) { ts = null; return; }
+    var s = ts; ts = null;
+    var t = e.changedTouches[0], dx = t.clientX - s.x, dy = t.clientY - s.y;
+    if(Math.abs(dy) < Math.abs(dx) * 1.2) return;           // sideways: the photo deck's
+    var fast = Math.abs(dy) / Math.max(1, performance.now() - s.t) > 0.35;
+    if((dy < -60 || (dy < -25 && fast)) && s.end) step(1);
+    else if((dy > 60 || (dy > 25 && fast)) && s.top) step(-1);
+  }, { passive:true });
+
+  // keyboard: arrows, Page Up/Down and Space turn pages at the edges
+  addEventListener('keydown', function(e){
+    if(locked() || e.altKey || e.ctrlKey || e.metaKey) return;
+    var tg = e.target, typing = tg && (/^(input|textarea|select|button)$/i.test(tg.tagName) || tg.isContentEditable);
+    var p = pages[cur], k = e.key;
+    var fwd = k === 'PageDown' || (!typing && (k === 'ArrowDown' || (k === ' ' && !e.shiftKey)));
+    var back = k === 'PageUp' || (!typing && (k === 'ArrowUp' || (k === ' ' && e.shiftKey)));
+    if(fwd && atEnd(p)){ e.preventDefault(); step(1); }
+    else if(back && atTop(p)){ e.preventDefault(); step(-1); }
+    else if(!typing && k === 'Home'){ e.preventDefault(); go(0, 'scroll'); }
+    else if(!typing && k === 'End'){ e.preventDefault(); go(pages.length - 1, 'scroll'); }
+  });
+
+  return { go:go, current:function(){ return pages[cur].id; } };
 })();
 
 /* ===================================================================
@@ -418,19 +510,20 @@ function goTo(t, from){
   deck.addEventListener('pointercancel', end);
 
   // teach the gesture once: the top card leans out and back
-  if(!reduced && 'IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(es){
-      if(!es[0].isIntersecting) return;
-      io.disconnect();
+  if(!reduced){
+    var taught = false;
+    var teach = function(){
+      if(taught) return; taught = true;
       setTimeout(function(){
         if(used || drag) return;
         var c = cards[order[0]];
         c.style.transition = 'transform .45s cubic-bezier(.3,.7,.4,1)';
         c.style.transform = 'translate3d(34px,0,0) rotate(4deg)';
         setTimeout(function(){ if(!used && !drag) layout(true); }, 480);
-      }, 1100);
-    }, { threshold:0.6 });
-    io.observe(deck);
+      }, 700);
+    };
+    document.addEventListener('pagesettle', function(e){ if(e.detail.id === 'us') teach(); });
+    if(pager.current() === 'us') teach();
   }
 })();
 
@@ -839,7 +932,12 @@ function goTo(t, from){
     ptr.ty = ((e.clientY - r.top)/r.height) * 2 - 1;
   }, { passive:true });
   hero.addEventListener('pointerleave', function(){ ptr.tx = ptr.ty = 0; }, { passive:true });
-  hero.addEventListener('pointerdown', function(e){
+  var downAt = null;
+  hero.addEventListener('pointerdown', function(e){ downAt = { x:e.clientX, y:e.clientY }; });
+  hero.addEventListener('pointercancel', function(){ downAt = null; });
+  hero.addEventListener('pointerup', function(e){
+    var d = downAt; downAt = null;
+    if(!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 12) return;   // a swipe turns the page instead
     if(e.target.closest && e.target.closest('a,button')) return;
     var r = cv.getBoundingClientRect();
     ndc.x =  ((e.clientX - r.left)/r.width)  * 2 - 1;
@@ -886,38 +984,21 @@ function goTo(t, from){
   if(reduced){ render(); if(hint) hint.hidden = true; }
   else{
     loop();
-    if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){
-        var vis = es[0].isIntersecting;
-        if(vis && !running){ running = true; loop(); }
-        else if(!vis && running){ running = false; cancelAnimationFrame(raf); }
-      }, { threshold:0 }).observe(cv);
-    }
+    // pages stack on top of each other, so render only while the sea is showing
+    var wake = function(){ if(!running){ running = true; loop(); } };
+    var rest = function(){ running = false; cancelAnimationFrame(raf); };
+    document.addEventListener('pagechange', function(e){ if(e.detail.id === 'home' || e.detail.from === 'home') wake(); });
+    document.addEventListener('pagesettle', function(e){ if(e.detail.id !== 'home') rest(); });
+    if(pager.current() !== 'home') rest();
   }
 })();
 
 
-/* =============== REVEALS — staggered within each screen =============== */
+/* =============== REVEALS — a page's content drifts in as the page arrives =============== */
 (function reveals(){
-  var items = $$('.reveal');
-  items.forEach(function(n){
-    var s = n.closest('.screen'), sib = s ? [].slice.call(s.querySelectorAll('.reveal')) : [n];
-    n.dataset.ri = sib.indexOf(n);
-  });
-  function all(){ items.forEach(function(n){ n.classList.add('in'); }); }
-  if(reduced || !('IntersectionObserver' in window)){ all(); return; }
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){
-      if(!e.isIntersecting) return;
-      var n = e.target;
-      n.style.setProperty('--rd', (Math.min(+n.dataset.ri || 0, 5) * 0.09).toFixed(2) + 's');
-      n.classList.add('in');
-      io.unobserve(n);
-      setTimeout(function(){ n.style.removeProperty('--rd'); }, 1600);
-    });
-  }, { rootMargin:'0px 0px -6% 0px', threshold:0.06 });
-  items.forEach(function(n){ io.observe(n); });
-  setTimeout(all, 4000);
+  if(reduced){ $$('.reveal').forEach(function(n){ n.classList.add('in'); }); return; }
+  var start = document.querySelector('.screen.is-active');
+  if(start) replay(start);
 })();
 
 })();
