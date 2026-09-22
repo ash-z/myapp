@@ -79,13 +79,19 @@
     </div>
   </section>
 
-  <section class="screen alt" id="wedding" aria-labelledby="wedH">
+  <section class="screen alt" id="events" aria-labelledby="evH">
     <div class="wrap">
       <div class="head reveal">
-        <span class="eyebrow telugu">వివాహ ముహూర్తం</span>
-        <h2 id="wedH">The wedding</h2>
+        <span class="eyebrow telugu">వివాహ వివరాలు</span>
+        <h2 id="evH">The celebrations</h2>
       </div>
-      <article class="ticket reveal" data-tilt>
+      <div class="seg reveal" id="seg" role="tablist" aria-label="Choose an event">
+        <span class="seg-pill" aria-hidden="true"></span>
+        <button role="tab" aria-selected="true" aria-controls="tickets">Wedding</button>
+        <button role="tab" aria-selected="false" aria-controls="tickets">Reception</button>
+      </div>
+      <div class="tickets reveal" id="tickets">
+        <article class="ticket" data-tilt aria-label="The wedding">
         <div class="t-top">
           <div class="t-row"><span class="t-city">Visakhapatnam</span><span class="t-tag telugu">వివాహం</span></div>
           <div class="t-when">
@@ -116,16 +122,7 @@
         </div>
         <span class="t-foil" aria-hidden="true"></span>
       </article>
-    </div>
-  </section>
-
-  <section class="screen" id="reception" aria-labelledby="recH">
-    <div class="wrap">
-      <div class="head reveal">
-        <span class="eyebrow telugu">ఆశీర్వచనం</span>
-        <h2 id="recH">The reception</h2>
-      </div>
-      <article class="ticket reveal" data-tilt>
+        <article class="ticket" data-tilt aria-label="The reception">
         <div class="t-top">
           <div class="t-row"><span class="t-city">Hyderabad</span><span class="t-tag telugu">ఆశీర్వచనం</span></div>
           <div class="t-when">
@@ -151,7 +148,63 @@
         </div>
         <span class="t-foil" aria-hidden="true"></span>
       </article>
+      </div>
       <p class="note reveal">Travel and stay details for outstation guests will follow closer to the date.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="rsvp" aria-labelledby="rsvpH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">మీ రాక</span>
+        <h2 id="rsvpH">Will you be there?</h2>
+      </div>
+      <div class="rsvp-card reveal" id="rsvpCard">
+        <form class="rsvp-form" id="rsvpForm" novalidate>
+          <label class="fld" for="rsvpName">
+            <span class="lbl">Your full name</span>
+            <input id="rsvpName" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required placeholder="First and last name">
+          </label>
+          <fieldset class="fld">
+            <legend class="lbl">Joining us for</legend>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" id="rsvpW"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Wedding</b><small>Thu 29 Oct &middot; Visakhapatnam</small></span></label>
+              <label class="chip"><input type="checkbox" id="rsvpR"><span class="chip-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b>Reception</b><small>Sun 1 Nov &middot; Hyderabad</small></span></label>
+            </div>
+          </fieldset>
+          <div class="fld">
+            <span class="lbl" id="partyL">How many of you</span>
+            <div class="stepper" role="group" aria-labelledby="partyL">
+              <button type="button" id="partyMinus" aria-label="One fewer">&minus;</button>
+              <output id="partyN" aria-live="polite">1</output>
+              <button type="button" id="partyPlus" aria-label="One more">+</button>
+            </div>
+          </div>
+          <input class="hp" type="text" name="website" id="rsvpHp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="rsvp-acts">
+            <button type="submit" class="btn solid" id="rsvpYes">Count me in</button>
+            <button type="button" class="btn ghost" id="rsvpNo">Sorry, can&rsquo;t make it</button>
+          </div>
+          <p class="rsvp-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
+        </form>
+        <div class="rsvp-done" id="rsvpDone" hidden>
+          <svg class="done-diya" viewBox="0 0 60 56" aria-hidden="true">
+            <path class="done-flame" d="M30 5C36.5 15 38.5 20.5 38.5 25.5a8.5 8.5 0 0 1-17 0C21.5 20.5 23.5 15 30 5Z"/>
+            <path class="done-bowl" d="M6 36c1 11 11 16 24 16s23-5 24-16Z"/>
+            <path class="done-rim" d="M2 36h56"/>
+          </svg>
+          <p class="done-title" id="doneTitle">Thank you</p>
+          <p class="done-sub" id="doneSub"></p>
+          <div class="rsvp-acts">
+            <button type="button" class="btn" id="rsvpEdit">Change my RSVP</button>
+            <button type="button" class="btn ghost" id="rsvpAnother">RSVP for someone else</button>
+          </div>
+        </div>
+      </div>
+      <div class="coming reveal" id="coming" hidden>
+        <p class="coming-count"><b id="comingN">0</b> <span id="comingL">guests are coming</span></p>
+        <ul class="coming-list" id="comingList"></ul>
+      </div>
     </div>
   </section>
 
@@ -206,13 +259,13 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>
       Us
     </a>
-    <a href="#wedding">
+    <a href="#events">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c2 3 3 4.4 3 6.3a3 3 0 0 1-6 0C9 7.4 10 6 12 3Z"/><path d="M4 14h16c-.6 3.8-3.8 6-8 6s-7.4-2.2-8-6Z"/></svg>
-      Wedding
+      Events
     </a>
-    <a href="#reception">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>
-      Reception
+    <a href="#rsvp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7.5 12l3 3 6-6"/></svg>
+      RSVP
     </a>
     <a href="#blessings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20c-4.2 0-7.2-2.6-8-6.2 3.1 0 5.6 1.1 8 3.6 2.4-2.5 4.9-3.6 8-3.6-.8 3.6-3.8 6.2-8 6.2Z"/><path d="M12 17.4c-2.1-2.2-2.6-5.4 0-9.4 2.6 4 2.1 7.2 0 9.4Z"/></svg>
@@ -222,3 +275,4 @@
 </nav>
 
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="veil" id="veil" aria-hidden="true"></div>

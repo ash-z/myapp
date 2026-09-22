@@ -14,6 +14,9 @@ var CONFIG = {
     { src: null }    // Susmita & Ashish
   ],
   shareUrl: "https://ash-z.github.io/myapp/",
+  // RSVP backend: the Web app URL of the Google Apps Script in
+  // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
+  rsvp: { endpoint: null },
   shareText: "Sai Susmita weds Ashish — Thursday, 29 October 2026, Visakhapatnam."
 };
 
@@ -259,15 +262,53 @@ function buildSeal(host){
   seal.addEventListener('click', open);
 })();
 
-/* =============== TAB BAR =============== */
+/* ===================================================================
+   TAB BAR + SCREEN TRANSITIONS
+   A tap blooms the next screen open from the tab itself; its content
+   then drifts in piece by piece. Browsers without view transitions
+   get a quick veil instead; reduced motion jumps straight there.
+   =================================================================== */
+function replay(screen){
+  var items = [].slice.call(screen.querySelectorAll('.reveal'));
+  items.forEach(function(n, i){ n.classList.remove('in'); n.style.setProperty('--rd', (0.28 + i*0.09).toFixed(2) + 's'); });
+  void screen.offsetWidth;
+  requestAnimationFrame(function(){ items.forEach(function(n){ n.classList.add('in'); }); });
+  setTimeout(function(){ items.forEach(function(n){ n.style.removeProperty('--rd'); }); }, 1800);
+}
+function jumpTo(t){
+  var prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = 'auto';
+  window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY);
+  root.style.scrollBehavior = prev;
+}
+function goTo(t, from){
+  if(!t) return;
+  if(reduced){ jumpTo(t); return; }
+  var r = from ? from.getBoundingClientRect() : null;
+  var x = r ? r.left + r.width/2 : innerWidth/2;
+  var y = r ? r.top + r.height/2 : innerHeight - 50;
+  if(document.startViewTransition){
+    root.style.setProperty('--vx', x + 'px');
+    root.style.setProperty('--vy', y + 'px');
+    root.style.setProperty('--vr', (Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 110) + 'px');
+    try{
+      document.startViewTransition(function(){ jumpTo(t); replay(t); });
+    }catch(e){ jumpTo(t); replay(t); }
+    fx.burst(x, y - 10, 14, 'petal');
+    return;
+  }
+  var veil = $('#veil');
+  if(!veil){ jumpTo(t); replay(t); return; }
+  veil.classList.add('on');
+  setTimeout(function(){ jumpTo(t); replay(t); veil.classList.remove('on'); }, 230);
+}
+
 (function tabbar(){
   var links = $$('.tabs a');
   links.forEach(function(a){
     a.addEventListener('click', function(e){
       e.preventDefault();
-      var t = document.getElementById(a.hash.slice(1));
-      if(!t) return;
-      t.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block:'start' });
+      goTo(document.getElementById(a.hash.slice(1)), a);
       try{ history.replaceState(null, '', a.hash); }catch(err){}
       buzz(6);
     });
@@ -280,6 +321,40 @@ function buildSeal(host){
     });
   }, { rootMargin:'-48% 0px -48% 0px' });
   $$('.screen').forEach(function(s){ io.observe(s); });
+})();
+
+/* =============== EVENTS — swipe between the two tickets =============== */
+(function eventTickets(){
+  var strip = $('#tickets'), seg = $('#seg');
+  if(!strip || !seg) return;
+  var tabs = [].slice.call(seg.querySelectorAll('button'));
+  var cards = [].slice.call(strip.querySelectorAll('.ticket'));
+  var current = 0;
+  function mark(i){
+    if(i === current) return;
+    current = i;
+    seg.style.setProperty('--seg', i);
+    tabs.forEach(function(b, k){ b.setAttribute('aria-selected', String(k === i)); });
+  }
+  function show(i){
+    var c = cards[i];
+    strip.scrollTo({ left: c.offsetLeft - (strip.clientWidth - c.clientWidth)/2, behavior: reduced ? 'auto' : 'smooth' });
+    mark(i); buzz(6);
+  }
+  tabs.forEach(function(b, i){ b.addEventListener('click', function(){ show(i); }); });
+  var pend = false;
+  strip.addEventListener('scroll', function(){
+    if(pend) return; pend = true;
+    requestAnimationFrame(function(){
+      pend = false;
+      var mid = strip.scrollLeft + strip.clientWidth/2, best = 0, dist = 1e9;
+      cards.forEach(function(c, i){
+        var d = Math.abs(c.offsetLeft + c.clientWidth/2 - mid);
+        if(d < dist){ dist = d; best = i; }
+      });
+      mark(best);
+    });
+  }, { passive:true });
 })();
 
 /* ===================================================================
@@ -418,6 +493,134 @@ function buildSeal(host){
     });
   }
   tick(); setInterval(tick, 1000);
+})();
+
+/* ===================================================================
+   RSVP — a guest adds their full name, picks the events and how many
+   are coming. Responses land in the couple's Google Sheet; the page
+   shows who's coming (first name + initial, shortened by the sheet's
+   script, so full names never leave it). Each phone keeps a token, so
+   answering again updates the same row instead of adding a new one.
+   =================================================================== */
+(function rsvp(){
+  var form = $('#rsvpForm'); if(!form) return;
+  var endpoint = CONFIG.rsvp && CONFIG.rsvp.endpoint;
+  var nameI = $('#rsvpName'), cW = $('#rsvpW'), cR = $('#rsvpR'), hp = $('#rsvpHp');
+  var minus = $('#partyMinus'), plus = $('#partyPlus'), out = $('#partyN');
+  var yes = $('#rsvpYes'), no = $('#rsvpNo'), msg = $('#rsvpMsg');
+  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dSub = $('#doneSub');
+  var edit = $('#rsvpEdit'), another = $('#rsvpAnother');
+  var coming = $('#coming'), cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
+  var KEY = 'sa-rsvp', SUMKEY = 'sa-rsvp-sum';
+  var party = 1, mine = null;
+
+  function load(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
+  function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function token(){
+    try{ if(crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+    return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+  }
+  function first(n){ return String(n).trim().split(/\s+/)[0]; }
+  function say(t, soft){ msg.textContent = t || ''; msg.classList.toggle('soft', !!soft); }
+  function setParty(n){
+    party = Math.max(1, Math.min(10, n));
+    out.textContent = party;
+    minus.disabled = party <= 1; plus.disabled = party >= 10;
+  }
+  minus.addEventListener('click', function(){ setParty(party - 1); buzz(5); });
+  plus.addEventListener('click',  function(){ setParty(party + 1); buzz(5); });
+  setParty(1);
+
+  function renderList(sum){
+    if(!sum || !sum.ok){ coming.hidden = true; return; }
+    coming.hidden = !(sum.people > 0);
+    cN.textContent = sum.people;
+    cL.textContent = sum.people === 1 ? 'guest is coming' : 'guests are coming';
+    list.textContent = '';
+    (sum.guests || []).forEach(function(g, i){
+      var li = document.createElement('li');
+      li.style.setProperty('--i', Math.min(i, 30));
+      var dot = document.createElement('i'); li.appendChild(dot);
+      li.appendChild(document.createTextNode(g.name));
+      if(g.party > 1){ var sm = document.createElement('small'); sm.textContent = '+' + (g.party - 1); li.appendChild(sm); }
+      if(mine && mine.coming && g.name === mine.short) li.classList.add('you');
+      list.appendChild(li);
+    });
+  }
+  function showDone(r, fresh){
+    form.hidden = true; done.hidden = false;
+    var who = first(r.name);
+    if(r.coming){
+      var ev = r.w && r.r ? 'the wedding and the reception' : r.w ? 'the wedding' : 'the reception';
+      dTitle.textContent = 'Thank you, ' + who;
+      dSub.textContent = 'We’ll see you at ' + ev + (r.party > 1 ? ' — ' + r.party + ' of you.' : '.');
+    } else {
+      dTitle.textContent = 'Thank you, ' + who;
+      dSub.textContent = 'We\u2019ve noted that you can\u2019t make it.';
+    }
+    done.classList.toggle('lit', !!r.coming);
+    if(fresh && r.coming && !reduced){
+      var b = done.getBoundingClientRect();
+      fx.burst(b.left + b.width/2, b.top + 30, 30, 'petal');
+      buzz([10, 60, 10]);
+    }
+  }
+  function showForm(r){
+    done.hidden = true; form.hidden = false;
+    nameI.value = r ? r.name : '';
+    cW.checked = r ? !!r.w : false; cR.checked = r ? !!r.r : false;
+    setParty(r && r.party ? r.party : 1);
+    nameI.removeAttribute('aria-invalid'); say('');
+  }
+
+  function post(body){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 15000);
+    return fetch(endpoint, { method:'POST', body:JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+      .then(function(res){ return res.json(); })
+      .finally(function(){ clearTimeout(timer); });
+  }
+  function submit(isComing){
+    var name = nameI.value.replace(/\s+/g, ' ').trim();
+    if(name.length < 2 || name.split(' ').length < 2){
+      nameI.setAttribute('aria-invalid', 'true'); nameI.focus();
+      say('Please add your full name — first and last.'); return;
+    }
+    nameI.removeAttribute('aria-invalid');
+    if(isComing && !cW.checked && !cR.checked){ say('Pick the wedding, the reception, or both.'); return; }
+    if(!endpoint){ say('RSVPs open very soon — please check back.', true); return; }
+
+    var tok = (mine && mine.token) || token();
+    var body = { token:tok, name:name, coming:isComing, wedding:isComing && cW.checked,
+                 reception:isComing && cR.checked, party:isComing ? party : 0, website:hp.value };
+    var btn = isComing ? yes : no;
+    btn.setAttribute('aria-busy', 'true'); say('Sending…', true);
+    post(body).then(function(sum){
+      btn.removeAttribute('aria-busy');
+      if(!sum || !sum.ok){ say(sum && sum.error === 'pick an event' ? 'Pick the wedding, the reception, or both.' : 'That didn’t go through — please try again.'); return; }
+      mine = { token:tok, name:name, coming:isComing, w:body.wedding, r:body.reception, party:body.party, short:sum.you || '' };
+      save(KEY, mine); save(SUMKEY, sum);
+      say(''); showDone(mine, true); renderList(sum);
+    }).catch(function(){
+      btn.removeAttribute('aria-busy');
+      say('Couldn’t reach the RSVP list — check your connection and try again.');
+    });
+  }
+  form.addEventListener('submit', function(e){ e.preventDefault(); submit(true); });
+  no.addEventListener('click', function(){ submit(false); });
+  edit.addEventListener('click', function(){ showForm(mine); nameI.focus(); });
+  another.addEventListener('click', function(){ mine = null; try{ localStorage.removeItem(KEY); }catch(e){} showForm(null); nameI.focus(); });
+
+  mine = load(KEY);
+  if(mine && mine.name) showDone(mine, false);
+  renderList(load(SUMKEY));
+  if(endpoint){
+    setTimeout(function(){
+      fetch(endpoint).then(function(r){ return r.json(); })
+        .then(function(sum){ if(sum && sum.ok){ save(SUMKEY, sum); renderList(sum); } })
+        .catch(function(){});
+    }, 1200);
+  }
 })();
 
 /* ===================================================================
@@ -686,13 +889,24 @@ function buildSeal(host){
 })();
 
 
-/* =============== REVEALS =============== */
+/* =============== REVEALS — staggered within each screen =============== */
 (function reveals(){
   var items = $$('.reveal');
+  items.forEach(function(n){
+    var s = n.closest('.screen'), sib = s ? [].slice.call(s.querySelectorAll('.reveal')) : [n];
+    n.dataset.ri = sib.indexOf(n);
+  });
   function all(){ items.forEach(function(n){ n.classList.add('in'); }); }
   if(reduced || !('IntersectionObserver' in window)){ all(); return; }
   var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var n = e.target;
+      n.style.setProperty('--rd', (Math.min(+n.dataset.ri || 0, 5) * 0.09).toFixed(2) + 's');
+      n.classList.add('in');
+      io.unobserve(n);
+      setTimeout(function(){ n.style.removeProperty('--rd'); }, 1600);
+    });
   }, { rootMargin:'0px 0px -6% 0px', threshold:0.06 });
   items.forEach(function(n){ io.observe(n); });
   setTimeout(all, 4000);

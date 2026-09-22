@@ -24,6 +24,21 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - No framed oval portraits side by side — in India that reads as a memorial photo. Photos live in the swipeable deck.
 - No algorithmic line-art or posterised portraits (tried twice, rejected).
 
+## Screens
+Invite (the sea) · Us (photo deck) · Events (wedding + reception tickets; Wedding/Reception switch, swipe on phones, side by side on wide screens) · RSVP · Blessings.
+Tab taps bloom the next screen open from the tab (View Transitions API; a quick veil where unsupported; a plain jump for reduced motion).
+Each screen's top edge is a row of temple arches, and content drifts in staggered.
+
+## RSVP
+`rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.
+Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.
+- Guests give a full name (first + last required), events, party size (1–10); "can't make it" records a No.
+- Each phone keeps a token in localStorage; answering again updates the same sheet row.
+- The page only ever receives "First L." names and a head count; full names stay in the sheet.
+- Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.
+- Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
+- The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
+
 ## Next: the illustrated art layer (Canva)
 The couple wants illustrated art **throughout** the invitation, in the spirit of their engagement invitations (Canva designs `DAHTZLG9LZ4`, `DAHTZPuwew0`). Selected pieces, all in their Canva account:
 
@@ -46,5 +61,5 @@ How to pull them in:
 ## Open items
 - Real photos: attach 3 (Susmita, Ashish, together), 4:5 portrait; set `CONFIG.photos[i].src`.
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
-- RSVP — not built (needs a form service or backend).
+- RSVP — built; waiting on the couple to deploy `rsvp/Code.gs` (see above).
 - Travel/stay for outstation guests — one placeholder line under the reception ticket.
