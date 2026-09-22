@@ -1,0 +1,224 @@
+<script>(function(){var d=document.documentElement;d.classList.add('js');var s=null;try{s=sessionStorage.getItem('sa-opened')}catch(e){}if(location.hash||s){d.classList.add('ui','opened')}else{d.classList.add('locked')}})();</script>
+
+<div class="splash" id="splash" role="dialog" aria-label="Wedding invitation">
+  <div class="sp-inner">
+    <p class="invocation telugu sp-a">॥ శ్రీ గణేశాయ నమః ॥</p>
+    <button class="seal sp-a" id="seal" tabindex="-1" aria-hidden="true"><span class="mono">S&thinsp;·&thinsp;A</span></button>
+    <p class="eyebrow telugu sp-a">శుభలేఖ</p>
+    <h2 class="sp-names sp-a"><span class="n">Sai Susmita</span><span class="amp">&amp;</span><span class="n">Ashish</span></h2>
+    <p class="sp-date sp-a">29 · 10 · 2026</p>
+    <button class="open-btn sp-a" id="openBtn">Open invitation</button>
+  </div>
+</div>
+
+<div class="pal" id="pal" role="group" aria-label="Colour">
+  <button id="palIvory" aria-pressed="true">Ivory</button>
+  <button id="palJewel" aria-pressed="false">Jewel</button>
+</div>
+
+<main id="app">
+
+  <section class="screen hero" id="home" aria-label="Invitation">
+    <canvas id="bay" aria-hidden="true"></canvas>
+    <div class="plate">
+      <p class="invocation telugu">॥ శ్రీ గణేశాయ నమః ॥</p>
+      <div class="hero-eyebrow"><i></i><span class="eyebrow telugu">శుభలేఖ</span><i></i></div>
+      <h1 class="names">
+        <span class="nm">Sai Susmita</span>
+        <span class="weds">weds</span>
+        <span class="nm">Ashish</span>
+      </h1>
+      <p class="hero-when">Thursday &middot; 29 October 2026</p>
+      <p class="hero-where">Visakhapatnam &middot; Hyderabad</p>
+    </div>
+    <p class="hint" id="hint">Touch the water to float a lamp</p>
+  </section>
+
+  <section class="screen" id="us" aria-labelledby="usH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">వధూవరులు</span>
+        <h2 id="usH">The two of them</h2>
+      </div>
+      <div class="deck-wrap reveal">
+        <div class="deck" id="deck" tabindex="0" role="region" aria-roledescription="photo deck" aria-label="Photographs — swipe, tap, or use the arrow keys">
+          <figure class="card" data-mood="her" aria-label="Susmita">
+            <div class="card-in"><div class="card-face">
+              <div class="ph ph-her" aria-hidden="true"><span class="ph-mono">S</span></div>
+              <figcaption class="cap"><span class="cap-name">Susmita</span><span class="cap-tel telugu">సుస్మిత</span></figcaption>
+              <span class="soon">Photo coming soon</span>
+            </div></div>
+          </figure>
+          <figure class="card" data-mood="him" aria-label="Ashish">
+            <div class="card-in"><div class="card-face">
+              <div class="ph ph-him" aria-hidden="true"><span class="ph-mono">A</span></div>
+              <figcaption class="cap"><span class="cap-name">Ashish</span><span class="cap-tel telugu">ఆశిష్</span></figcaption>
+              <span class="soon">Photo coming soon</span>
+            </div></div>
+          </figure>
+          <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
+            <div class="card-in"><div class="card-face">
+              <div class="ph ph-both" aria-hidden="true"><span class="ph-mono">S&thinsp;&amp;&thinsp;A</span></div>
+              <figcaption class="cap"><span class="cap-name">Susmita &amp; Ashish</span></figcaption>
+              <span class="soon">Photo coming soon</span>
+            </div></div>
+          </figure>
+        </div>
+      </div>
+      <div class="deck-ui reveal">
+        <div class="dots" id="dots">
+          <button class="dot" aria-label="Show Susmita"></button>
+          <button class="dot" aria-label="Show Ashish"></button>
+          <button class="dot" aria-label="Show Susmita and Ashish"></button>
+        </div>
+        <p class="swipe-cue" id="swipeCue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Swipe the cards
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen alt" id="wedding" aria-labelledby="wedH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">వివాహ ముహూర్తం</span>
+        <h2 id="wedH">The wedding</h2>
+      </div>
+      <article class="ticket reveal" data-tilt>
+        <div class="t-top">
+          <div class="t-row"><span class="t-city">Visakhapatnam</span><span class="t-tag telugu">వివాహం</span></div>
+          <div class="t-when">
+            <div class="t-date"><b>29</b><span>Oct<br>2026</span></div>
+            <div class="t-time"><span>Thursday</span><b>7:29 PM</b><small>Muhurtam</small></div>
+          </div>
+        </div>
+        <div class="t-perf" aria-hidden="true"></div>
+        <div class="t-bot">
+          <p class="t-venue">Hotel Ambica Sea Green</p>
+          <p class="t-addr">Beach Road, Visakhapatnam, Andhra Pradesh</p>
+          <div class="t-count" data-countdown="2026-10-29T19:29:00+05:30" data-mode="full" data-past="Married on 29 October 2026" aria-label="Time until the muhurtam">
+            <div><b data-u="d">—</b><span>Days</span></div>
+            <div><b data-u="h">—</b><span>Hours</span></div>
+            <div><b data-u="m">—</b><span>Mins</span></div>
+            <div><b data-u="s">—</b><span>Secs</span></div>
+          </div>
+          <div class="t-btns">
+            <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20Ambica%20Sea%20Green%20Beach%20Road%20Visakhapatnam">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Directions
+            </a>
+            <a class="btn" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Susmita%20weds%20Ashish%20%E2%80%94%20Muhurtam&amp;dates=20261029T135900Z/20261029T163000Z&amp;location=Hotel%20Ambica%20Sea%20Green%2C%20Beach%20Road%2C%20Visakhapatnam">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Save date
+            </a>
+          </div>
+        </div>
+        <span class="t-foil" aria-hidden="true"></span>
+      </article>
+    </div>
+  </section>
+
+  <section class="screen" id="reception" aria-labelledby="recH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">ఆశీర్వచనం</span>
+        <h2 id="recH">The reception</h2>
+      </div>
+      <article class="ticket reveal" data-tilt>
+        <div class="t-top">
+          <div class="t-row"><span class="t-city">Hyderabad</span><span class="t-tag telugu">ఆశీర్వచనం</span></div>
+          <div class="t-when">
+            <div class="t-date"><b>01</b><span>Nov<br>2026</span></div>
+            <div class="t-time"><span>Sunday</span><b>11:00 AM</b><small>Reception</small></div>
+          </div>
+        </div>
+        <div class="t-perf" aria-hidden="true"></div>
+        <div class="t-bot">
+          <p class="t-venue">Hotel Tulip Grand</p>
+          <p class="t-addr">Annojiguda, Hyderabad</p>
+          <p class="t-count short" data-countdown="2026-11-01T11:00:00+05:30" data-mode="short" data-past="Thank you for celebrating with us">&nbsp;</p>
+          <div class="t-btns">
+            <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20Tulip%20Grand%20Annojiguda%20Hyderabad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Directions
+            </a>
+            <a class="btn" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Susmita%20%26%20Ashish%20%E2%80%94%20Reception&amp;dates=20261101T053000Z/20261101T083000Z&amp;location=Hotel%20Tulip%20Grand%2C%20Annojiguda%2C%20Hyderabad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Save date
+            </a>
+          </div>
+        </div>
+        <span class="t-foil" aria-hidden="true"></span>
+      </article>
+      <p class="note reveal">Travel and stay details for outstation guests will follow closer to the date.</p>
+    </div>
+  </section>
+
+  <section class="screen alt" id="blessings" aria-labelledby="blsH">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow telugu">పెద్దలు</span>
+        <h2 id="blsH">With the blessings of</h2>
+      </div>
+      <div class="fams reveal">
+        <div class="fam">
+          <p class="rel">Parents of the bride</p>
+          <p class="par">Chandrika &amp; Srinivasulu Gorantla</p>
+          <p class="child">their daughter <b>Sai Susmita</b></p>
+        </div>
+        <div class="fam">
+          <p class="rel">Parents of the groom</p>
+          <p class="par">Satyarani &amp; Suresh Bhimanpalliwar</p>
+          <p class="child">their son <b>Ashish</b></p>
+        </div>
+      </div>
+      <div class="close reveal">
+        <p class="blessing">We ask for your presence, and for your blessings.</p>
+        <p class="sig telugu">సాయి సుస్మిత &amp; ఆశిష్</p>
+        <p class="sig-en">Sai Susmita &amp; Ashish</p>
+        <div class="acts">
+          <button class="btn solid" id="shower">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M7 4v2M12 3v3M17 4v2M5 10v2M10 9v2M15 9v2M19 10v2M8 15v2M13 14v2M17 15v2"/></svg>
+            Shower akshintalu
+          </button>
+          <button class="btn" id="share">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+            Share invitation
+          </button>
+        </div>
+        <p class="akshi"><span class="telugu">అక్షింతలు</span> &mdash; the turmeric rice guests shower on the couple as a blessing.</p>
+        <p class="shower-note" id="showerNote" aria-live="polite"></p>
+      </div>
+      <p class="foot">29 . 10 . 2026 &nbsp;&middot;&nbsp; Visakhapatnam &nbsp;&middot;&nbsp; 01 . 11 . 2026 &nbsp;&middot;&nbsp; Hyderabad</p>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <div class="tabs-in">
+    <a href="#home" aria-current="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="3"/><path d="M2 16c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 20c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/></svg>
+      Invite
+    </a>
+    <a href="#us">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>
+      Us
+    </a>
+    <a href="#wedding">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c2 3 3 4.4 3 6.3a3 3 0 0 1-6 0C9 7.4 10 6 12 3Z"/><path d="M4 14h16c-.6 3.8-3.8 6-8 6s-7.4-2.2-8-6Z"/></svg>
+      Wedding
+    </a>
+    <a href="#reception">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>
+      Reception
+    </a>
+    <a href="#blessings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20c-4.2 0-7.2-2.6-8-6.2 3.1 0 5.6 1.1 8 3.6 2.4-2.5 4.9-3.6 8-3.6-.8 3.6-3.8 6.2-8 6.2Z"/><path d="M12 17.4c-2.1-2.2-2.6-5.4 0-9.4 2.6 4 2.1 7.2 0 9.4Z"/></svg>
+      Blessings
+    </a>
+  </div>
+</nav>
+
+<canvas id="fx" aria-hidden="true"></canvas>
