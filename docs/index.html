@@ -548,7 +548,7 @@ button{font:inherit;color:inherit}
 
 </head>
 <body>
-<script>(function(){var d=document.documentElement;d.classList.add('js');var s=null;try{s=sessionStorage.getItem('sa-opened')}catch(e){}if(location.hash||s){d.classList.add('ui','opened')}else{d.classList.add('locked')}})();</script>
+<script>(function(){var d=document.documentElement;d.classList.add('js');if(location.hash){d.classList.add('ui','opened')}else{d.classList.add('locked')}})();</script>
 
 <div class="splash" id="splash" role="dialog" aria-label="Wedding invitation">
   <div class="crown"><img class="toranam" data-art="toranam" alt="" aria-hidden="true" decoding="async"><span class="ganesha" role="img" aria-label="Lord Ganesha"></span></div>
@@ -5374,7 +5374,6 @@ function buildSeal(host){
     buzz(12); enableTilt();
     root.classList.add('ui');
     [app, tabs, pal].forEach(function(e){ if(e) e.inert = false; });
-    try{ sessionStorage.setItem('sa-opened', '1'); }catch(e){}
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
@@ -5433,7 +5432,6 @@ var pager = (function(){
     // arriving from below starts at the top; backing up into a long page lands on its end
     inn.scrollTop = (mode === 'scroll' && !down) ? inn.scrollHeight : 0;
     cur = i; mark(i);
-    try{ history.replaceState(null, '', '#' + inn.id); }catch(e){}
     emit('pagechange', { id:inn.id, from:out.id });
     buzz(6);
     if(reduced){ settle(i); busy = false; return; }

@@ -253,7 +253,6 @@ function buildSeal(host){
     buzz(12); enableTilt();
     root.classList.add('ui');
     [app, tabs, pal].forEach(function(e){ if(e) e.inert = false; });
-    try{ sessionStorage.setItem('sa-opened', '1'); }catch(e){}
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
@@ -312,7 +311,6 @@ var pager = (function(){
     // arriving from below starts at the top; backing up into a long page lands on its end
     inn.scrollTop = (mode === 'scroll' && !down) ? inn.scrollHeight : 0;
     cur = i; mark(i);
-    try{ history.replaceState(null, '', '#' + inn.id); }catch(e){}
     emit('pagechange', { id:inn.id, from:out.id });
     buzz(6);
     if(reduced){ settle(i); busy = false; return; }
