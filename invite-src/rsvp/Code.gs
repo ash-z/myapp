@@ -11,7 +11,7 @@
  */
 
 var SHEET = 'RSVPs';
-var HEADERS = ['Updated', 'Token', 'Full name', 'Wedding', 'Wedding guests', 'Reception', 'Reception guests'];
+var HEADERS = ['Updated', 'Token', 'Full name', 'Wedding', 'Wedding guests', 'Reception', 'Reception guests', 'Invite'];
 
 function sheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -79,7 +79,8 @@ function doPost(e) {
     var party = function (x) { return x.coming ? Math.min(10, Math.max(1, parseInt(x.party, 10) || 1)) : 0; };
 
     var sh = sheet_();
-    var row = [new Date(), token, name, w.coming ? 'Yes' : 'No', party(w), r.coming ? 'Yes' : 'No', party(r)];
+    var row = [new Date(), token, name, w.coming ? 'Yes' : 'No', party(w), r.coming ? 'Yes' : 'No', party(r),
+               d.invite === 'friends' ? 'Friends' : 'Relatives'];                // which link they answered from
     var tokens = rows_(sh).map(function (existing) { return existing[1]; });
     var i = tokens.indexOf(token);
     if (i >= 0) sh.getRange(i + 2, 1, 1, row.length).setValues([row]);         // same phone answering again

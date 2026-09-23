@@ -6,8 +6,11 @@
    Photographs live in invite-src/photos (cropped by photos_process.py)
    and are placed in the deck in body.html.
    =================================================================== */
+// which invitation this is: build.py writes window.INVITE = "friends" into the
+// friends' page (which adds the day-before page); the relatives' page leaves it unset
+var INVITE = window.INVITE === 'friends' ? 'friends' : 'relatives';
 var CONFIG = {
-  shareUrl: "https://ash-z.github.io/myapp/",
+  shareUrl: "https://ash-z.github.io/myapp/" + (INVITE === 'friends' ? 'friends/' : ''),
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
   rsvp: { endpoint: null },
@@ -751,7 +754,7 @@ var refit = (function(){
     if(!endpoint){ say('RSVPs open very soon — please check back.', true); return; }
 
     var tok = (mine && mine.token) || token();
-    var body = { token:tok, name:name, website:hp.value };
+    var body = { token:tok, name:name, website:hp.value, invite:INVITE };
     EVENTS.forEach(function(ev){
       var b = blocks[ev.key], yes = b.answer() === true;
       body[ev.key] = { coming:yes, party: yes ? b.party : 0 };

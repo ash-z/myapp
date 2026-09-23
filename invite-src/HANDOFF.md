@@ -1,25 +1,28 @@
 # Wedding invitation — handoff
 
-Live: https://ash-z.github.io/myapp/ (GitHub Pages, branch **`golden`**, folder `/docs`).
-`docs/index.html` is **generated** — edit the files here, then rebuild:
+Live (GitHub Pages, branch **`golden`**, folder `/docs`), two versions of one invitation:
+- **Relatives:** https://ash-z.github.io/myapp/ (`docs/index.html`)
+- **Friends:** https://ash-z.github.io/myapp/friends/ (`docs/friends/index.html`): the same, plus the day-before page
+
+Both pages are **generated**: edit the files here, then rebuild:
 
 ```sh
-cd invite-src && npm install && python3 build.py          # -> ../docs/index.html, build/artifact.html, build/artifact-dev.html
+cd invite-src && npm install && python3 build.py          # -> ../docs/{,friends/}index.html, build/artifact{,-dev}{,-friends}.html
 node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; convert to ../docs/og.jpg
 ```
 
 | File | What it holds |
 |---|---|
 | `style.html` | `<title>`, font link, all CSS. Palettes are tokens: ivory = light, jewel = dark |
-| `body.html` | all markup: opening screen, 5 screens, tab bar |
+| `body.html` | all markup: opening screen, the screens, tab bar; `<!--friends-->` blocks are friends-only |
 | `app.js` | `CONFIG` at the top (photos, share URL), then palette, particles, tilt, opening, tabs, photo deck, countdowns, blessings, the three.js sea |
 | `three-entry.js` | the three.js symbols esbuild keeps; add to it if `app.js` needs more |
 
 ## Golden and dev
 - **`golden`** is what guests see. GitHub Pages serves it; nothing is committed to it directly.
   `golden-v1` (commit `4bcc0d7`) is the version first shared with guests.
-- **`claude/add-threejs-library-ogt1s7`** is where work happens. Its preview is the dev artifact
-  (`build/artifact-dev.html`, marked DEV); the golden preview artifact is `build/artifact.html`.
+- **`claude/add-threejs-library-ogt1s7`** is where work happens. Its previews are the dev artifacts
+  (`build/artifact-dev.html` and `build/artifact-dev-friends.html`, marked DEV); the golden preview artifact is `build/artifact.html`.
 - **Promote** only when the couple says so, after checking the dev preview on a phone:
   ```sh
   git checkout golden && git merge --ff-only claude/add-threejs-library-ogt1s7 && git push origin golden
@@ -29,7 +32,9 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 
 ## Locked decisions
 - Names: **Sai Susmita** in formal places (opening screen, hero, families, closing, title, previews); **Susmita** in casual ones (photo deck). The woman is always named first.
-- Two events only: muhurtam Thu 29 Oct 2026 7:29 PM, Hotel Ambica Sea Green, Visakhapatnam; reception Sun 1 Nov 2026 11:00 AM, Hotel Tulip Grand, Annojiguda, Hyderabad.
+- Two events for everyone: muhurtam Thu 29 Oct 2026 7:29 PM, Hotel Ambica Sea Green, Visakhapatnam; reception Sun 1 Nov 2026 11:00 AM, Hotel Tulip Grand, Annojiguda, Hyderabad.
+- **Friends only**, Wed 28 Oct 2026: Haldi 9:30 AM · Pellikuturu 11:30 AM · Mehendi & Sangeet 5:30 PM onwards.
+  These must never appear in the relatives' version. It is the only difference between the two.
 - Type: Italiana / Marcellus / Karla / Noto Sans Telugu. Palettes ivory + jewel, toggle top-right.
 - three.js is **inlined**, never loaded from a CDN (a CDN load silently failed before).
 - No copy the couple did not supply. Keep it plain; no invented backstory.
@@ -38,6 +43,13 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
+The friends' version adds a seventh, **Haldi** ("The day before"), between Us and Wedding: one ticket with the day's three
+events, a countdown to the haldi and an all-day "Save date" (no venue given yet, so no Directions button). A toranam hangs
+along the ticket's top edge with Ganesha in its gap.
+
+**Two versions:** anything between `<!--friends-->` and `<!--/friends-->` lines in `body.html` is only in the friends'
+version (`build.py` drops it for the relatives'), and the friends' page sets `window.INVITE = "friends"`, which `app.js`
+reads for its share link and the RSVP. The tab bar sizes itself to however many tabs there are.
 The invitation is a **pager**: pages are stacked full-screen layers and only the active one shows (`.js` styles; without JS it degrades to one scrolling document).
 - Scroll, swipe or arrow keys / Page Up/Down / Space at a page's edge turn the page. The next page rises under a row of temple arches with a gold line riding the edge (line and mask are driven from the same thread so they never drift); going back runs downward.
 - **Pages never scroll.** Every page fits one screen: layouts are compact, and the FIT module in app.js scales a page's
@@ -56,7 +68,7 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 `rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.
 Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.
 - Guests give a full name (first + last required), then answer the wedding and the reception separately: Attending / Can't make it, with a separate party size (1–10) for each. Both must be answered.
-- Sheet columns: Updated, Token, Full name, Wedding, Wedding guests, Reception, Reception guests.
+- Sheet columns: Updated, Token, Full name, Wedding, Wedding guests, Reception, Reception guests, Invite (Friends or Relatives: which link they answered from). Both versions share one sheet and one guest list.
 - The page shows a guest list per event (Wedding / Reception switch) with its own head count.
 - Each phone keeps a token in localStorage; answering again updates the same sheet row.
 - The page only ever receives "First L." names and a head count; full names stay in the sheet.
@@ -82,6 +94,7 @@ every `<img data-art="name">` shares it. Ganesha is a CSS mask (`--ganesha-img`)
 | `ganesha` (line art; Canva stock element "lord ganesha", from the engagement invitation) | centre of the toranam on the opening screen and the sea |
 | `couple` (bride and groom holding hands) | **retired** — its garland on the bride was drawn wrong (strands hanging like a stole). The opening screen now shows the couple's seated portrait (`photos/out/cover.webp`) in a temple-arch window before the kolam |
 | `gopuram` | rising from the wedding ticket |
+| `toranam` + `ganesha` (again) | hung along the top of the friends' day-before ticket |
 | `corner-left`, `corner-right` | opening screen bottom corners; reception ticket top corners (flipped) |
 | `diya` (with sprig) | RSVP card corner |
 | `peacock` | Blessings, a facing pair |
@@ -101,3 +114,4 @@ also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
 - RSVP — built; waiting on the couple to deploy `rsvp/Code.gs` (see above).
 - Travel/stay for outstation guests — one placeholder line under the reception ticket.
+- Venue for the 28 October events (friends' version) — not given yet; add it with a Directions button when it is.
