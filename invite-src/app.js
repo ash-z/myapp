@@ -336,16 +336,17 @@ var pager = (function(){
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
   function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); cue(i); }
 
-  // the side rail: up and down a page, with the page number between; up on the first page is the cover
-  var railUp = $('#railUp'), railDown = $('#railDown'), railN = $('#railN');
+  // the side rail: up and down a page, a dot per page between (the current one gold); up on the first
+  // page and down on the last go to the cover
+  var railUp = $('#railUp'), railDown = $('#railDown'), railDots = $('#railDots');
+  if(railDots) pages.forEach(function(){ railDots.appendChild(document.createElement('i')); });
   function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
   function cue(i){
-    if(!railN) return;
+    if(!railDots) return;
     var last = i >= pages.length - 1;
-    railN.textContent = (i + 1) + '/' + pages.length;
+    [].forEach.call(railDots.children, function(d, k){ d.classList.toggle('on', k === i); });
     railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
-    railDown.disabled = last;
-    railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
+    railDown.setAttribute('aria-label', last ? 'Back to the cover' : 'Next: ' + tabName(i + 1));
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
   addEventListener('resize', setPh); setPh();
@@ -403,7 +404,7 @@ var pager = (function(){
     if(cur !== 0){ cur = 0; mark(0); settle(0); }
     cover.close();
   }
-  function step(d){ if(d < 0 && cur === 0) toCover(); else go(cur + d, 'scroll'); }
+  function step(d){ if((d < 0 && cur === 0) || (d > 0 && cur === pages.length - 1)) toCover(); else go(cur + d, 'scroll'); }
   if(railUp) railUp.addEventListener('click', function(){ step(-1); });
   if(railDown) railDown.addEventListener('click', function(){ step(1); });
 

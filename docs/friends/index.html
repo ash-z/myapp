@@ -66,7 +66,7 @@ body{
 a{color:inherit}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
-.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:20px}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:24px}   /* 24px leaves the side rail its own margin */
 .telugu{font-family:"Noto Sans Telugu","Nirmala UI",sans-serif;letter-spacing:.02em}
 .eyebrow{font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .eyebrow.telugu{letter-spacing:.08em;text-transform:none;font-size:13.5px}
@@ -157,22 +157,24 @@ button{font:inherit;color:inherit}
   pointer-events:none;
 }
 .js:not(.ui) .tabs{transform:translateY(140%)}
-/* side rail: up and down a page, with the page number between; the down arrow blinks */
+/* side rail: up and down a page, a dot per page between. Slim enough to sit in the page margin beside the
+   tickets and cards (never over them); each arrow's tap area is larger than it looks */
 .rail{
-  position:fixed;right:max(4px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:0;width:32px;padding:3px 0;
+  position:fixed;right:max(2px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;width:20px;padding:4px 0;
   border:1px solid var(--rule);border-radius:999px;
   background:color-mix(in srgb,var(--surface) 84%,transparent);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -10px rgba(0,0,0,.35);
   transition:opacity .6s ease .5s;
 }
-.rail button{position:relative;display:grid;place-items:center;width:30px;height:36px;padding:0;border:0;background:none;color:var(--gold);cursor:pointer}
-.rail button::before{content:"";position:absolute;inset:-4px -8px}      /* a bigger target than it looks */
-.rail button:disabled{opacity:.28;cursor:default}
-.rail svg{width:19px;height:19px}
-#railDown:not(:disabled) svg{animation:rail-blink 1.6s ease-in-out infinite}
+.rail button{position:relative;display:grid;place-items:center;width:20px;height:28px;padding:0;border:0;background:none;color:var(--gold);cursor:pointer}
+.rail button::before{content:"";position:absolute;inset:-6px -4px -6px -16px}
+.rail svg{width:16px;height:16px}
+#railDown svg{animation:rail-blink 1.6s ease-in-out infinite}
 @keyframes rail-blink{0%,100%{transform:translateY(-1px);opacity:1}50%{transform:translateY(3px);opacity:.35}}
-.rail-n{font-size:11px;font-weight:700;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums}
+.rail-dots{display:flex;flex-direction:column;align-items:center;gap:5px}
+.rail-dots i{display:block;width:5px;height:5px;border-radius:50%;background:var(--rule);transition:background .3s,transform .3s}
+.rail-dots i.on{background:var(--gold);transform:scale(1.35)}
 .js:not(.ui) .rail{opacity:0;pointer-events:none;transition:none}
 .tabs-in{
   pointer-events:auto;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);
@@ -1009,7 +1011,7 @@ button{font:inherit;color:inherit}
 
 <nav class="rail" id="rail" aria-label="Page up and down">
   <button id="railUp" type="button" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
-  <span class="rail-n" id="railN" aria-hidden="true">1/6</span>
+  <span class="rail-dots" id="railDots" aria-hidden="true"></span>
   <button id="railDown" type="button" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
 </nav>
 <div class="sheet-scrim" id="sheetScrim" hidden></div>
@@ -5592,16 +5594,17 @@ var pager = (function(){
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
   function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); cue(i); }
 
-  // the side rail: up and down a page, with the page number between; up on the first page is the cover
-  var railUp = $('#railUp'), railDown = $('#railDown'), railN = $('#railN');
+  // the side rail: up and down a page, a dot per page between (the current one gold); up on the first
+  // page and down on the last go to the cover
+  var railUp = $('#railUp'), railDown = $('#railDown'), railDots = $('#railDots');
+  if(railDots) pages.forEach(function(){ railDots.appendChild(document.createElement('i')); });
   function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
   function cue(i){
-    if(!railN) return;
+    if(!railDots) return;
     var last = i >= pages.length - 1;
-    railN.textContent = (i + 1) + '/' + pages.length;
+    [].forEach.call(railDots.children, function(d, k){ d.classList.toggle('on', k === i); });
     railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
-    railDown.disabled = last;
-    railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
+    railDown.setAttribute('aria-label', last ? 'Back to the cover' : 'Next: ' + tabName(i + 1));
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
   addEventListener('resize', setPh); setPh();
@@ -5659,7 +5662,7 @@ var pager = (function(){
     if(cur !== 0){ cur = 0; mark(0); settle(0); }
     cover.close();
   }
-  function step(d){ if(d < 0 && cur === 0) toCover(); else go(cur + d, 'scroll'); }
+  function step(d){ if((d < 0 && cur === 0) || (d > 0 && cur === pages.length - 1)) toCover(); else go(cur + d, 'scroll'); }
   if(railUp) railUp.addEventListener('click', function(){ step(-1); });
   if(railDown) railDown.addEventListener('click', function(){ step(1); });
 

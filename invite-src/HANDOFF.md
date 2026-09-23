@@ -77,9 +77,10 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - One trackpad flick turns at most one page: input during a turn, and until it has been quiet for 250ms after it, is swallowed.
 - Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
 - **No Next button and no "swipe up" text:** the couple had both removed; the side rail is the page-turn control.
-- **Side rail** (`#rail`), fixed on the right edge: ▲ / page number (e.g. 3/7) / ▼. ▼ blinks and is disabled on the
-  last page; ▲ on the first page returns to the cover.
-- **Back to the cover:** ▲ or a swipe down (or wheel/arrow up) on the first page. The cover slides back down over the invitation (which resets to its first page) and
+- **Side rail** (`#rail`), fixed on the right edge: ▲ / a dot per page (current one gold) / ▼, 20px wide so it sits in
+  the 24px page margin beside tickets and cards, never over them (it used to cover the tickets' right edge, which looked
+  misaligned). ▼ blinks. ▲ on the first page and ▼ on the last page go to the cover.
+- **Back to the cover:** ▲ or a swipe down (or wheel/arrow up) on the first page; ▼ or a swipe up on the last page. The cover slides back down over the invitation (which resets to its first page) and
   opens again as usual (`cover.close()` in the opening module).
 - **Cues:** on the cover, the arrow in "Open invitation" nudges and blinks and a gold ring pulses from the button
   (tapping the photo opens it too). The rail's ▼ blinks. All of it stops under reduced motion.
