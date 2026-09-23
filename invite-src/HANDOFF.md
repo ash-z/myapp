@@ -55,7 +55,7 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 ## Photographs
 The couple's photos are in `photos/` (phone screenshots, ~1200px wide). `photos_process.py` crops each to a 4:5 card
 (crops chosen by eye to frame faces and drop relatives at the edges) and writes `photos/out/*.webp` at 800×1000.
-Deck order: laughing together (lead, captioned) · Susmita · Ashish · seated portrait · with garlands · the ring.
+Deck order: laughing together (lead, captioned) · Susmita · Ashish · seated portrait · the ring. (The standing-with-garlands photo was removed at the couple's request; its source screenshot is still in `photos/`.)
 On GitHub Pages the photos are separate files in `docs/photos/` (the page stays ~1.1MB); the artifact embeds them.
 To add or reorder: add the file to `photos/`, add a line to `DECK` in `photos_process.py`, add a `<figure>` and a dot in
 `body.html`, then run `photos_process.py` and `build.py`. The deck shows three cards in its stack at a time.

@@ -19,7 +19,6 @@ DECK = [
     ("susmita",           "07-59-12-956", 100, 330, 1000),
     ("ashish",            "07-59-05-226", 150, 200,  960),
     ("together-portrait", "07-59-16-387", 0,   200, 1200),
-    ("together-garlands", "07-59-10-098", 230, 190,  960),
     ("together-ring",     "07-59-27-571", 0,    60, 1200),
     # not a deck card: the opening screen's arch window, cropped close on the two of them
     ("cover",             "07-59-16-387", 140, 100,  960),
