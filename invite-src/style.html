@@ -509,14 +509,15 @@ button{font:inherit;color:inherit}
   filter:drop-shadow(0 6px 8px rgba(80,40,10,.16))}
 /* Ganesha in the garland's centre gap, placed as on the opening screen (margins in % are of the ticket's width) */
 .t-ganesha{position:absolute;left:50%;top:0;width:11.8%;margin:-11.9% 0 0 -5.9%;pointer-events:none}
-.hung .t-top{padding-top:calc(26px + 7%)}
-.t-sched{list-style:none;margin:0;padding:0}
-.t-sched li{display:grid;grid-template-columns:7.2em 1fr;align-items:baseline;gap:12px;padding:7px 0}
+.hung .t-top{padding-top:calc(18px + 7%);padding-bottom:16px}
+.hung .t-when{margin-top:0}
+.hung .t-count{margin-top:14px}
+.t-sched{list-style:none;margin:8px 0 0;padding:0}
+.t-sched li{display:grid;grid-template-columns:7.2em 1fr;align-items:baseline;gap:12px;padding:5px 0}
 .t-sched li + li{border-top:1px solid var(--rule)}
 .t-sched time{font-family:"Marcellus",Georgia,serif;font-size:15px;color:var(--gold);white-space:nowrap}
 .t-sched time small{display:block;font-family:"Karla",system-ui,sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .t-sched span{font-family:"Marcellus",Georgia,serif;font-size:clamp(17px,4.6vw,19px);line-height:1.25}
-.t-btns.one{grid-template-columns:1fr}
 /* rsvp: a diya on the card's corner */
 .rsvp-card{margin-top:34px}
 .card-diya{position:absolute;top:-50px;right:-12px;width:clamp(96px,27vw,128px);height:auto;pointer-events:none}

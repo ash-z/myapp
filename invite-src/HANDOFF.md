@@ -34,7 +34,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - Names: **Sai Susmita** in formal places (opening screen, hero, families, closing, title, previews); **Susmita** in casual ones (photo deck). The woman is always named first.
 - Two events for everyone: muhurtam Thu 29 Oct 2026 7:29 PM, Hotel Ambica Sea Green, Visakhapatnam; reception Sun 1 Nov 2026 11:00 AM, Hotel Tulip Grand, Annojiguda, Hyderabad.
 - **Friends only**, Wed 28 Oct 2026: Haldi 9:30 AM · Pellikuturu 11:30 AM · Mehendi & Sangeet 5:30 PM onwards.
-  These must never appear in the relatives' version. It is the only difference between the two.
+  All at Home, near Sivaji Park, MVP Colony, Vizag. These must never appear in the relatives' version. It is the only difference between the two.
 - Type: Italiana / Marcellus / Karla / Noto Sans Telugu. Palettes ivory + jewel, toggle top-right.
 - three.js is **inlined**, never loaded from a CDN (a CDN load silently failed before).
 - No copy the couple did not supply. Keep it plain; no invented backstory.
@@ -44,7 +44,8 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 The friends' version adds a seventh, **Haldi** ("The day before"), between Us and Wedding: one ticket with the day's three
-events, a countdown to the haldi and an all-day "Save date" (no venue given yet, so no Directions button). A toranam hangs
+events at **Home, near Sivaji Park, MVP Colony, Vizag**, a countdown to the haldi, Directions (a Maps search for
+Sivaji Park, MVP Colony; swap in the house's own Maps link if the couple sends one) and an all-day "Save date". A toranam hangs
 along the ticket's top edge with Ganesha in its gap.
 
 **Two versions:** anything between `<!--friends-->` and `<!--/friends-->` lines in `body.html` is only in the friends'
@@ -114,4 +115,3 @@ also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
 - RSVP — built; waiting on the couple to deploy `rsvp/Code.gs` (see above).
 - Travel/stay for outstation guests — one placeholder line under the reception ticket.
-- Venue for the 28 October events (friends' version) — not given yet; add it with a Directions button when it is.
