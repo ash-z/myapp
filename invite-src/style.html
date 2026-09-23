@@ -120,6 +120,14 @@ button{font:inherit;color:inherit}
   color:var(--muted);background:none;border:0;border-radius:999px;padding:7px 11px;cursor:pointer;
 }
 .pal button[aria-pressed="true"]{background:var(--gold);color:var(--bg)}
+/* music: a speaker beside the colour switch, shown only when a song file exists */
+.pal .mus{display:grid;place-items:center;padding:4px 8px 4px 9px;margin-left:2px;color:var(--gold);border-left:1px solid var(--rule);border-radius:0 999px 999px 0}
+.pal .mus[aria-pressed="true"]{background:none;color:var(--gold)}
+.pal .mus[hidden]{display:none}
+.mus svg{width:19px;height:19px}
+.mus:not(.on) .w,.mus.on .x{display:none}
+.mus.on .w{animation:mus-wave 1.6s ease-in-out infinite}
+@keyframes mus-wave{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* ============ TAB BAR ============ */
 .tabs{
@@ -598,7 +606,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail svg,.mus .w{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}

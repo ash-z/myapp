@@ -86,6 +86,14 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 
+## Music
+The couple's song lives in **`docs/music/`** as `song.mp3` (or `song.m4a` / `song.wav`); see the README there.
+The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it
+(rebuild after adding one). It starts when a guest taps "Open invitation" (phones need a tap before sound), loops,
+pauses when the page is hidden, and the speaker button next to Ivory/Jewel pauses/resumes it (remembered per phone).
+With no file the button stays hidden and the page is silent. Copyrighted film songs on a public page can draw a
+takedown; that's the couple's call.
+
 ## RSVP
 `rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.
 Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.

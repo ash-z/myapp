@@ -14,10 +14,13 @@
   </div>
 </div>
 
-<div class="pal" id="pal" role="group" aria-label="Colour">
+<div class="pal" id="pal" role="group" aria-label="Colour and music">
   <button id="palIvory" aria-pressed="true">Ivory</button>
   <button id="palJewel" aria-pressed="false">Jewel</button>
+  <button id="musicBtn" class="mus" type="button" hidden aria-pressed="false" aria-label="Play the music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".18"/><path class="w" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
 </div>
+<!-- the couple's song: build.py points these at docs/music/song.mp3 (or .m4a / .wav) -->
+<audio id="song" loop preload="none"><source data-music="song.mp3" type="audio/mpeg"><source data-music="song.m4a" type="audio/mp4"><source data-music="song.wav" type="audio/wav"></audio>
 
 <main id="app">
 

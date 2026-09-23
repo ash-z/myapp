@@ -139,6 +139,14 @@ button{font:inherit;color:inherit}
   color:var(--muted);background:none;border:0;border-radius:999px;padding:7px 11px;cursor:pointer;
 }
 .pal button[aria-pressed="true"]{background:var(--gold);color:var(--bg)}
+/* music: a speaker beside the colour switch, shown only when a song file exists */
+.pal .mus{display:grid;place-items:center;padding:4px 8px 4px 9px;margin-left:2px;color:var(--gold);border-left:1px solid var(--rule);border-radius:0 999px 999px 0}
+.pal .mus[aria-pressed="true"]{background:none;color:var(--gold)}
+.pal .mus[hidden]{display:none}
+.mus svg{width:19px;height:19px}
+.mus:not(.on) .w,.mus.on .x{display:none}
+.mus.on .w{animation:mus-wave 1.6s ease-in-out infinite}
+@keyframes mus-wave{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* ============ TAB BAR ============ */
 .tabs{
@@ -617,7 +625,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail svg,.mus .w{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}
@@ -642,10 +650,13 @@ button{font:inherit;color:inherit}
   </div>
 </div>
 
-<div class="pal" id="pal" role="group" aria-label="Colour">
+<div class="pal" id="pal" role="group" aria-label="Colour and music">
   <button id="palIvory" aria-pressed="true">Ivory</button>
   <button id="palJewel" aria-pressed="false">Jewel</button>
+  <button id="musicBtn" class="mus" type="button" hidden aria-pressed="false" aria-label="Play the music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".18"/><path class="w" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
 </div>
+<!-- the couple's song: build.py points these at docs/music/song.mp3 (or .m4a / .wav) -->
+<audio id="song" loop preload="none"><source src="../music/song.mp3" type="audio/mpeg"><source src="../music/song.m4a" type="audio/mp4"><source src="../music/song.wav" type="audio/wav"></audio>
 
 <main id="app">
 
@@ -5470,6 +5481,36 @@ function buildSeal(host){
   return drawn;
 }
 
+/* ===================================================================
+   MUSIC — the couple's song from docs/music (song.mp3, .m4a or .wav).
+   Phones only allow sound after a tap, so it starts when the invitation
+   is opened. The speaker beside the colour switch pauses and resumes it
+   (remembered on this phone). No file, no button, no sound.
+   =================================================================== */
+var music = (function(){
+  var a = $('#song'), btn = $('#musicBtn');
+  if(!a || !btn || !a.querySelector('source')) return { start:function(){} };
+  var off = false; try{ off = localStorage.getItem('sa-music') === 'off'; }catch(e){}
+  function paint(){
+    var on = !a.paused;
+    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Pause the music' : 'Play the music');
+  }
+  function play(){ var p = a.play(); if(p && p.catch) p.catch(function(){}); }
+  a.addEventListener('loadedmetadata', function(){ btn.hidden = false; paint(); });   // there is a song
+  a.addEventListener('play', paint); a.addEventListener('pause', paint);
+  btn.addEventListener('click', function(){
+    if(a.paused){ off = false; play(); } else { off = true; a.pause(); }
+    try{ localStorage.setItem('sa-music', off ? 'off' : 'on'); }catch(e){}
+  });
+  document.addEventListener('visibilitychange', function(){            // quiet while the guest is elsewhere
+    if(document.hidden){ if(!a.paused){ a.pause(); a.dataset.resume = '1'; } }
+    else if(a.dataset.resume){ delete a.dataset.resume; play(); }
+  });
+  a.preload = 'metadata'; a.load();                                     // finds out whether a song is there
+  return { start:function(){ if(!off) play(); } };
+})();
+
 var cover = (function opening(){
   var sp = $('#splash'), btn = $('#openBtn'), seal = $('#seal');
   var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail');
@@ -5497,7 +5538,7 @@ var cover = (function opening(){
   }
   function open(){
     if(done) return; done = true;
-    buzz(12); enableTilt();
+    buzz(12); enableTilt(); music.start();
     root.classList.add('ui');
     [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = false; });
     if(reduced){ finish(); return; }

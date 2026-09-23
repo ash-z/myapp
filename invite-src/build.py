@@ -91,11 +91,26 @@ def photo_src(inline, up=""):
 badge = ('<div aria-hidden="true" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:8px;'
          'z-index:9999;pointer-events:none;padding:2px 8px;border-radius:999px;background:#9A3A32;color:#fff;'
          'font:600 10px/16px Karla,system-ui,sans-serif;letter-spacing:.12em">DEV</div>')
+# the couple's song: docs/music/song.mp3 (or .m4a / .wav). The pages point at the folder, so a song
+# dropped in works without a rebuild; the artifacts have to be one file, so they embed it (if there is one)
+music_dir = root / "docs" / "music"
+song = next((music_dir / f"song.{e}" for e in ("mp3", "m4a", "wav") if (music_dir / f"song.{e}").exists()), None)
+AUDIO = re.compile(r'<audio id="song"[^>]*>.*?</audio>', re.S)
+def music_src(up):
+    return lambda m: f'src="{up}music/{m.group(1)}"'
+def music_inline(body):
+    if not song:
+        return AUDIO.sub('<audio id="song" loop preload="none"></audio>', body)
+    kind = {"mp3": "audio/mpeg", "m4a": "audio/mp4", "wav": "audio/wav"}[song.suffix[1:]]
+    data = base64.b64encode(song.read_bytes()).decode()
+    return AUDIO.sub(f'<audio id="song" loop preload="none"><source src="data:{kind};base64,{data}" type="{kind}"></audio>', body)
+
 for invite, sub in (("relatives", ""), ("friends", "friends/")):
     body, suffix = bodies[invite], "" if invite == "relatives" else "-" + invite
     up = "../" * sub.count("/")
     page = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(False, up), body)
-    one  = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(True), body)
+    page = re.sub(r'data-music="([a-z0-9.]+)"', music_src(up), page)
+    one  = music_inline(re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(True), body))
     (build / f"artifact{suffix}.html").write_text(style + "\n" + one + tail(invite))
     # the dev previews: same pages, marked so they are never mistaken for the ones guests see
     (build / f"artifact-dev{suffix}.html").write_text(

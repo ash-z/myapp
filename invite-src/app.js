@@ -225,6 +225,36 @@ function buildSeal(host){
   return drawn;
 }
 
+/* ===================================================================
+   MUSIC — the couple's song from docs/music (song.mp3, .m4a or .wav).
+   Phones only allow sound after a tap, so it starts when the invitation
+   is opened. The speaker beside the colour switch pauses and resumes it
+   (remembered on this phone). No file, no button, no sound.
+   =================================================================== */
+var music = (function(){
+  var a = $('#song'), btn = $('#musicBtn');
+  if(!a || !btn || !a.querySelector('source')) return { start:function(){} };
+  var off = false; try{ off = localStorage.getItem('sa-music') === 'off'; }catch(e){}
+  function paint(){
+    var on = !a.paused;
+    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Pause the music' : 'Play the music');
+  }
+  function play(){ var p = a.play(); if(p && p.catch) p.catch(function(){}); }
+  a.addEventListener('loadedmetadata', function(){ btn.hidden = false; paint(); });   // there is a song
+  a.addEventListener('play', paint); a.addEventListener('pause', paint);
+  btn.addEventListener('click', function(){
+    if(a.paused){ off = false; play(); } else { off = true; a.pause(); }
+    try{ localStorage.setItem('sa-music', off ? 'off' : 'on'); }catch(e){}
+  });
+  document.addEventListener('visibilitychange', function(){            // quiet while the guest is elsewhere
+    if(document.hidden){ if(!a.paused){ a.pause(); a.dataset.resume = '1'; } }
+    else if(a.dataset.resume){ delete a.dataset.resume; play(); }
+  });
+  a.preload = 'metadata'; a.load();                                     // finds out whether a song is there
+  return { start:function(){ if(!off) play(); } };
+})();
+
 var cover = (function opening(){
   var sp = $('#splash'), btn = $('#openBtn'), seal = $('#seal');
   var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail');
@@ -252,7 +282,7 @@ var cover = (function opening(){
   }
   function open(){
     if(done) return; done = true;
-    buzz(12); enableTilt();
+    buzz(12); enableTilt(); music.start();
     root.classList.add('ui');
     [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = false; });
     if(reduced){ finish(); return; }
