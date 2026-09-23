@@ -24,7 +24,7 @@ if (!ok) { console.error('Fonts never loaded; refusing to write a fallback-font 
 await p.addStyleTag({ content:`
   .open-btn,.pal,.sp-corner{display:none!important}
   .sp-inner{display:grid!important;grid-template-columns:auto auto;column-gap:64px;row-gap:12px;align-items:center;justify-items:center;max-width:none!important;padding-top:104px!important}
-  .sp-inner .seal{grid-column:1;grid-row:1/5;width:220px!important;margin:26px 0 0!important}
+  .sp-inner .seal{grid-column:1;grid-row:1/5;width:250px!important;margin:0 0 20px!important}
   .sp-inner .invocation{grid-column:2;grid-row:1}
   .sp-inner .eyebrow{grid-column:2;grid-row:2}
   .sp-names{grid-column:2;grid-row:3}

@@ -66,7 +66,7 @@ every `<img data-art="name">` shares it. Ganesha is a CSS mask (`--ganesha-img`)
 |---|---|
 | `toranam` (mango leaves, marigold, jasmine, brass bells) | top of the opening screen, the sea, and Blessings; Ganesha hangs in its centre gap |
 | `ganesha` (line art; Canva stock element "lord ganesha", from the engagement invitation) | centre of the toranam on the opening screen and the sea |
-| `couple` (bride and groom holding hands) | opening screen, in front of the kolam; the "together" photo card until a photo arrives |
+| `couple` (bride and groom holding hands) | **retired** — its garland on the bride was drawn wrong (strands hanging like a stole). The opening screen now shows the couple's seated portrait (`photos/out/cover.webp`) in a temple-arch window before the kolam |
 | `gopuram` | rising from the wedding ticket |
 | `corner-left`, `corner-right` | opening screen bottom corners; reception ticket top corners (flipped) |
 | `diya` (with sprig) | RSVP card corner |
