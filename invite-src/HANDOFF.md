@@ -44,8 +44,8 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 The friends' version adds a seventh, **Haldi** ("The day before"), between Us and Wedding: one ticket with the day's three
-events at **Home, near Sivaji Park, MVP Colony, Vizag**, a countdown to the haldi, Directions (a Maps search for
-Sivaji Park, MVP Colony; swap in the house's own Maps link if the couple sends one) and an all-day "Save date". A toranam hangs
+events at **Home, near Sivaji Park, MVP Colony, Vizag**, a countdown to the haldi, Directions (the couple's pin for
+the house, https://maps.app.goo.gl/4jKmVR2unpEwwRWNA) and an all-day "Save date". A toranam hangs
 along the ticket's top edge with Ganesha in its gap.
 
 **Two versions:** anything between `<!--friends-->` and `<!--/friends-->` lines in `body.html` is only in the friends'
