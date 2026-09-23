@@ -2,8 +2,9 @@
 
     cd invite-src && npm install && python3 build.py
 
-Writes docs/index.html (served by GitHub Pages) and build/artifact.html
-(the same page without <head>, for publishing as a Claude artifact).
+Writes docs/index.html (served by GitHub Pages), build/artifact.html
+(the same page without <head>, for publishing as a Claude artifact) and
+build/artifact-dev.html (that page with a DEV badge, for the dev preview).
 three.js is tree-shaken by esbuild and inlined, so the page makes no
 runtime request except the Google Fonts stylesheet.
 """
@@ -78,7 +79,13 @@ page_body = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(False), body)
 body = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(True), body)
 
 (build / "artifact.html").write_text(style + "\n" + body + tail)
+# the dev preview: same page, marked so it is never mistaken for the one guests see
+badge = ('<div aria-hidden="true" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:8px;'
+         'z-index:9999;pointer-events:none;padding:2px 8px;border-radius:999px;background:#9A3A32;color:#fff;'
+         'font:600 10px/16px Karla,system-ui,sans-serif;letter-spacing:.12em">DEV</div>')
+(build / "artifact-dev.html").write_text(
+    style.replace(f"<title>{name}</title>", f"<title>{name} (dev)</title>") + "\n" + badge + "\n" + body + tail)
 (root / "docs" / "index.html").write_text(
     '<!doctype html>\n<html lang="en">\n<head>\n' + head + style +
     "\n</head>\n<body>\n" + page_body + tail + "</body>\n</html>\n")
-print("wrote docs/index.html and build/artifact.html")
+print("wrote docs/index.html, build/artifact.html and build/artifact-dev.html")

@@ -1,10 +1,10 @@
 # Wedding invitation — handoff
 
-Live: https://ash-z.github.io/myapp/ (GitHub Pages, branch `claude/add-threejs-library-ogt1s7`, folder `/docs`).
+Live: https://ash-z.github.io/myapp/ (GitHub Pages, branch **`golden`**, folder `/docs`).
 `docs/index.html` is **generated** — edit the files here, then rebuild:
 
 ```sh
-cd invite-src && npm install && python3 build.py          # -> ../docs/index.html, build/artifact.html
+cd invite-src && npm install && python3 build.py          # -> ../docs/index.html, build/artifact.html, build/artifact-dev.html
 node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; convert to ../docs/og.jpg
 ```
 
@@ -14,6 +14,18 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 | `body.html` | all markup: opening screen, 5 screens, tab bar |
 | `app.js` | `CONFIG` at the top (photos, share URL), then palette, particles, tilt, opening, tabs, photo deck, countdowns, blessings, the three.js sea |
 | `three-entry.js` | the three.js symbols esbuild keeps; add to it if `app.js` needs more |
+
+## Golden and dev
+- **`golden`** is what guests see. GitHub Pages serves it; nothing is committed to it directly.
+  `golden-v1` (commit `4bcc0d7`) is the version first shared with guests.
+- **`claude/add-threejs-library-ogt1s7`** is where work happens. Its preview is the dev artifact
+  (`build/artifact-dev.html`, marked DEV); the golden preview artifact is `build/artifact.html`.
+- **Promote** only when the couple says so, after checking the dev preview on a phone:
+  ```sh
+  git checkout golden && git merge --ff-only claude/add-threejs-library-ogt1s7 && git push origin golden
+  git checkout claude/add-threejs-library-ogt1s7
+  ```
+  Pages redeploys in about a minute. To roll back, reset `golden` to the previous good commit and push.
 
 ## Locked decisions
 - Names: **Sai Susmita** in formal places (opening screen, hero, families, closing, title, previews); **Susmita** in casual ones (photo deck). The woman is always named first.
