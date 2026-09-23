@@ -10,12 +10,12 @@ for (let attempt = 1; attempt <= 4 && !ok; attempt++){
   await p.goto('file://' + src, { waitUntil:'networkidle' });
   ok = await p.evaluate(async()=>{
     try{
-      await Promise.all([document.fonts.load('600 60px "Cormorant Garamond"'), document.fonts.load('20px Marcellus'),
+      await Promise.all([document.fonts.load('60px "Alex Brush"'), document.fonts.load('40px "Tiro Telugu"'), document.fonts.load('20px Marcellus'),
                          document.fonts.load('20px "Noto Sans Telugu"', 'శుభలేఖ')]);
       await document.fonts.ready;
     }catch(e){}
     const loaded = fam => [...document.fonts].some(f => f.family.replace(/"/g,'') === fam && f.status === 'loaded');
-    return loaded('Cormorant Garamond') && loaded('Marcellus') && loaded('Noto Sans Telugu');
+    return loaded('Alex Brush') && loaded('Tiro Telugu') && loaded('Marcellus') && loaded('Noto Sans Telugu');
   });
   console.log('attempt', attempt, 'fonts loaded:', ok);
 }

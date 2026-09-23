@@ -37,10 +37,13 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
   (hall name not known yet; add it next to the floor when the couple sends it).
 - **Friends only**, Wed 28 Oct 2026: Haldi 9:30 AM · Pellikuturu 11:30 AM · Mehendi & Sangeet 5:30 PM onwards.
   All at Home, near Sivaji Park, MVP Colony, Vizag. These must never appear in the relatives' version. It is the only difference between the two.
-- Type: Cormorant Garamond SemiBold (display) / Marcellus / Karla / Noto Sans Telugu. Palettes ivory + jewel, toggle top-right.
+- Type: **Alex Brush** (the couple's names only) / **Tiro Telugu** (headings, ticket dates, the closing line; its Latin is
+  drawn to sit with Telugu script) / Marcellus (times, venues) / Karla (body, labels) / Noto Sans Telugu (Telugu labels).
+  The couple chose this pairing from six traditional options; generic serifs (Cormorant, Playfair, Cinzel, Lora…) were rejected
+  as not matching the page. Palettes ivory + jewel, toggle top-right.
 - **Readability comes first** (the couple asked for it): no text below 12px (tab labels excepted, 9.5–12px by width),
   small capitals tracked no wider than .12em, body text regular weight, and light-theme gold/grey text at ≥4.5:1
-  (`--gold:#8A6420`, `--muted:#6B5B47`). Italiana, the first display face, was too thin to read and was dropped.
+  (`--gold:#8A6420`, `--muted:#6B5B47`). Italiana, the first display face, was too thin to read and was dropped; Cormorant Garamond after it didn't suit.
   Short screens (≤740px tall) get a compact layout (less spacing, smaller ornaments) so the text doesn't shrink.
 - three.js is **inlined**, never loaded from a CDN (a CDN load silently failed before).
 - No copy the couple did not supply. Keep it plain; no invented backstory.
