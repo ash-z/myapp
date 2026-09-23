@@ -166,6 +166,23 @@ button{font:inherit;color:inherit}
 .next-cue::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none}
 .next-cue.pulse::after{animation:cue-ring 1.8s ease-out 1s 3}
 .js:not(.ui) .next-cue{opacity:0;pointer-events:none;transition:none}
+/* side rail: up and down a page, with the page number between; the down arrow blinks */
+.rail{
+  position:fixed;right:max(4px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0;width:32px;padding:3px 0;
+  border:1px solid var(--rule);border-radius:999px;
+  background:color-mix(in srgb,var(--surface) 84%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -10px rgba(0,0,0,.35);
+  transition:opacity .6s ease .5s;
+}
+.rail button{position:relative;display:grid;place-items:center;width:30px;height:36px;padding:0;border:0;background:none;color:var(--gold);cursor:pointer}
+.rail button::before{content:"";position:absolute;inset:-4px -8px}      /* a bigger target than it looks */
+.rail button:disabled{opacity:.28;cursor:default}
+.rail svg{width:19px;height:19px}
+#railDown:not(:disabled) svg{animation:rail-blink 1.6s ease-in-out infinite}
+@keyframes rail-blink{0%,100%{transform:translateY(-1px);opacity:1}50%{transform:translateY(3px);opacity:.35}}
+.rail-n{font-size:11px;font-weight:700;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums}
+.js:not(.ui) .rail{opacity:0;pointer-events:none;transition:none}
 .tabs-in{
   pointer-events:auto;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);
   width:min(520px,100%);height:var(--tab-h);padding:5px;gap:2px;
@@ -349,7 +366,7 @@ button{font:inherit;color:inherit}
 .sig-en{margin:14px 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(15px,4vw,18px);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .acts-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:16px}
 .acts{display:grid;gap:10px;flex:0 1 230px}
-.acts .btn{padding-inline:16px}
+.acts .btn{padding-inline:12px;letter-spacing:.06em;white-space:nowrap}
 .akshi{margin:10px auto 0;max-width:28em;font-size:13px;color:var(--muted)}
 .akshi .telugu{color:var(--accent)}
 .shower-note{margin:8px 0 0;min-height:1.5em;font-size:12px;letter-spacing:.06em;color:var(--gold)}
@@ -619,7 +636,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.next-cue svg,.next-cue::after,.open-btn svg,.open-btn::after{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.next-cue svg,.next-cue::after,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}
@@ -998,6 +1015,11 @@ button{font:inherit;color:inherit}
   </div>
 </nav>
 
+<nav class="rail" id="rail" aria-label="Page up and down">
+  <button id="railUp" type="button" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+  <span class="rail-n" id="railN" aria-hidden="true">1/6</span>
+  <button id="railDown" type="button" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+</nav>
 <button class="next-cue" id="nextCue" type="button"><span id="nextName">Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
 
 <div class="sheet-scrim" id="sheetScrim" hidden></div>
@@ -5469,15 +5491,15 @@ function buildSeal(host){
   return drawn;
 }
 
-(function opening(){
+var cover = (function opening(){
   var sp = $('#splash'), btn = $('#openBtn'), seal = $('#seal');
-  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal');
+  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail'), nc = $('#nextCue');
   var drawn = buildSeal(seal);
-  if(!root.classList.contains('locked')){ if(sp) sp.hidden = true; return; }
+  var done = !root.classList.contains('locked');             // a link to #page skips the cover
+  if(done){ if(sp) sp.hidden = true; }
+  else [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
 
-  [app, tabs, pal].forEach(function(e){ if(e) e.inert = true; });
-
-  if(!reduced){
+  if(!done && !reduced){
     drawn.forEach(function(p, i){
       var len = 0; try{ len = p.getTotalLength(); }catch(e){}
       if(!len) return;
@@ -5489,7 +5511,6 @@ function buildSeal(host){
     }); });
   }
 
-  var done = false;
   function finish(){
     root.classList.remove('locked');
     root.classList.add('opened');
@@ -5499,16 +5520,29 @@ function buildSeal(host){
     if(done) return; done = true;
     buzz(12); enableTilt();
     root.classList.add('ui');
-    [app, tabs, pal].forEach(function(e){ if(e) e.inert = false; });
-    var nc = $('#nextCue');                                   // replay the Next button's pulse now it can be seen
-    if(nc){ nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
+    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = false; });
+    if(nc){                                                   // replay the Next button's pulse now it can be seen
+      nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
     setTimeout(finish, 1400);
   }
+  // back to the cover: it slides down over the invitation again
+  function close(){
+    if(!done || !sp) return; done = false;
+    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
+    sp.classList.remove('opening'); sp.classList.add('gone');
+    sp.hidden = false;
+    root.classList.remove('opened', 'ui'); root.classList.add('locked');
+    void sp.offsetWidth;
+    requestAnimationFrame(function(){ sp.classList.remove('gone'); });
+    try{ btn.focus({ preventScroll:true }); }catch(e){}
+    buzz(8);
+  }
   btn.addEventListener('click', open);
   seal.addEventListener('click', open);
+  return { close:close };
 })();
 
 /* ===================================================================
@@ -5543,12 +5577,19 @@ var pager = (function(){
   // the Next button above the tab bar names the page the next swipe turns to, and turns to it when
   // tapped; on the last page it offers the way back to the start
   var nxt = $('#nextCue'), nxtName = $('#nextName');
+  var railUp = $('#railUp'), railDown = $('#railDown'), railN = $('#railN');
   function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
   function cue(i){
     if(!nxt) return;
     var last = i >= pages.length - 1;
     nxt.classList.toggle('back', last);
-    nxtName.textContent = last ? 'Back to the start' : 'Next: ' + tabName(i + 1);
+    nxtName.textContent = last ? 'Back to the cover' : 'Next: ' + tabName(i + 1);
+    if(railN){
+      railN.textContent = (i + 1) + '/' + pages.length;
+      railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
+      railDown.disabled = last;
+      railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
+    }
     nxt.classList.remove('pulse'); void nxt.offsetWidth; nxt.classList.add('pulse');
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
@@ -5601,8 +5642,16 @@ var pager = (function(){
       quietUntil = performance.now() + 250;
     }, DUR);
   }
-  function step(d){ go(cur + d, 'scroll'); }
-  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) go(0, 'bloom', nxt); else step(1); });
+  // back to the cover: the invitation returns to its first page underneath, and the cover slides down over it
+  function toCover(){
+    if(busy || locked()) return;
+    if(cur !== 0){ cur = 0; mark(0); settle(0); }
+    cover.close();
+  }
+  function step(d){ if(d < 0 && cur === 0) toCover(); else go(cur + d, 'scroll'); }
+  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) toCover(); else step(1); });
+  if(railUp) railUp.addEventListener('click', function(){ step(-1); });
+  if(railDown) railDown.addEventListener('click', function(){ step(1); });
 
   // tabs: bloom from the tab; tapping the tab you're on scrolls its page back to the top
   links.forEach(function(l){

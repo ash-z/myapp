@@ -147,6 +147,23 @@ button{font:inherit;color:inherit}
 .next-cue::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none}
 .next-cue.pulse::after{animation:cue-ring 1.8s ease-out 1s 3}
 .js:not(.ui) .next-cue{opacity:0;pointer-events:none;transition:none}
+/* side rail: up and down a page, with the page number between; the down arrow blinks */
+.rail{
+  position:fixed;right:max(4px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0;width:32px;padding:3px 0;
+  border:1px solid var(--rule);border-radius:999px;
+  background:color-mix(in srgb,var(--surface) 84%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -10px rgba(0,0,0,.35);
+  transition:opacity .6s ease .5s;
+}
+.rail button{position:relative;display:grid;place-items:center;width:30px;height:36px;padding:0;border:0;background:none;color:var(--gold);cursor:pointer}
+.rail button::before{content:"";position:absolute;inset:-4px -8px}      /* a bigger target than it looks */
+.rail button:disabled{opacity:.28;cursor:default}
+.rail svg{width:19px;height:19px}
+#railDown:not(:disabled) svg{animation:rail-blink 1.6s ease-in-out infinite}
+@keyframes rail-blink{0%,100%{transform:translateY(-1px);opacity:1}50%{transform:translateY(3px);opacity:.35}}
+.rail-n{font-size:11px;font-weight:700;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums}
+.js:not(.ui) .rail{opacity:0;pointer-events:none;transition:none}
 .tabs-in{
   pointer-events:auto;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);
   width:min(520px,100%);height:var(--tab-h);padding:5px;gap:2px;
@@ -330,7 +347,7 @@ button{font:inherit;color:inherit}
 .sig-en{margin:14px 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(15px,4vw,18px);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .acts-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:16px}
 .acts{display:grid;gap:10px;flex:0 1 230px}
-.acts .btn{padding-inline:16px}
+.acts .btn{padding-inline:12px;letter-spacing:.06em;white-space:nowrap}
 .akshi{margin:10px auto 0;max-width:28em;font-size:13px;color:var(--muted)}
 .akshi .telugu{color:var(--accent)}
 .shower-note{margin:8px 0 0;min-height:1.5em;font-size:12px;letter-spacing:.06em;color:var(--gold)}
@@ -600,7 +617,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.next-cue svg,.next-cue::after,.open-btn svg,.open-btn::after{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.next-cue svg,.next-cue::after,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}

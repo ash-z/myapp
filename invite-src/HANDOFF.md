@@ -74,7 +74,12 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - One trackpad flick turns at most one page: input during a turn, and until it has been quiet for 250ms after it, is swallowed.
 - Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
 - **Next button** (`#nextCue`), fixed above the tab bar on every page: "Next: <tab name>" turns to the next page;
-  on the last page it reads "Back to the start". The first page also says "Swipe up, or tap Next, to continue".
+  on the last page it reads "Back to the cover". The first page also says "Swipe up, or tap Next, to continue".
+- **Side rail** (`#rail`), fixed on the right edge: ▲ / page number (e.g. 3/7) / ▼. ▼ blinks and is disabled on the
+  last page; ▲ on the first page returns to the cover.
+- **Back to the cover:** ▲ on the first page, a swipe down (or wheel/arrow up) on the first page, or "Back to the
+  cover" on the last page. The cover slides back down over the invitation (which resets to its first page) and
+  opens again as usual (`cover.close()` in the opening module).
 - **Cues:** on the cover, the arrow in "Open invitation" nudges and blinks and a gold ring pulses from the button
   (tapping the photo opens it too). Each time a page arrives, the Next button pulses three times and its arrow
   blinks as it bobs. All of it stops under reduced motion.

@@ -225,15 +225,15 @@ function buildSeal(host){
   return drawn;
 }
 
-(function opening(){
+var cover = (function opening(){
   var sp = $('#splash'), btn = $('#openBtn'), seal = $('#seal');
-  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal');
+  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail'), nc = $('#nextCue');
   var drawn = buildSeal(seal);
-  if(!root.classList.contains('locked')){ if(sp) sp.hidden = true; return; }
+  var done = !root.classList.contains('locked');             // a link to #page skips the cover
+  if(done){ if(sp) sp.hidden = true; }
+  else [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
 
-  [app, tabs, pal].forEach(function(e){ if(e) e.inert = true; });
-
-  if(!reduced){
+  if(!done && !reduced){
     drawn.forEach(function(p, i){
       var len = 0; try{ len = p.getTotalLength(); }catch(e){}
       if(!len) return;
@@ -245,7 +245,6 @@ function buildSeal(host){
     }); });
   }
 
-  var done = false;
   function finish(){
     root.classList.remove('locked');
     root.classList.add('opened');
@@ -255,16 +254,29 @@ function buildSeal(host){
     if(done) return; done = true;
     buzz(12); enableTilt();
     root.classList.add('ui');
-    [app, tabs, pal].forEach(function(e){ if(e) e.inert = false; });
-    var nc = $('#nextCue');                                   // replay the Next button's pulse now it can be seen
-    if(nc){ nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
+    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = false; });
+    if(nc){                                                   // replay the Next button's pulse now it can be seen
+      nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
     setTimeout(finish, 1400);
   }
+  // back to the cover: it slides down over the invitation again
+  function close(){
+    if(!done || !sp) return; done = false;
+    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
+    sp.classList.remove('opening'); sp.classList.add('gone');
+    sp.hidden = false;
+    root.classList.remove('opened', 'ui'); root.classList.add('locked');
+    void sp.offsetWidth;
+    requestAnimationFrame(function(){ sp.classList.remove('gone'); });
+    try{ btn.focus({ preventScroll:true }); }catch(e){}
+    buzz(8);
+  }
   btn.addEventListener('click', open);
   seal.addEventListener('click', open);
+  return { close:close };
 })();
 
 /* ===================================================================
@@ -299,12 +311,19 @@ var pager = (function(){
   // the Next button above the tab bar names the page the next swipe turns to, and turns to it when
   // tapped; on the last page it offers the way back to the start
   var nxt = $('#nextCue'), nxtName = $('#nextName');
+  var railUp = $('#railUp'), railDown = $('#railDown'), railN = $('#railN');
   function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
   function cue(i){
     if(!nxt) return;
     var last = i >= pages.length - 1;
     nxt.classList.toggle('back', last);
-    nxtName.textContent = last ? 'Back to the start' : 'Next: ' + tabName(i + 1);
+    nxtName.textContent = last ? 'Back to the cover' : 'Next: ' + tabName(i + 1);
+    if(railN){
+      railN.textContent = (i + 1) + '/' + pages.length;
+      railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
+      railDown.disabled = last;
+      railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
+    }
     nxt.classList.remove('pulse'); void nxt.offsetWidth; nxt.classList.add('pulse');
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
@@ -357,8 +376,16 @@ var pager = (function(){
       quietUntil = performance.now() + 250;
     }, DUR);
   }
-  function step(d){ go(cur + d, 'scroll'); }
-  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) go(0, 'bloom', nxt); else step(1); });
+  // back to the cover: the invitation returns to its first page underneath, and the cover slides down over it
+  function toCover(){
+    if(busy || locked()) return;
+    if(cur !== 0){ cur = 0; mark(0); settle(0); }
+    cover.close();
+  }
+  function step(d){ if(d < 0 && cur === 0) toCover(); else go(cur + d, 'scroll'); }
+  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) toCover(); else step(1); });
+  if(railUp) railUp.addEventListener('click', function(){ step(-1); });
+  if(railDown) railDown.addEventListener('click', function(){ step(1); });
 
   // tabs: bloom from the tab; tapping the tab you're on scrolls its page back to the top
   links.forEach(function(l){
