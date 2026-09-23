@@ -3,16 +3,10 @@
 
 /* ===================================================================
    CONFIG — the one place to edit.
-   photos: Susmita, Ashish, the two of them — in deck order.
-   `src` takes a data URI, or on GitHub Pages simply a file name
-   sitting next to index.html (e.g. "susmita.jpg").
+   Photographs live in invite-src/photos (cropped by photos_process.py)
+   and are placed in the deck in body.html.
    =================================================================== */
 var CONFIG = {
-  photos: [
-    { src: null },   // Susmita
-    { src: null },   // Ashish
-    { src: null }    // Susmita & Ashish
-  ],
   shareUrl: "https://ash-z.github.io/myapp/",
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
@@ -475,27 +469,18 @@ var refit = (function(){
   var cards = [].slice.call(deck.querySelectorAll('.card'));
   var dots  = $$('#dots .dot'), cue = $('#swipeCue');
 
-  cards.forEach(function(c, i){
-    var p = CONFIG.photos[i];
-    if(!p || !p.src) return;
-    var face = c.querySelector('.card-face'), img = new Image();
-    img.alt = ''; img.decoding = 'async'; img.src = p.src;
-    face.insertBefore(img, face.firstChild);
-    ['.ph', '.soon'].forEach(function(s){ var n = face.querySelector(s); if(n) n.remove(); });
-  });
-
-  // until photographs arrive, lead with the illustrated card of the two of them
-  var anyPhoto = CONFIG.photos.some(function(p){ return p && p.src; });
-  var order = anyPhoto ? [0, 1, 2] : [2, 0, 1];
+  var order = cards.map(function(c, i){ return i; });
   var TILT = [-1.5, 4.5, -5];
-  var SPRING = 'transform .6s cubic-bezier(.2,.85,.25,1.12)';
-  function pose(pos){ return 'translate3d(0,' + (pos*14) + 'px,0) scale(' + (1 - pos*0.055) + ') rotate(' + TILT[pos] + 'deg)'; }
+  var SPRING = 'transform .6s cubic-bezier(.2,.85,.25,1.12), opacity .4s ease';
+  // three cards show in the stack; the rest wait, hidden, behind the third
+  function pose(pos){ var p = Math.min(pos, 2); return 'translate3d(0,' + (p*14) + 'px,0) scale(' + (1 - p*0.055) + ') rotate(' + TILT[p] + 'deg)'; }
   function layout(anim){
     order.forEach(function(ci, pos){
       var c = cards[ci];
       c.style.zIndex = String(10 - pos);
       c.style.transition = anim && !reduced ? SPRING : 'none';
       c.style.transform = pose(pos);
+      c.style.opacity = pos > 2 ? '0' : '1';
       c.classList.toggle('top', pos === 0);
       c.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
     });

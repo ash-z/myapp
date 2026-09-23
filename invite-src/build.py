@@ -61,8 +61,24 @@ head = f"""<meta charset="utf-8">
 <link rel="icon" href="{favicon}">
 """
 
+# photographs: separate files next to the page on GitHub Pages (loaded as the deck
+# needs them); embedded in the artifact, which has to be one file
+photos = here / "photos" / "out"
+(root / "docs" / "photos").mkdir(exist_ok=True)
+for f in photos.glob("*.webp"):
+    (root / "docs" / "photos" / f.name).write_bytes(f.read_bytes())
+def photo_src(inline):
+    def sub(m):
+        name = m.group(1)
+        if inline:
+            return 'src="data:image/webp;base64,' + base64.b64encode((photos / f"{name}.webp").read_bytes()).decode() + '"'
+        return f'src="photos/{name}.webp"'
+    return sub
+page_body = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(False), body)
+body = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(True), body)
+
 (build / "artifact.html").write_text(style + "\n" + body + tail)
 (root / "docs" / "index.html").write_text(
     '<!doctype html>\n<html lang="en">\n<head>\n' + head + style +
-    "\n</head>\n<body>\n" + body + tail + "</body>\n</html>\n")
+    "\n</head>\n<body>\n" + page_body + tail + "</body>\n</html>\n")
 print("wrote docs/index.html and build/artifact.html")

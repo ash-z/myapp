@@ -225,22 +225,6 @@ button{font:inherit;color:inherit}
 .card-in,.card-face{position:absolute;inset:0;border-radius:inherit}
 .card-face{overflow:hidden;box-shadow:var(--shadow);background:#b98a4a}
 .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ph{position:absolute;inset:0}
-.ph::before{ /* kolam dot lattice */
-  content:"";position:absolute;inset:0;opacity:.35;
-  background-image:radial-gradient(circle,rgba(255,244,220,.9) 1.3px,transparent 1.8px);
-  background-size:22px 22px;
-  -webkit-mask-image:radial-gradient(75% 60% at 50% 42%,#000 20%,transparent 75%);
-          mask-image:radial-gradient(75% 60% at 50% 42%,#000 20%,transparent 75%);
-}
-.ph-her {background:linear-gradient(158deg,#F0B444 0%,#D8612F 46%,#9A2E33 100%)}
-.ph-him {background:linear-gradient(158deg,#EAD6AC 0%,#BF9254 48%,#6A4526 100%)}
-.ph-both{background:linear-gradient(158deg,#F3CE7A 0%,#C4492E 52%,#3A1F1C 100%)}
-.ph-mono{
-  position:absolute;left:0;right:0;top:34%;transform:translateY(-50%);text-align:center;
-  font-family:"Italiana",Georgia,serif;font-size:clamp(84px,24vw,120px);line-height:1;
-  color:rgba(255,248,232,.82);text-shadow:0 6px 30px rgba(60,20,10,.25);
-}
 .cap{
   position:absolute;left:0;right:0;bottom:0;padding:48px 18px 16px;
   display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
@@ -248,12 +232,6 @@ button{font:inherit;color:inherit}
 }
 .cap-name{font-family:"Italiana",Georgia,serif;font-size:clamp(24px,6.4vw,30px);letter-spacing:.04em;line-height:1.1}
 .cap-tel{font-size:14px;color:#F5D79B}
-.soon{
-  position:absolute;top:14px;left:14px;padding:5px 10px;border-radius:999px;
-  font-weight:500;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
-  color:#FFF7EA;background:rgba(30,14,10,.28);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-}
 /* personality: she sways, he stays still */
 .card.top[data-mood="her"] .card-face{animation:sway 3.4s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg) translateY(-3px)}}
@@ -531,10 +509,6 @@ button{font:inherit;color:inherit}
 .sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
 .sp-corner-l{left:0}
 .sp-corner-r{right:0}
-/* the "together" card shows the illustrated couple until a photograph arrives */
-.ph-both{background:linear-gradient(158deg,#FBF1DD 0%,#F2D9AA 58%,#DDAE6B 100%)}
-/* the illustration keeps its own size; the full-bleed rule is for photographs */
-.card .ph-art{inset:auto;left:50%;bottom:13%;height:82%;width:auto;object-fit:contain;transform:translateX(-50%);filter:drop-shadow(0 10px 14px rgba(80,40,10,.18))}
 /* wedding: the gopuram rises from the ticket */
 .ticket.crowned{margin-top:clamp(78px,22vw,108px)}
 .t-gopuram{
@@ -619,34 +593,49 @@ button{font:inherit;color:inherit}
       </div>
       <div class="deck-wrap reveal">
         <div class="deck" id="deck" tabindex="0" role="region" aria-roledescription="photo deck" aria-label="Photographs — swipe, tap, or use the arrow keys">
+          <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
+            <div class="card-in"><div class="card-face">
+              <img src="photos/together-laughing.webp" alt="Susmita and Ashish laughing together, wearing garlands" decoding="async">
+              <figcaption class="cap"><span class="cap-name">Susmita &amp; Ashish</span></figcaption>
+            </div></div>
+          </figure>
           <figure class="card" data-mood="her" aria-label="Susmita">
             <div class="card-in"><div class="card-face">
-              <div class="ph ph-her" aria-hidden="true"><span class="ph-mono">S</span></div>
+              <img src="photos/susmita.webp" alt="Susmita in a silk saree" decoding="async">
               <figcaption class="cap"><span class="cap-name">Susmita</span><span class="cap-tel telugu">సుస్మిత</span></figcaption>
-              <span class="soon">Photo coming soon</span>
             </div></div>
           </figure>
           <figure class="card" data-mood="him" aria-label="Ashish">
             <div class="card-in"><div class="card-face">
-              <div class="ph ph-him" aria-hidden="true"><span class="ph-mono">A</span></div>
+              <img src="photos/ashish.webp" alt="Ashish" decoding="async">
               <figcaption class="cap"><span class="cap-name">Ashish</span><span class="cap-tel telugu">ఆశిష్</span></figcaption>
-              <span class="soon">Photo coming soon</span>
             </div></div>
           </figure>
           <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
             <div class="card-in"><div class="card-face">
-              <div class="ph ph-both" aria-hidden="true"><img class="ph-art" data-art="couple" alt="" decoding="async"></div>
-              <figcaption class="cap"><span class="cap-name">Susmita &amp; Ashish</span></figcaption>
-              <span class="soon">Photo coming soon</span>
+              <img src="photos/together-portrait.webp" alt="Susmita seated and Ashish standing beside her, both wearing garlands" decoding="async">
+            </div></div>
+          </figure>
+          <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
+            <div class="card-in"><div class="card-face">
+              <img src="photos/together-garlands.webp" alt="Ashish and Susmita standing together with garlands" decoding="async">
+            </div></div>
+          </figure>
+          <figure class="card" data-mood="both" aria-label="Susmita and Ashish">
+            <div class="card-in"><div class="card-face">
+              <img src="photos/together-ring.webp" alt="Susmita showing her ring, with Ashish behind her" decoding="async">
             </div></div>
           </figure>
         </div>
       </div>
       <div class="deck-ui reveal">
         <div class="dots" id="dots">
-          <button class="dot" aria-label="Show Susmita"></button>
-          <button class="dot" aria-label="Show Ashish"></button>
-          <button class="dot" aria-label="Show Susmita and Ashish"></button>
+          <button class="dot" aria-label="Show photo 1 of 6"></button>
+          <button class="dot" aria-label="Show photo 2 of 6"></button>
+          <button class="dot" aria-label="Show photo 3 of 6"></button>
+          <button class="dot" aria-label="Show photo 4 of 6"></button>
+          <button class="dot" aria-label="Show photo 5 of 6"></button>
+          <button class="dot" aria-label="Show photo 6 of 6"></button>
         </div>
         <p class="swipe-cue" id="swipeCue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -5132,16 +5121,10 @@ void main() {
 
 /* ===================================================================
    CONFIG — the one place to edit.
-   photos: Susmita, Ashish, the two of them — in deck order.
-   `src` takes a data URI, or on GitHub Pages simply a file name
-   sitting next to index.html (e.g. "susmita.jpg").
+   Photographs live in invite-src/photos (cropped by photos_process.py)
+   and are placed in the deck in body.html.
    =================================================================== */
 var CONFIG = {
-  photos: [
-    { src: null },   // Susmita
-    { src: null },   // Ashish
-    { src: null }    // Susmita & Ashish
-  ],
   shareUrl: "https://ash-z.github.io/myapp/",
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
@@ -5604,27 +5587,18 @@ var refit = (function(){
   var cards = [].slice.call(deck.querySelectorAll('.card'));
   var dots  = $$('#dots .dot'), cue = $('#swipeCue');
 
-  cards.forEach(function(c, i){
-    var p = CONFIG.photos[i];
-    if(!p || !p.src) return;
-    var face = c.querySelector('.card-face'), img = new Image();
-    img.alt = ''; img.decoding = 'async'; img.src = p.src;
-    face.insertBefore(img, face.firstChild);
-    ['.ph', '.soon'].forEach(function(s){ var n = face.querySelector(s); if(n) n.remove(); });
-  });
-
-  // until photographs arrive, lead with the illustrated card of the two of them
-  var anyPhoto = CONFIG.photos.some(function(p){ return p && p.src; });
-  var order = anyPhoto ? [0, 1, 2] : [2, 0, 1];
+  var order = cards.map(function(c, i){ return i; });
   var TILT = [-1.5, 4.5, -5];
-  var SPRING = 'transform .6s cubic-bezier(.2,.85,.25,1.12)';
-  function pose(pos){ return 'translate3d(0,' + (pos*14) + 'px,0) scale(' + (1 - pos*0.055) + ') rotate(' + TILT[pos] + 'deg)'; }
+  var SPRING = 'transform .6s cubic-bezier(.2,.85,.25,1.12), opacity .4s ease';
+  // three cards show in the stack; the rest wait, hidden, behind the third
+  function pose(pos){ var p = Math.min(pos, 2); return 'translate3d(0,' + (p*14) + 'px,0) scale(' + (1 - p*0.055) + ') rotate(' + TILT[p] + 'deg)'; }
   function layout(anim){
     order.forEach(function(ci, pos){
       var c = cards[ci];
       c.style.zIndex = String(10 - pos);
       c.style.transition = anim && !reduced ? SPRING : 'none';
       c.style.transform = pose(pos);
+      c.style.opacity = pos > 2 ? '0' : '1';
       c.classList.toggle('top', pos === 0);
       c.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
     });

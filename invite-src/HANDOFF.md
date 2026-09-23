@@ -50,6 +50,14 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
 
+## Photographs
+The couple's photos are in `photos/` (phone screenshots, ~1200px wide). `photos_process.py` crops each to a 4:5 card
+(crops chosen by eye to frame faces and drop relatives at the edges) and writes `photos/out/*.webp` at 800×1000.
+Deck order: laughing together (lead, captioned) · Susmita · Ashish · seated portrait · with garlands · the ring.
+On GitHub Pages the photos are separate files in `docs/photos/` (the page stays ~1.1MB); the artifact embeds them.
+To add or reorder: add the file to `photos/`, add a line to `DECK` in `photos_process.py`, add a `<figure>` and a dot in
+`body.html`, then run `photos_process.py` and `build.py`. The deck shows three cards in its stack at a time.
+
 ## Illustrations (from the couple's Canva)
 All art lives in `art/` (WebP for the build, PNG lossless masters) and is embedded once in the page as `window.ART`;
 every `<img data-art="name">` shares it. Ganesha is a CSS mask (`--ganesha-img`) so it takes the theme colour.
@@ -76,7 +84,6 @@ Canva designs created along the way (safe to delete once happy): the workbench `
 also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 
 ## Open items
-- Real photos: attach 3 (Susmita, Ashish, together), 4:5 portrait; set `CONFIG.photos[i].src`.
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
 - RSVP — built; waiting on the couple to deploy `rsvp/Code.gs` (see above).
 - Travel/stay for outstation guests — one placeholder line under the reception ticket.

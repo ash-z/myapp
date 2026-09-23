@@ -206,22 +206,6 @@ button{font:inherit;color:inherit}
 .card-in,.card-face{position:absolute;inset:0;border-radius:inherit}
 .card-face{overflow:hidden;box-shadow:var(--shadow);background:#b98a4a}
 .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ph{position:absolute;inset:0}
-.ph::before{ /* kolam dot lattice */
-  content:"";position:absolute;inset:0;opacity:.35;
-  background-image:radial-gradient(circle,rgba(255,244,220,.9) 1.3px,transparent 1.8px);
-  background-size:22px 22px;
-  -webkit-mask-image:radial-gradient(75% 60% at 50% 42%,#000 20%,transparent 75%);
-          mask-image:radial-gradient(75% 60% at 50% 42%,#000 20%,transparent 75%);
-}
-.ph-her {background:linear-gradient(158deg,#F0B444 0%,#D8612F 46%,#9A2E33 100%)}
-.ph-him {background:linear-gradient(158deg,#EAD6AC 0%,#BF9254 48%,#6A4526 100%)}
-.ph-both{background:linear-gradient(158deg,#F3CE7A 0%,#C4492E 52%,#3A1F1C 100%)}
-.ph-mono{
-  position:absolute;left:0;right:0;top:34%;transform:translateY(-50%);text-align:center;
-  font-family:"Italiana",Georgia,serif;font-size:clamp(84px,24vw,120px);line-height:1;
-  color:rgba(255,248,232,.82);text-shadow:0 6px 30px rgba(60,20,10,.25);
-}
 .cap{
   position:absolute;left:0;right:0;bottom:0;padding:48px 18px 16px;
   display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
@@ -229,12 +213,6 @@ button{font:inherit;color:inherit}
 }
 .cap-name{font-family:"Italiana",Georgia,serif;font-size:clamp(24px,6.4vw,30px);letter-spacing:.04em;line-height:1.1}
 .cap-tel{font-size:14px;color:#F5D79B}
-.soon{
-  position:absolute;top:14px;left:14px;padding:5px 10px;border-radius:999px;
-  font-weight:500;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
-  color:#FFF7EA;background:rgba(30,14,10,.28);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-}
 /* personality: she sways, he stays still */
 .card.top[data-mood="her"] .card-face{animation:sway 3.4s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg) translateY(-3px)}}
@@ -512,10 +490,6 @@ button{font:inherit;color:inherit}
 .sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
 .sp-corner-l{left:0}
 .sp-corner-r{right:0}
-/* the "together" card shows the illustrated couple until a photograph arrives */
-.ph-both{background:linear-gradient(158deg,#FBF1DD 0%,#F2D9AA 58%,#DDAE6B 100%)}
-/* the illustration keeps its own size; the full-bleed rule is for photographs */
-.card .ph-art{inset:auto;left:50%;bottom:13%;height:82%;width:auto;object-fit:contain;transform:translateX(-50%);filter:drop-shadow(0 10px 14px rgba(80,40,10,.18))}
 /* wedding: the gopuram rises from the ticket */
 .ticket.crowned{margin-top:clamp(78px,22vw,108px)}
 .t-gopuram{
