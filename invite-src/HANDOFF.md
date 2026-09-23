@@ -41,7 +41,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - **Telugu: natural words only**, one small label per page, never a word-for-word gloss that no Telugu card would use.
   The couple rejected made-up labels (మీ రాక, పెద్దలు, వధూవరులు, వివాహం as a ticket tag, the "&" signature). In use now:
   ॥ శ్రీ గణేశాయ నమః ॥ and శుభలేఖ (opening screen, Invite) · సుస్మిత / ఆశిష్ (photo captions) · వివాహ ముహూర్తం (Wedding) ·
-  ఆశీర్వచనం (Reception) · మీరు వస్తున్నారా? (RSVP) · ఆశీస్సులతో (Blessings) · అక్షింతలు (the note under Shower akshintalu).
+  రిసెప్షన్ (Reception; the couple chose it over the brief's ఆశీర్వచనం) · మీరు వస్తున్నారా? (RSVP) · ఆశీస్సులతో (Blessings) · అక్షింతలు (the note under Shower akshintalu).
   The Us page has no Telugu label.
 - No framed oval portraits side by side — in India that reads as a memorial photo. Photos live in the swipeable deck.
 - No algorithmic line-art or posterised portraits (tried twice, rejected).
