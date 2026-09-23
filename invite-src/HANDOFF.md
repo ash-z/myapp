@@ -32,10 +32,15 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 
 ## Locked decisions
 - Names: **Sai Susmita** in formal places (opening screen, hero, families, closing, title, previews); **Susmita** in casual ones (photo deck). The woman is always named first.
-- Two events for everyone: muhurtam Thu 29 Oct 2026 7:29 PM, Hotel Ambica Sea Green, Visakhapatnam; reception Sun 1 Nov 2026 11:00 AM, Hotel Tulip Grand, Annojiguda, Hyderabad.
+- Two events for everyone: **sumuhurtam** Thu 29 Oct 2026 **7:31 PM**, **'Marina' Banquet Hall**, Hotel Ambica Sea Green, Beach Road, Visakhapatnam;
+  reception Sun 1 Nov 2026 **11:00 AM onwards**, Hotel Tulip Grand, Annojiguda, Hyderabad.
 - **Friends only**, Wed 28 Oct 2026: Haldi 9:30 AM · Pellikuturu 11:30 AM · Mehendi & Sangeet 5:30 PM onwards.
   All at Home, near Sivaji Park, MVP Colony, Vizag. These must never appear in the relatives' version. It is the only difference between the two.
-- Type: Italiana / Marcellus / Karla / Noto Sans Telugu. Palettes ivory + jewel, toggle top-right.
+- Type: Cormorant Garamond SemiBold (display) / Marcellus / Karla / Noto Sans Telugu. Palettes ivory + jewel, toggle top-right.
+- **Readability comes first** (the couple asked for it): no text below 12px (tab labels excepted, 9.5–12px by width),
+  small capitals tracked no wider than .12em, body text regular weight, and light-theme gold/grey text at ≥4.5:1
+  (`--gold:#8A6420`, `--muted:#6B5B47`). Italiana, the first display face, was too thin to read and was dropped.
+  Short screens (≤740px tall) get a compact layout (less spacing, smaller ornaments) so the text doesn't shrink.
 - three.js is **inlined**, never loaded from a CDN (a CDN load silently failed before).
 - No copy the couple did not supply. Keep it plain; no invented backstory.
 - **Telugu: natural words only**, one small label per page, never a word-for-word gloss that no Telugu card would use.
@@ -67,6 +72,8 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
   the pager does not write the page into the address, so reloading always returns to the cover.
 - One trackpad flick turns at most one page: input during a turn, and until it has been quiet for 250ms after it, is swallowed.
 - Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
+- **Next button** (`#nextCue`), fixed above the tab bar on every page: "Next: <tab name>" turns to the next page;
+  on the last page it reads "Back to the start". The first page also says "Swipe up, or tap Next, to continue".
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 

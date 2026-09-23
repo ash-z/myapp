@@ -7,7 +7,7 @@
    and are placed in the deck in body.html.
    =================================================================== */
 // which invitation this is: build.py writes window.INVITE = "friends" into the
-// friends' page (which adds the day-before page); the relatives' page leaves it unset
+// friends' page; the relatives' page leaves it unset
 var INVITE = window.INVITE === 'friends' ? 'friends' : 'relatives';
 var CONFIG = {
   shareUrl: "https://ash-z.github.io/myapp/" + (INVITE === 'friends' ? 'friends/' : ''),
@@ -292,7 +292,18 @@ var pager = (function(){
   function atEnd(p){ return p.scrollTop + p.clientHeight >= p.scrollHeight - 2; }
   function locked(){ return root.classList.contains('locked') || root.classList.contains('sheet-open'); }
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
-  function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); }
+  function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); cue(i); }
+
+  // the Next button above the tab bar names the page the next swipe turns to, and turns to it when
+  // tapped; on the last page it offers the way back to the start
+  var nxt = $('#nextCue'), nxtName = $('#nextName');
+  function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
+  function cue(i){
+    if(!nxt) return;
+    var last = i >= pages.length - 1;
+    nxt.classList.toggle('back', last);
+    nxtName.textContent = last ? 'Back to the start' : 'Next: ' + tabName(i + 1);
+  }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
   addEventListener('resize', setPh); setPh();
 
@@ -344,6 +355,7 @@ var pager = (function(){
     }, DUR);
   }
   function step(d){ go(cur + d, 'scroll'); }
+  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) go(0, 'bloom', nxt); else step(1); });
 
   // tabs: bloom from the tab; tapping the tab you're on scrolls its page back to the top
   links.forEach(function(l){
