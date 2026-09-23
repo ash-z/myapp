@@ -69,8 +69,6 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 `rsvp/Code.gs` is a Google Apps Script web app over the couple's Google Sheet. Setup steps: `rsvp/SETUP.md`.
 Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.
 - Guests give a full name (first + last required), then answer the wedding and the reception separately: Attending / Can't make it, with a separate party size (1–10) for each. Both must be answered.
-  The "How many of you" counter shows from the start (guests missed it when it appeared only after "Attending"); it hides
-  for "Can't make it", and changing the count before answering marks that event as attending.
 - Sheet columns: Updated, Token, Full name, Wedding, Wedding guests, Reception, Reception guests, Invite (Friends or Relatives: which link they answered from). Both versions share one sheet and one guest list.
 - The page shows a guest list per event (Wedding / Reception switch) with its own head count.
 - Each phone keeps a token in localStorage; answering again updates the same sheet row.

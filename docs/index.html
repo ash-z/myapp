@@ -761,7 +761,7 @@ button{font:inherit;color:inherit}
               <label class="pill"><input type="radio" name="wedding" value="yes"><span>Attending</span></label>
               <label class="pill"><input type="radio" name="wedding" value="no"><span>Can&rsquo;t make it</span></label>
             </div>
-            <div class="ev-party">
+            <div class="ev-party" hidden>
               <span class="lbl" id="weddingPartyL">How many of you</span>
               <div class="stepper" role="group" aria-labelledby="weddingPartyL">
                 <button type="button" data-d="-1" aria-label="One fewer for the wedding">&minus;</button>
@@ -776,7 +776,7 @@ button{font:inherit;color:inherit}
               <label class="pill"><input type="radio" name="reception" value="yes"><span>Attending</span></label>
               <label class="pill"><input type="radio" name="reception" value="no"><span>Can&rsquo;t make it</span></label>
             </div>
-            <div class="ev-party">
+            <div class="ev-party" hidden>
               <span class="lbl" id="receptionPartyL">How many of you</span>
               <div class="stepper" role="group" aria-labelledby="receptionPartyL">
                 <button type="button" data-d="-1" aria-label="One fewer for the reception">&minus;</button>
@@ -5751,8 +5751,7 @@ var refit = (function(){
   function first(n){ return String(n).trim().split(/\s+/)[0]; }
   function say(t, soft){ msg.textContent = t || ''; msg.classList.toggle('soft', !!soft); }
 
-  // one controller per event block: yes/no + its own party size. The party size shows from the
-  // start (hidden only for "can't make it"); changing it before answering counts as attending.
+  // one controller per event block: yes/no + its own party size
   var blocks = {};
   EVENTS.forEach(function(ev){
     var box = document.getElementById('ev-' + ev.key);
@@ -5765,16 +5764,13 @@ var refit = (function(){
       b.party = Math.max(1, Math.min(10, n)); out.textContent = b.party;
       btns[0].disabled = b.party <= 1; btns[1].disabled = b.party >= 10;
     };
-    b.sync = function(){ partyRow.hidden = b.answer() === false; box.classList.remove('missing'); };
+    b.sync = function(){ partyRow.hidden = b.answer() !== true; box.classList.remove('missing'); };
     b.set = function(ans, party){
       radios.forEach(function(x){ x.checked = ans === null ? false : x.value === (ans ? 'yes' : 'no'); });
       b.setParty(party || 1); b.sync();
     };
     radios.forEach(function(x){ x.addEventListener('change', function(){ b.sync(); buzz(5); }); });
-    btns.forEach(function(x){ x.addEventListener('click', function(){
-      if(b.answer() !== true){ radios.forEach(function(r){ r.checked = r.value === 'yes'; }); b.sync(); }
-      b.setParty(b.party + (+x.dataset.d)); buzz(5);
-    }); });
+    btns.forEach(function(x){ x.addEventListener('click', function(){ b.setParty(b.party + (+x.dataset.d)); buzz(5); }); });
     b.set(null, 1);
     blocks[ev.key] = b;
   });
