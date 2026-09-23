@@ -79,7 +79,8 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - **No Next button and no "swipe up" text:** the couple had both removed; the side rail is the page-turn control.
 - **Side rail** (`#rail`), fixed on the right edge: ▲ / a dot per page (current one gold) / ▼, 20px wide so it sits in
   the 24px page margin beside tickets and cards, never over them (it used to cover the tickets' right edge, which looked
-  misaligned). ▼ blinks. ▲ on the first page and ▼ on the last page go to the cover.
+  misaligned). The section blinks gently: ▲ and ▼ fade and nudge in turn, and a soft gold glow breathes around
+  it (off under reduced motion). ▲ on the first page and ▼ on the last page go to the cover.
 - **Back to the cover:** ▲ or a swipe down (or wheel/arrow up) on the first page; ▼ or a swipe up on the last page. The cover slides back down over the invitation (which resets to its first page) and
   opens again as usual (`cover.close()` in the opening module).
 - **Cues:** on the cover, the arrow in "Open invitation" nudges and blinks and a gold ring pulses from the button
