@@ -256,6 +256,8 @@ function buildSeal(host){
     buzz(12); enableTilt();
     root.classList.add('ui');
     [app, tabs, pal].forEach(function(e){ if(e) e.inert = false; });
+    var nc = $('#nextCue');                                   // replay the Next button's pulse now it can be seen
+    if(nc){ nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
@@ -303,6 +305,7 @@ var pager = (function(){
     var last = i >= pages.length - 1;
     nxt.classList.toggle('back', last);
     nxtName.textContent = last ? 'Back to the start' : 'Next: ' + tabName(i + 1);
+    nxt.classList.remove('pulse'); void nxt.offsetWidth; nxt.classList.add('pulse');
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
   addEventListener('resize', setPh); setPh();
