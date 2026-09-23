@@ -227,11 +227,11 @@ function buildSeal(host){
 
 var cover = (function opening(){
   var sp = $('#splash'), btn = $('#openBtn'), seal = $('#seal');
-  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail'), nc = $('#nextCue');
+  var app = $('#app'), tabs = $('#tabs'), pal = $('#pal'), rail = $('#rail');
   var drawn = buildSeal(seal);
   var done = !root.classList.contains('locked');             // a link to #page skips the cover
   if(done){ if(sp) sp.hidden = true; }
-  else [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
+  else [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = true; });
 
   if(!done && !reduced){
     drawn.forEach(function(p, i){
@@ -254,9 +254,7 @@ var cover = (function opening(){
     if(done) return; done = true;
     buzz(12); enableTilt();
     root.classList.add('ui');
-    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = false; });
-    if(nc){                                                   // replay the Next button's pulse now it can be seen
-      nc.classList.remove('pulse'); void nc.offsetWidth; nc.classList.add('pulse'); }
+    [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = false; });
     if(reduced){ finish(); return; }
     sp.classList.add('opening');
     setTimeout(function(){ sp.classList.add('gone'); }, 360);
@@ -265,7 +263,7 @@ var cover = (function opening(){
   // back to the cover: it slides down over the invitation again
   function close(){
     if(!done || !sp) return; done = false;
-    [app, tabs, pal, rail, nc].forEach(function(e){ if(e) e.inert = true; });
+    [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = true; });
     sp.classList.remove('opening'); sp.classList.add('gone');
     sp.hidden = false;
     root.classList.remove('opened', 'ui'); root.classList.add('locked');
@@ -308,23 +306,16 @@ var pager = (function(){
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
   function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); cue(i); }
 
-  // the Next button above the tab bar names the page the next swipe turns to, and turns to it when
-  // tapped; on the last page it offers the way back to the start
-  var nxt = $('#nextCue'), nxtName = $('#nextName');
+  // the side rail: up and down a page, with the page number between; up on the first page is the cover
   var railUp = $('#railUp'), railDown = $('#railDown'), railN = $('#railN');
   function tabName(i){ var l = links.filter(function(a){ return a.hash === '#' + pages[i].id; })[0]; return l ? l.textContent.trim() : ''; }
   function cue(i){
-    if(!nxt) return;
+    if(!railN) return;
     var last = i >= pages.length - 1;
-    nxt.classList.toggle('back', last);
-    nxtName.textContent = last ? 'Back to the cover' : 'Next: ' + tabName(i + 1);
-    if(railN){
-      railN.textContent = (i + 1) + '/' + pages.length;
-      railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
-      railDown.disabled = last;
-      railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
-    }
-    nxt.classList.remove('pulse'); void nxt.offsetWidth; nxt.classList.add('pulse');
+    railN.textContent = (i + 1) + '/' + pages.length;
+    railUp.setAttribute('aria-label', i === 0 ? 'Back to the cover' : 'Previous: ' + tabName(i - 1));
+    railDown.disabled = last;
+    railDown.setAttribute('aria-label', last ? 'Last page' : 'Next: ' + tabName(i + 1));
   }
   function setPh(){ root.style.setProperty('--ph', innerHeight + 'px'); }
   addEventListener('resize', setPh); setPh();
@@ -383,7 +374,6 @@ var pager = (function(){
     cover.close();
   }
   function step(d){ if(d < 0 && cur === 0) toCover(); else go(cur + d, 'scroll'); }
-  if(nxt) nxt.addEventListener('click', function(){ if(cur >= pages.length - 1) toCover(); else step(1); });
   if(railUp) railUp.addEventListener('click', function(){ step(-1); });
   if(railDown) railDown.addEventListener('click', function(){ step(1); });
 

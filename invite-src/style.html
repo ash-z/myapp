@@ -130,24 +130,6 @@ button{font:inherit;color:inherit}
   pointer-events:none;
 }
 .js:not(.ui) .tabs{transform:translateY(140%)}
-/* Next: names the next page and turns to it; "Back to the start" on the last page */
-.next-cue{
-  position:fixed;left:50%;bottom:calc(var(--tab-h) + 20px + env(safe-area-inset-bottom,0px));z-index:49;
-  display:flex;align-items:center;gap:8px;padding:9px 14px 9px 18px;transform:translateX(-50%);
-  border:1px solid var(--rule);border-radius:999px;cursor:pointer;white-space:nowrap;
-  background:color-mix(in srgb,var(--surface) 90%,transparent);
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 10px 24px -12px rgba(0,0,0,.4);
-  font-weight:600;font-size:14px;line-height:1.2;color:var(--ink);
-  transition:opacity .6s ease .5s;
-}
-.next-cue svg{width:18px;height:18px;color:var(--gold);animation:nc-bob 1.8s ease-in-out infinite}
-.next-cue.back svg{transform:rotate(180deg);animation-name:nc-bob-up}
-@keyframes nc-bob{0%,100%{transform:translateY(-1px);opacity:1}50%{transform:translateY(3px);opacity:.45}}
-@keyframes nc-bob-up{0%,100%{transform:rotate(180deg) translateY(-1px);opacity:1}50%{transform:rotate(180deg) translateY(3px);opacity:.45}}
-/* when a page arrives, the Next button pulses three times, then rests */
-.next-cue::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none}
-.next-cue.pulse::after{animation:cue-ring 1.8s ease-out 1s 3}
-.js:not(.ui) .next-cue{opacity:0;pointer-events:none;transition:none}
 /* side rail: up and down a page, with the page number between; the down arrow blinks */
 .rail{
   position:fixed;right:max(4px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
@@ -187,7 +169,7 @@ button{font:inherit;color:inherit}
 .screen{
   position:relative;min-height:100vh;min-height:100svh;
   display:flex;flex-direction:column;justify-content:center;
-  padding-block:clamp(52px,7.5vh,84px) calc(var(--tab-h) + 70px + env(safe-area-inset-bottom,0px));
+  padding-block:clamp(52px,7.5vh,84px) calc(var(--tab-h) + 26px + env(safe-area-inset-bottom,0px));
   scroll-snap-align:start;--sbg:var(--bg);background:var(--sbg);--notch:var(--sbg);
 }
 .screen.alt{--sbg:var(--bg2)}
@@ -232,8 +214,6 @@ button{font:inherit;color:inherit}
   content:"";display:block;width:7px;height:7px;margin:0 auto 14px;border-radius:50%;
   background:#F5D79B;box-shadow:0 0 0 0 rgba(245,215,155,.6);animation:ping 2.2s ease-out infinite;
 }
-.hint b{display:block;font-weight:600;font-size:13px;color:#FBF3E4}
-.hint span{display:block;margin-top:6px;opacity:.85}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(245,215,155,.55)}80%,100%{box-shadow:0 0 0 18px rgba(245,215,155,0)}}
 
 /* ============ US — THE DECK ============ */
@@ -581,8 +561,7 @@ button{font:inherit;color:inherit}
 
 /* short screens (iPhone SE, older Androids): tighten spacing and ornaments instead of shrinking the text */
 @media (max-height:740px){
-  .screen{padding-block:58px calc(var(--tab-h) + 60px + env(safe-area-inset-bottom,0px))}
-  .next-cue{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));padding:7px 12px 7px 16px;font-size:13.5px}
+  .screen{padding-block:58px calc(var(--tab-h) + 22px + env(safe-area-inset-bottom,0px))}
   .head{margin-bottom:12px}
   .sp-names .n{font-size:1.12em;line-height:1}
   .head h2{margin-top:4px;font-size:clamp(28px,7.4vw,36px)}
@@ -619,7 +598,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.next-cue svg,.next-cue::after,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail svg{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}
