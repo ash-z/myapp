@@ -88,6 +88,12 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 
+## Blessings: the two families
+The bride's and groom's parents sit in two mirrored columns with a gold rule between. Their three lines share rows
+across the columns (CSS subgrid), both sides break at the same places ("Parents of / the bride", "Chandrika & /
+Srinivasulu Gorantla"), the children's names sit on their own line, and the parents' names scale with the screen so
+"Suresh Bhimanpalliwar" (the longest line) always fits. Checked identical line-for-line from 360px to desktop.
+
 ## Music
 The couple's song lives in **`docs/music/`** as `song.mp3` (or `song.m4a` / `song.wav`); see the README there.
 The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it

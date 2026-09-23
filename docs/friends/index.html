@@ -352,11 +352,17 @@ button{font:inherit;color:inherit}
 .btn svg{width:15px;height:15px;flex:none}
 
 /* ============ BLESSINGS ============ */
-.fams{display:grid;gap:16px;grid-template-columns:1fr 1fr;max-width:720px;margin-inline:auto;text-align:center}
+/* the two families mirror each other: their three lines share rows across the columns (subgrid), so a
+   name that wraps on one side never pushes that side out of step; a gold rule runs down the middle */
+.fams{position:relative;display:grid;column-gap:28px;row-gap:0;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;max-width:720px;margin-inline:auto;text-align:center}
+.fams::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;border-left:1px solid var(--rule)}
+.fam{display:grid;grid-row:span 3;grid-template-rows:subgrid;align-content:start}
 .fam .rel{margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.fam .par{margin:6px 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(14.5px,3.9vw,20px);line-height:1.4;text-wrap:balance}
+/* both sides break at the same places ("Parents of / the bride", "… & / …"); the names scale with the screen so the
+   longest line, "Suresh Bhimanpalliwar", always fits its column */
+.fam .par{margin:6px 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(13px,calc(4.72vw - 3.6px),20px);line-height:1.4;white-space:nowrap}
 .fam .child{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
-.fam .child b{font-weight:500;color:var(--gold)}
+.fam .child b{display:block;margin-top:2px;font-family:"Tiro Telugu",Georgia,serif;font-weight:400;font-size:clamp(17px,4.6vw,20px);line-height:1.2;color:var(--gold)}
 .close{text-align:center;margin-top:clamp(18px,3.5vh,40px)}
 .blessing{font-family:"Tiro Telugu",Georgia,serif;font-weight:400;font-size:clamp(21px,5.6vw,34px);line-height:1.45;letter-spacing:.03em;max-width:15em;margin:0 auto;text-wrap:balance}
 .sig-en{margin:14px 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(15px,4vw,18px);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
@@ -621,7 +627,7 @@ button{font:inherit;color:inherit}
   .ev-rsvp{padding:10px 12px}
   .pill span{min-height:40px;padding:6px}
   #blessings{padding-top:calc(min(100vw,620px) * .2 + 6px)}
-  .fams{gap:12px}
+  .fams{column-gap:20px}
   .close{margin-top:14px}
   .blessing{line-height:1.3}
   .acts-row{margin-top:10px}
@@ -945,13 +951,13 @@ button{font:inherit;color:inherit}
       </div>
       <div class="fams reveal">
         <div class="fam">
-          <p class="rel">Parents of the bride</p>
-          <p class="par">Chandrika &amp; Srinivasulu Gorantla</p>
+          <p class="rel">Parents of<br>the bride</p>
+          <p class="par">Chandrika &amp;<br>Srinivasulu Gorantla</p>
           <p class="child">their daughter <b>Sai Susmita</b></p>
         </div>
         <div class="fam">
-          <p class="rel">Parents of the groom</p>
-          <p class="par">Satyarani &amp; Suresh Bhimanpalliwar</p>
+          <p class="rel">Parents of<br>the groom</p>
+          <p class="par">Satyarani &amp;<br>Suresh Bhimanpalliwar</p>
           <p class="child">their son <b>Ashish</b></p>
         </div>
       </div>
