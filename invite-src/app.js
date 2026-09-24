@@ -13,7 +13,7 @@ var CONFIG = {
   shareUrl: "https://ash-z.github.io/myapp/" + (INVITE === 'friends' ? 'friends/' : ''),
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
-  rsvp: { endpoint: null },
+  rsvp: { endpoint: "https://script.google.com/macros/s/AKfycbzj1rTcoZJViDXlqlNKXT3YeDaFdZ-eB5_WGodyv8TqwVJTlLderG9BTnFoDCV5QlpZfg/exec" },
   shareText: "Sai Susmita weds Ashish — Thursday, 29 October 2026, Visakhapatnam."
 };
 
@@ -334,7 +334,7 @@ var pager = (function(){
   function idx(id){ for(var i = 0; i < pages.length; i++){ if(pages[i].id === id) return i; } return -1; }
   function atTop(p){ return p.scrollTop <= 1; }
   function atEnd(p){ return p.scrollTop + p.clientHeight >= p.scrollHeight - 2; }
-  function locked(){ return root.classList.contains('locked') || root.classList.contains('sheet-open'); }
+  function locked(){ return root.classList.contains('locked') || root.classList.contains('sheet-open') || root.classList.contains('typing'); }
   function emit(name, detail){ document.dispatchEvent(new CustomEvent(name, { detail:detail })); }
   function mark(i){ links.forEach(function(l){ l.setAttribute('aria-current', String(l.hash === '#' + pages[i].id)); }); cue(i); }
 
@@ -505,6 +505,7 @@ var refit = (function(){
     items.push({ p:p, box:box, inner:inner });
   });
   function fit(it){
+    if(root.classList.contains('typing')){ it.inner.style.transform = ''; it.box.style.height = ''; return; }   // see RSVP
     var cs = getComputedStyle(it.p);
     var avail = it.p.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     var h = it.inner.offsetHeight;                           // layout height, unaffected by the scale
@@ -774,6 +775,22 @@ var refit = (function(){
     setTimeout(function(){ scrim.hidden = true; sheet.hidden = true; }, 450);
     try{ link.focus({ preventScroll:true }); }catch(e){}
   }
+  // while the name field has focus (the phone keyboard is up) the tab bar and rail step aside and the page keeps its
+  // full size and scrolls, instead of shrinking to fit the half-screen that is left
+  function typing(){
+    var el = document.activeElement, on = !!(el && el.matches && el.matches('#rsvpForm input[type="text"]'));
+    if(root.classList.contains('typing') !== on){ root.classList.toggle('typing', on); refit(); }
+  }
+  form.addEventListener('focusin', typing);
+  form.addEventListener('focusout', function(){ setTimeout(typing, 0); });
+  // the guest-list sheet keeps keyboard focus inside while it is open
+  sheet.addEventListener('keydown', function(e){
+    if(e.key !== 'Tab') return;
+    var f = [].slice.call(sheet.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])')).filter(function(x){ return !x.disabled && x.offsetParent !== null; });
+    if(!f.length) return;
+    if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+    else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+  });
   link.addEventListener('click', openSheet);
   $('#sheetClose').addEventListener('click', closeSheet);
   scrim.addEventListener('click', closeSheet);

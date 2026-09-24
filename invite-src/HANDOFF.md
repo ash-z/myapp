@@ -131,6 +131,8 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
+- While typing a name (phone keyboard up) the page keeps full size and scrolls, the tab bar and rail step aside,
+  and pages don't turn (`html.typing`). The guest-list sheet keeps keyboard focus inside while open.
 - While `CONFIG.rsvp.endpoint` is null the card says "RSVPs open very soon — please check back." up front and the form
   is dimmed and inert (guests used to fill it in and only then learn nothing was saved).
 
@@ -170,5 +172,7 @@ also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 
 ## Open items
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
-- RSVP — built; waiting on the couple to deploy `rsvp/Code.gs` (see above).
+- RSVP — **connected**: the couple deployed `rsvp/Code.gs` from a phone as a standalone script (script.google.com; it
+  opens their sheet by id) — `CONFIG.rsvp.endpoint` is its /exec URL. If they redeploy, use Manage deployments → Edit →
+  New version so the URL stays the same.
 - Travel/stay for outstation guests — one placeholder line under the reception ticket.
