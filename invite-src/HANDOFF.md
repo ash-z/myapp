@@ -35,7 +35,8 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - Two events for everyone: **sumuhurtam** Thu 29 Oct 2026 **7:31 PM**, **'Marina' Banquet Hall**, Hotel Ambica Sea Green, Beach Road, Visakhapatnam;
   reception Sun 1 Nov 2026 **11:00 AM onwards**, Hotel Tulip Grand, **5th floor**, Annojiguda, Hyderabad
   (hall name not known yet; add it next to the floor when the couple sends it). Directions: the couple's pin
-  https://maps.app.goo.gl/9DuCbhDxaaxrSeXr5. The wedding's Directions is still a Maps search for the hotel (no pin yet).
+  https://maps.app.goo.gl/9DuCbhDxaaxrSeXr5. Wedding Directions: the couple's pin for Marina Banquet Hall,
+  https://maps.app.goo.gl/AhTU2qBLJbRZLm4s6.
 - **Friends only**, Wed 28 Oct 2026: Haldi 9:30 AM · Pellikuturu 11:30 AM · Mehendi & Sangeet 5:30 PM onwards.
   All at Home, near Sivaji Park, MVP Colony, Vizag. These must never appear in the relatives' version. It is the only difference between the two.
 - Type: **Alex Brush** (the couple's names only) / **Tiro Telugu** (headings, ticket dates, the closing line; its Latin is
