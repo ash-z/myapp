@@ -133,6 +133,13 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
+- The sheet also has a **Totals** tab (built by the script): replies, per event replies attending / people coming /
+  can't make it, replies per link, and the shared akshintalu count. Formulas count on their own; delete the tab to
+  rebuild it. Don't rename the RSVPs tab (the script would start a new one).
+- **Akshintalu is one shared count** for all guests: taps are sent in batches (≤50 per request) to the script, which keeps
+  the total in Script Properties and in Totals!B11; the page shows "Akshintalu showered by everyone · N". With an old
+  script or offline it falls back to this phone's own count.
+- The guest-list line shows both events: "34 coming to the wedding · 50 to the reception · See who".
 - While typing a name (phone keyboard up) the page keeps full size and scrolls, the tab bar and rail step aside,
   and pages don't turn (`html.typing`). The guest-list sheet keeps keyboard focus inside while open.
 - While `CONFIG.rsvp.endpoint` is null the card says "RSVPs open very soon — please check back." up front and the form

@@ -6033,14 +6033,22 @@ var refit = (function(){
 
   // guest lists, one per event
   function renderList(){
+    if(summary && typeof summary.akshi === 'number') document.dispatchEvent(new CustomEvent('rsvpsummary', { detail:summary }));
     if(!summary || !summary.ok || !summary.wedding){ link.hidden = true; return; }
     var W = summary.wedding, R = summary.reception;
     link.hidden = !(W.people > 0 || R.people > 0);
-    var lead = W.people > 0 ? W : R, where = W.people > 0 ? 'the wedding' : 'the reception';
+    // "34 coming to the wedding · 50 to the reception · See who" (an event nobody has said yes to yet is left out)
     linkText.innerHTML = '';
-    var bn = document.createElement('b'); bn.textContent = lead.people;
-    linkText.appendChild(bn);
-    linkText.appendChild(document.createTextNode(' coming to ' + where + ' \u00b7 See who'));
+    var parts = [];
+    if(W.people > 0) parts.push([W.people, 'the wedding']);
+    if(R.people > 0) parts.push([R.people, 'the reception']);
+    parts.forEach(function(x, k){
+      if(k) linkText.appendChild(document.createTextNode(' \u00b7 '));
+      var bn = document.createElement('b'); bn.textContent = x[0];
+      linkText.appendChild(bn);
+      linkText.appendChild(document.createTextNode((k ? ' to ' : ' coming to ') + x[1]));
+    });
+    linkText.appendChild(document.createTextNode(' \u00b7 See who'));
     cntW.textContent = W.people; cntR.textContent = R.people;
     var side = summary[showing];
     cN.textContent = side.people;
@@ -6197,12 +6205,34 @@ var refit = (function(){
   var btn = $('#shower'), share = $('#share'), note = $('#showerNote'), scr = $('#blessings');
   var n = 0, ft = 0;
   try{ n = parseInt(localStorage.getItem('sa-akshi') || '0', 10) || 0; }catch(e){}
-  function say(){ if(note) note.textContent = n ? 'Akshintalu showered · ' + n : ''; }
+  // everyone's handfuls add up to one shared count, kept by the RSVP script (this phone's own count when offline);
+  // taps are sent in small batches a moment after the last one
+  var ep = CONFIG.rsvp && CONFIG.rsvp.endpoint, total = null, pending = 0, sendT = 0;
+  try{ var cached = JSON.parse(localStorage.getItem('sa-rsvp2-sum') || 'null'); if(cached && typeof cached.akshi === 'number') total = cached.akshi; }catch(e){}
+  document.addEventListener('rsvpsummary', function(e){ if(typeof e.detail.akshi === 'number'){ total = Math.max(total || 0, e.detail.akshi + pending); say(); } });
+  function flush(keep){
+    clearTimeout(sendT);
+    if(!ep || !pending) return;
+    var k = Math.min(pending, 50); pending -= k;
+    fetch(ep, { method:'POST', body:JSON.stringify({ type:'akshi', n:k }), keepalive: !!keep })
+      .then(function(r){ return r.json(); })
+      .then(function(o){ if(o && o.ok && typeof o.akshi === 'number'){ total = o.akshi + pending; say(); } })
+      .catch(function(){ pending += k; });
+    if(pending) sendT = setTimeout(flush, 1500);
+  }
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) flush(true); });
+  function say(){
+    if(!note) return;
+    note.textContent = total != null ? 'Akshintalu showered by everyone \u00b7 ' + total.toLocaleString('en-IN')
+                                     : (n ? 'Akshintalu showered \u00b7 ' + n : '');
+  }
   function flash(t){ if(!note) return; note.textContent = t; clearTimeout(ft); ft = setTimeout(say, 3400); }
   say();
 
   if(btn) btn.addEventListener('click', function(){
     n++; try{ localStorage.setItem('sa-akshi', String(n)); }catch(e){}
+    pending++; if(total != null) total++;
+    clearTimeout(sendT); sendT = setTimeout(flush, 1500);
     fx.shower(240); buzz([8, 50, 8]);
     if(reduced) flash('Your blessings are on their way'); else say();
   });

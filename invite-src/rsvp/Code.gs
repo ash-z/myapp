@@ -9,20 +9,57 @@ var SHEET = 'RSVPs';
 var SPREADSHEET_ID = '1hA_KvHGzC9amlnnR008L8vf2evqOwqZF6R03BTCU0m4';
 var HEADERS = ['Updated', 'Token', 'Full name', 'Wedding', 'Wedding guests', 'Reception', 'Reception guests', 'Invite'];
 
+var TOTALS = 'Totals';
+
+function book_() {
+  return SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
 function sheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = book_();
   var sh = ss.getSheetByName(SHEET);
   if (!sh) {
     sh = ss.insertSheet(SHEET);
     sh.appendRow(HEADERS);
     sh.setFrozenRows(1);
   }
+  totals_(ss);
   return sh;
 }
 
 function rows_(sh) {
   var n = sh.getLastRow() - 1;
   return n > 0 ? sh.getRange(2, 1, n, HEADERS.length).getValues() : [];
+}
+
+// A Totals tab the couple can glance at. Its formulas keep counting on their own as replies arrive; the
+// akshintalu count (row 11) is written by the script. Delete the tab to have it rebuilt.
+function totals_(ss) {
+  var t = ss.getSheetByName(TOTALS);
+  if (t) return t;
+  t = ss.insertSheet(TOTALS);
+  var r = "'" + SHEET + "'!";
+  t.getRange(1, 1, 11, 2).setValues([
+    ['', 'Count'],
+    ['Replies', '=COUNTA(' + r + 'B2:B)'],
+    ['Wedding: replies attending', '=COUNTIF(' + r + 'D2:D,"Yes")'],
+    ['Wedding: people coming', '=SUMIF(' + r + 'D2:D,"Yes",' + r + 'E2:E)'],
+    ['Wedding: can\'t make it', '=COUNTIF(' + r + 'D2:D,"No")'],
+    ['Reception: replies attending', '=COUNTIF(' + r + 'F2:F,"Yes")'],
+    ['Reception: people coming', '=SUMIF(' + r + 'F2:F,"Yes",' + r + 'G2:G)'],
+    ['Reception: can\'t make it', '=COUNTIF(' + r + 'F2:F,"No")'],
+    ['Replies from the Relatives link', '=COUNTIF(' + r + 'H2:H,"Relatives")'],
+    ['Replies from the Friends link', '=COUNTIF(' + r + 'H2:H,"Friends")'],
+    ['Akshintalu showered (all guests)', akshi_()]
+  ]);
+  t.getRange(1, 1, 1, 2).setFontWeight('bold');
+  t.setColumnWidth(1, 260);
+  return t;
+}
+
+// Akshintalu: one shared count of every handful showered, by every guest
+function akshi_() {
+  return Number(PropertiesService.getScriptProperties().getProperty('akshi')) || 0;
 }
 
 // "Lakshmi Prasanna Reddy" -> "Lakshmi R."
@@ -46,7 +83,7 @@ function side_(rows, col) {
 
 function summary_(sh) {
   var rows = rows_(sh);
-  return { ok: true, wedding: side_(rows, 3), reception: side_(rows, 5) };
+  return { ok: true, wedding: side_(rows, 3), reception: side_(rows, 5), akshi: akshi_() };
 }
 
 function json_(o) {
@@ -64,6 +101,15 @@ function doPost(e) {
     var d = {};
     try { d = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (err) {}
     if (d.website) return json_(summary_(sheet_()));                            // bots fill the hidden field; store nothing
+
+    if (d.type === 'akshi') {                                                   // a guest showered akshintalu
+      var add = Math.min(50, Math.max(1, parseInt(d.n, 10) || 1));
+      var total = akshi_() + add;
+      PropertiesService.getScriptProperties().setProperty('akshi', String(total));
+      sheet_();
+      book_().getSheetByName(TOTALS).getRange(11, 2).setValue(total);
+      return json_({ ok: true, akshi: total });
+    }
 
     var token = String(d.token || '');
     var name = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 80);
