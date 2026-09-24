@@ -11,10 +11,13 @@
  */
 
 var SHEET = 'RSVPs';
+// The couple's spreadsheet. A script made from the sheet (Extensions -> Apps Script) uses that sheet; a script made
+// on its own at script.google.com (e.g. from a phone) has no sheet of its own, so it opens this one by its id.
+var SPREADSHEET_ID = '1hA_KvHGzC9amlnnR008L8vf2evqOwqZF6R03BTCU0m4';
 var HEADERS = ['Updated', 'Token', 'Full name', 'Wedding', 'Wedding guests', 'Reception', 'Reception guests', 'Invite'];
 
 function sheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
   var sh = ss.getSheetByName(SHEET);
   if (!sh) {
     sh = ss.insertSheet(SHEET);
