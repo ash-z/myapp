@@ -632,7 +632,11 @@ var refit = (function(){
 
 /* =============== COUNTDOWNS (each ticket keeps its own) =============== */
 (function countdowns(){
-  var els = $$('[data-countdown]').map(function(el){ return { el:el, t:new Date(el.dataset.countdown).getTime() }; });
+  // counts down to the start; an event that runs all day says "Happening today" (data-today) until the day
+  // ends (data-until), then the thank-you (data-past)
+  var els = $$('[data-countdown]').map(function(el){
+    return { el:el, t:new Date(el.dataset.countdown).getTime(), until: el.dataset.until ? new Date(el.dataset.until).getTime() : 0 };
+  });
   if(!els.length) return;
   function pad(n){ return n < 10 ? '0' + n : '' + n; }
   function tick(){
@@ -640,7 +644,8 @@ var refit = (function(){
     els.forEach(function(o){
       var el = o.el, diff = o.t - now;
       if(diff <= 0){
-        if(!el.dataset.done){ el.dataset.done = '1'; el.innerHTML = '<span class="past">' + el.dataset.past + '</span>'; }
+        var say = (o.until && now < o.until && el.dataset.today) ? el.dataset.today : el.dataset.past;
+        if(el.dataset.done !== say){ el.dataset.done = say; el.innerHTML = '<span class="past">' + say + '</span>'; }
         return;
       }
       var s = Math.floor(diff/1000), d = Math.floor(s/86400);
@@ -675,6 +680,8 @@ var refit = (function(){
     { key:'reception', label:'Reception', when:'Sun 1 Nov · Hyderabad' }
   ];
   var mine = null, summary = null, showing = 'wedding';
+  // until the RSVP sheet is connected, say so up front and rest the form, instead of after a guest fills it in
+  if(!endpoint){ var soon = $('#rsvpSoon'); if(soon) soon.hidden = false; form.inert = true; form.classList.add('closed'); }
 
   function load(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
   function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
@@ -1116,7 +1123,8 @@ var refit = (function(){
     var wake = function(){ if(!running){ running = true; loop(); } };
     var rest = function(){ running = false; cancelAnimationFrame(raf); };
     document.addEventListener('pagechange', function(e){ if(e.detail.id === 'home' || e.detail.from === 'home') wake(); });
-    document.addEventListener('pagesettle', function(e){ if(e.detail.id !== 'home') rest(); });
+    // (the sea also wakes when a page settles on it: going back to the cover lands on it without a page turn)
+    document.addEventListener('pagesettle', function(e){ if(e.detail.id === 'home') wake(); else rest(); });
     if(pager.current() !== 'home') rest();
   }
 })();

@@ -47,7 +47,7 @@ body{
 a{color:inherit}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
-.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:24px}   /* 24px leaves the side rail its own margin */
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:28px}   /* 28px leaves the side rail its own margin */
 .telugu{font-family:"Noto Sans Telugu","Nirmala UI",sans-serif;letter-spacing:.02em}
 .eyebrow{font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .eyebrow.telugu{letter-spacing:.08em;text-transform:none;font-size:13.5px}
@@ -147,9 +147,10 @@ button{font:inherit;color:inherit}
 @keyframes tab-sweep{0%{transform:translateX(-110%);opacity:1}100%{transform:translateX(110%);opacity:1}}
 @keyframes tab-glow{0%,100%{box-shadow:0 14px 34px -14px rgba(0,0,0,.35)}50%{box-shadow:0 14px 34px -14px rgba(0,0,0,.35),0 0 0 1px rgba(220,178,98,.55),0 0 18px 2px rgba(220,178,98,.35)}}
 /* side rail: up and down a page, a dot per page between. Slim enough to sit in the page margin beside the
-   tickets and cards (never over them); each arrow's tap area is larger than it looks */
+   tickets and cards (never over them), and low, beside their plain lower half rather than the ticket's tear
+   line and notches; each arrow's tap area is larger than it looks */
 .rail{
-  position:fixed;right:max(2px,env(safe-area-inset-right,0px));top:50%;z-index:49;transform:translateY(-50%);
+  position:fixed;right:max(3px,env(safe-area-inset-right,0px));bottom:calc(var(--tab-h) + 22px + env(safe-area-inset-bottom,0px));z-index:49;
   display:flex;flex-direction:column;align-items:center;gap:4px;width:20px;padding:4px 0;
   border:1px solid var(--rule);border-radius:999px;
   background:color-mix(in srgb,var(--surface) 84%,transparent);
@@ -223,9 +224,12 @@ button{font:inherit;color:inherit}
 .hero-eyebrow{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:16px}
 .hero-eyebrow i{display:block;width:22px;height:1px;background:rgba(245,215,155,.45)}
 .hero-eyebrow span{color:#F5D79B;text-shadow:0 1px 12px rgba(20,8,12,.9)}
-.names{margin:0;line-height:.95}
+.names{margin:0;line-height:.95;position:relative;isolation:isolate}
+/* a soft dark glow behind the names so "weds" and the names read over the bright sunset */
+.names::before{content:"";position:absolute;inset:-14% -16%;z-index:-1;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(20,8,12,.5),rgba(20,8,12,.28) 60%,rgba(20,8,12,0))}
 .nm{display:block;font-family:"Alex Brush",cursive;font-weight:400;font-size:clamp(57px,16.9vw,105px);line-height:1.05;letter-spacing:0;color:#FBF3E4;text-shadow:0 2px 34px rgba(20,8,12,.95)}
-.weds{display:block;font-family:"Marcellus",Georgia,serif;font-size:clamp(13px,3.4vw,16px);letter-spacing:.12em;text-indent:.12em;text-transform:uppercase;color:#F0C476;margin:.6em 0 .5em;text-shadow:0 1px 16px rgba(20,8,12,.95)}
+.weds{display:block;font-family:"Marcellus",Georgia,serif;font-size:clamp(13px,3.4vw,16px);letter-spacing:.12em;text-indent:.12em;text-transform:uppercase;color:#FBF3E4;font-weight:400;margin:.6em 0 .5em;text-shadow:0 1px 16px rgba(20,8,12,.95)}
 .hero-when{margin:1.3em 0 0;font-family:"Marcellus",Georgia,serif;font-size:clamp(14px,3.8vw,17px);letter-spacing:.12em;text-transform:uppercase;color:#FBF3E4;text-shadow:0 1px 16px rgba(20,8,12,.95)}
 .hero-where{margin:.6em 0 0;font-size:clamp(13px,3.4vw,14.5px);letter-spacing:.12em;text-transform:uppercase;color:rgba(251,243,228,.88);text-shadow:0 1px 14px rgba(20,8,12,.98)}
 .hint{
@@ -369,6 +373,9 @@ button{font:inherit;color:inherit}
   background:var(--surface);box-shadow:var(--shadow),inset 0 0 0 1px var(--rule);
 }
 .rsvp-form{display:grid;gap:12px}
+.rsvp-soon{margin:18px 0 12px;padding:10px 14px;text-wrap:balance;border:1px dashed var(--rule);border-radius:12px;background:var(--card);
+  text-align:center;font-weight:600;font-size:14px;line-height:1.4;color:var(--ink)}
+.rsvp-form.closed{opacity:.5;filter:saturate(.5)}
 .fld{display:grid;gap:9px;margin:0;padding:0;border:0;min-width:0}
 .lbl{padding:0;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .fld input[type="text"]{
@@ -613,6 +620,9 @@ button{font:inherit;color:inherit}
   .rsvp-card{margin-top:24px;padding:16px 16px 14px}
   .card-diya{width:86px;top:-38px}
   .rsvp-form{gap:10px}
+  .rsvp-soon{margin:6px 0 8px;padding:6px 10px;font-size:13px}
+  .rsvp-soon:not([hidden]) ~ .rsvp-form{gap:8px}
+  .rsvp-soon:not([hidden]) ~ .rsvp-form .ev-rsvp{padding:8px 12px}
   .ev-rsvp{padding:10px 12px}
   .pill span{min-height:40px;padding:6px}
   #blessings{padding-top:calc(min(100vw,620px) * .2 + 6px)}

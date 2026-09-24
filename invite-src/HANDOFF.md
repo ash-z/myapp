@@ -78,8 +78,8 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - Tab taps bloom the page open from the tab; tapping the current tab scrolls that page to its top.
 - **No Next button and no "swipe up" text:** the couple had both removed; the side rail is the page-turn control.
 - **Side rail** (`#rail`), fixed on the right edge: ▲ / a dot per page (current one gold) / ▼, 20px wide so it sits in
-  the 24px page margin beside tickets and cards, never over them (it used to cover the tickets' right edge, which looked
-  misaligned). The section blinks gently: ▲ and ▼ fade and nudge in turn, and a soft gold glow breathes around
+  the 28px page margin beside tickets and cards, never over them, and anchored low (just above the tab bar) so it
+  sits beside the cards' plain lower half, not the ticket's tear line and notches (≥5px clear at 360–412px). The section blinks gently: ▲ and ▼ fade and nudge in turn, and a soft gold glow breathes around
   it (off under reduced motion). ▲ on the first page and ▼ on the last page go to the cover.
 - **Back to the cover:** ▲ or a swipe down (or wheel/arrow up) on the first page; ▼ or a swipe up on the last page. The cover slides back down over the invitation (which resets to its first page) and
   opens again as usual (`cover.close()` in the opening module).
@@ -115,6 +115,8 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
+- While `CONFIG.rsvp.endpoint` is null the card says "RSVPs open very soon — please check back." up front and the form
+  is dimmed and inert (guests used to fill it in and only then learn nothing was saved).
 
 ## Photographs
 The couple's photos are in `photos/` (phone screenshots, ~1200px wide). `photos_process.py` crops each to a 4:5 card
