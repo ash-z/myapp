@@ -5,7 +5,7 @@
 /* ============ PALETTE — ivory (light, default) / jewel (dark) ============ */
 :root{
   --bg:#F7F2E8; --bg2:#EFE6D5; --ink:#2B2318;
-  --gold:#8A6420; --accent:#9A3A32; --muted:#6B5B47;
+  --gold:#826019; --accent:#9A3A32; --muted:#6B5B47;
   --surface:#FFFCF6; --rule:rgba(169,124,43,.28); --card:rgba(169,124,43,.06);
   --shadow:0 24px 50px -20px rgba(70,45,15,.42);
   --bg-a0:rgba(247,242,232,0);
@@ -16,7 +16,7 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#17100F; --bg2:#241419; --ink:#F5E9D4;
-    --gold:#DCB262; --accent:#B9515C; --muted:#B39E8A;
+    --gold:#DCB262; --accent:#D0707A; --muted:#B39E8A;
     --surface:#2A1C1F; --rule:rgba(220,178,98,.26); --card:rgba(220,178,98,.07);
     --shadow:0 24px 50px -20px rgba(0,0,0,.75);
     --bg-a0:rgba(23,16,15,0);
@@ -26,7 +26,7 @@
 :root[data-theme="dark"]{
   --ganesha:#DCB262;
   --bg:#17100F; --bg2:#241419; --ink:#F5E9D4;
-  --gold:#DCB262; --accent:#B9515C; --muted:#B39E8A;
+  --gold:#DCB262; --accent:#D0707A; --muted:#B39E8A;
   --surface:#2A1C1F; --rule:rgba(220,178,98,.26); --card:rgba(220,178,98,.07);
   --shadow:0 24px 50px -20px rgba(0,0,0,.75);
   --bg-a0:rgba(23,16,15,0);
@@ -50,7 +50,7 @@ button{font:inherit;color:inherit}
 .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:28px}   /* 28px leaves the side rail its own margin */
 .telugu{font-family:"Noto Sans Telugu","Nirmala UI",sans-serif;letter-spacing:.02em}
 .eyebrow{font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
-.eyebrow.telugu{letter-spacing:.08em;text-transform:none;font-size:13.5px}
+.eyebrow.telugu{letter-spacing:.04em;text-transform:none;font-size:15.5px}
 
 /* ============ OPENING SCREEN ============ */
 .splash{display:none}
@@ -112,7 +112,7 @@ button{font:inherit;color:inherit}
   position:fixed;top:env(safe-area-inset-top,0px);right:0;z-index:40;
   margin:12px 12px 0 0;display:flex;gap:2px;padding:3px;
   border:1px solid var(--rule);border-radius:999px;
-  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
 }
 .pal button{
@@ -205,6 +205,9 @@ button{font:inherit;color:inherit}
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M0 22V15C0 8.5 5.5 5 12.5 5c3.5 0 6.5-1.4 9.5-5 3 3.6 6 5 9.5 5C38.5 5 44 8.5 44 15v7Z'/%3E%3C/svg%3E") repeat-x center bottom/44px 22px;
 }
 .head{text-align:center;margin-bottom:clamp(16px,3vh,36px)}
+/* every heading sits at the same height: the small label above it takes one fixed line, and a page without one keeps the space */
+.head > .eyebrow{display:block;min-height:25px;line-height:25px}
+.head:not(:has(> .eyebrow)){padding-top:25px}
 .head h2{margin:10px 0 0;font-family:"Tiro Telugu",Georgia,serif;font-weight:400;font-size:clamp(30px,7.6vw,46px);letter-spacing:.01em;text-wrap:balance}
 .note{margin:clamp(22px,4vw,32px) auto 0;max-width:30em;text-align:center;font-size:13px;color:var(--muted)}
 
@@ -546,8 +549,10 @@ button{font:inherit;color:inherit}
 .crown .ganesha{position:absolute;left:50%;top:calc(min(100vw,900px) * .028);transform:translateX(-50%)}
 .hero .crown .ganesha{background:#F5D79B}
 .hero .plate{padding-top:calc(min(100vw,900px) * .12)}
-#blessings{padding-top:calc(min(100vw,620px) * .23 + 14px)}
-.crown-page .toranam{width:min(100%,620px)}
+#blessings{--tw:min(100vw,620px);padding-top:calc(var(--tw) * .23 + 14px)}
+@media (min-width:700px){#blessings{--tw:460px}}
+.crown-page .toranam{width:var(--tw)}
+.crown-page .ganesha{top:calc(var(--tw) * .028);width:calc(var(--tw) * .105)}
 /* opening screen */
 .sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
 .sp-corner-l{left:0}
@@ -564,6 +569,7 @@ button{font:inherit;color:inherit}
 .t-flora-r{right:-20px;transform:scaleY(-1)}
 /* a hung ticket: a toranam along its top edge, and a schedule list */
 .ticket.hung{margin-top:clamp(40px,11vw,52px)}
+.head:has(+ .ticket.hung) .eyebrow{display:block;text-wrap:balance}
 .t-toranam{position:absolute;left:50%;top:0;width:112%;height:auto;transform:translate(-50%,-38%);pointer-events:none;
   filter:drop-shadow(0 6px 8px rgba(80,40,10,.16))}
 /* Ganesha in the garland's centre gap, placed as on the opening screen (margins in % are of the ticket's width) */
@@ -591,20 +597,30 @@ button{font:inherit;color:inherit}
 .js .reveal.in{opacity:1;transform:none;filter:none;
   transition:opacity .9s ease,transform 1s cubic-bezier(.16,.84,.24,1),filter .9s ease;
   transition-delay:var(--rd,0s)}
+/* tall screens: headings sit at one height on every page instead of jumping as pages turn */
+@media (min-height:741px){
+  .js .screen:not(.hero){justify-content:flex-start;padding-top:clamp(64px,9vh,96px)}
+  .js .screen:not(.hero) > .fit-box{margin-block:0 auto}
+  .deck{width:clamp(190px,min(84vw,calc((100svh - 330px) * .8)),400px)}   /* the photos use the height these screens have */
+}
 /* tab labels: as large as the bar allows (a seven-tab bar needs a little less) */
 .tabs a{font-size:clamp(10.5px,3vw,12px)}
 .tabs-in:has(> a:nth-child(7)) a{font-size:clamp(9.5px,2.65vw,11.5px)}
 
 /* short screens (iPhone SE, older Androids): tighten spacing and ornaments instead of shrinking the text */
-@media (max-height:740px){
+@media (max-height:740px), (min-width:700px) and (max-height:900px){
   .screen{padding-block:58px calc(var(--tab-h) + 22px + env(safe-area-inset-bottom,0px))}
   .head{margin-bottom:12px}
   .sp-names .n{font-size:1.12em;line-height:1}
+  .sp-corner{width:74px}
+  .sp-inner{gap:5px}
+  .sp-inner .eyebrow.telugu{font-size:14px}
   .head h2{margin-top:4px;font-size:clamp(28px,7.4vw,36px)}
   .ticket.crowned{margin-top:62px}
   .t-gopuram{height:80px}
   .head:has(+ .ticket.hung){margin-bottom:4px}
   .hung .t-time b,.hung .t-time small{display:none}  /* the schedule below repeats it */
+  .hung .t-time span{font-family:"Marcellus",Georgia,serif;font-size:20px;letter-spacing:.04em;text-transform:none;color:var(--ink)}
   .t-top{padding:18px 22px 12px}
   .hung .t-top{padding-top:calc(12px + 7%);padding-bottom:10px}
   .t-when{margin-top:12px}

@@ -574,7 +574,13 @@ var refit = (function(){
     c.style.transform = 'translate3d(' + (dir*135) + '%,-4%,0) rotate(' + (dir*22) + 'deg)';
     setTimeout(function(){ order.push(order.shift()); c.style.zIndex = '0'; layout(true); arrive(); }, 320);
   }
-  function prev(){ markUsed(); order.unshift(order.pop()); layout(true); arrive(); buzz(6); }
+  function prev(){                                   // the previous photo slides back in from the left
+    markUsed(); buzz(6);
+    order.unshift(order.pop());
+    var c = cards[order[0]];
+    if(!reduced){ c.style.transition = 'none'; c.style.transform = 'translate3d(-135%,-4%,0) rotate(-22deg)'; void c.offsetWidth; }
+    layout(true); arrive();
+  }
   function go(i){
     markUsed();
     if(order[0] === i) return;
@@ -606,7 +612,7 @@ var refit = (function(){
     if(e.type === 'pointercancel'){ layout(true); return; }
     var v = d.dx / Math.max(1, performance.now() - d.t);
     if(Math.abs(d.dx) < 6 && Math.abs(d.dy) < 6){ next(1); return; }
-    if(Math.abs(d.dx) > 80 || Math.abs(v) > 0.5) next(d.dx > 0 ? 1 : -1);
+    if(Math.abs(d.dx) > 80 || Math.abs(v) > 0.5){ if(d.dx < 0) next(-1); else prev(); }   // left: next photo; right: back
     else layout(true);
   }
   deck.addEventListener('pointerup', end);
@@ -705,7 +711,10 @@ var refit = (function(){
       b.party = Math.max(1, Math.min(10, n)); out.textContent = b.party;
       btns[0].disabled = b.party <= 1; btns[1].disabled = b.party >= 10;
     };
-    b.sync = function(){ partyRow.hidden = b.answer() !== true; box.classList.remove('missing'); };
+    b.sync = function(){
+      partyRow.hidden = b.answer() !== true;
+      if(box.classList.contains('missing')){ box.classList.remove('missing'); say(''); }   // the "let us know" note goes once answered
+    };
     b.set = function(ans, party){
       radios.forEach(function(x){ x.checked = ans === null ? false : x.value === (ans ? 'yes' : 'no'); });
       b.setParty(party || 1); b.sync();

@@ -90,6 +90,20 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 
+## Polish from the design/QA review (Sept 2026)
+- **Headings sit at one height on every page** on tall screens (≥741px): pages top-align (`.fit-box{margin-block:0 auto}`),
+  the small label above each heading takes one fixed 25px line, and a page without one (Us) keeps that space. Blessings
+  sits lower by design (its toranam). The photo deck grows with the screen height there (up to 400px).
+- Ganesha hangs in the Blessings toranam's gap too; that toranam is 460px wide on wide screens.
+- Photo deck: swipe left = next photo, swipe right = back (the previous one slides in from the left); tap = next.
+- Telugu labels 15.5px (were 13.5px) and marked `lang="te"`. Light gold `#826019` (≥4.6:1 on every page background);
+  Jewel accent `#D0707A` (5.6:1).
+- Short screens: cover corner florals 74px so they clear "Open invitation"; the 28 Oct ticket shows "Wednesday" at
+  full size beside the date when the time line is hidden. The compact layout also serves wide-but-short screens
+  (laptops ≤900px tall), so Blessings no longer shrinks to ~10px text there.
+- Known and accepted: while no song is in `docs/music/`, each load makes three 404 requests (song.mp3/.m4a/.wav) —
+  the price of "drop a file in, no rebuild".
+
 ## Blessings: the two families
 The bride's and groom's parents sit in two mirrored columns with a gold rule between. Their three lines share rows
 across the columns (CSS subgrid), both sides break at the same places ("Parents of / the bride", "Chandrika & /
