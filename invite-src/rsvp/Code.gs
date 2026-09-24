@@ -1,14 +1,7 @@
-/**
- * RSVP backend for the Sai Susmita & Ashish invitation.
- *
- * Paste into Extensions -> Apps Script of the Google Sheet that should hold
- * the RSVPs, then Deploy -> New deployment -> Web app
- * (Execute as: Me, Who has access: Anyone). See SETUP.md.
- *
- * Each guest answers the wedding and the reception separately, with a party
- * size for each. The sheet keeps full names; the invitation only receives
- * per-event counts and "First L." names, so full names never leave the sheet.
- */
+// RSVP backend for the Sai Susmita & Ashish invitation. Setup: invite-src/rsvp/SETUP.md.
+// Each guest answers the wedding and the reception separately, with a party size for each. The sheet keeps
+// full names; the invitation only receives per-event counts and "First L." names.
+// (Line comments only: a phone paste into the Apps Script editor mangles /** */ blocks.)
 
 var SHEET = 'RSVPs';
 // The couple's spreadsheet. A script made from the sheet (Extensions -> Apps Script) uses that sheet; a script made
@@ -32,13 +25,13 @@ function rows_(sh) {
   return n > 0 ? sh.getRange(2, 1, n, HEADERS.length).getValues() : [];
 }
 
-/** "Lakshmi Prasanna Reddy" -> "Lakshmi R." */
+// "Lakshmi Prasanna Reddy" -> "Lakshmi R."
 function short_(name) {
   var parts = String(name).replace(/^'/, '').trim().split(/\s+/);
   return parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.' : parts[0];
 }
 
-/** Who is coming to one event: column `col` holds Yes/No, `col + 1` the party size. */
+// Who is coming to one event: column `col` holds Yes/No, `col + 1` the party size.
 function side_(rows, col) {
   var guests = [], people = 0;
   rows.forEach(function (r) {
