@@ -287,7 +287,7 @@ button{font:inherit;color:inherit}
 
 /* ============ TICKETS ============ */
 .ticket{
-  position:relative;width:min(100%,420px);margin:0 auto;border-radius:24px;
+  position:relative;isolation:isolate;backface-visibility:hidden;width:min(100%,420px);margin:0 auto;border-radius:24px;
   background:var(--surface);box-shadow:var(--shadow),inset 0 0 0 1px var(--rule);
   transform:perspective(900px) rotateX(calc(var(--ry,0) * 1deg)) rotateY(calc(var(--rx,0) * 1deg));
   transition:transform .25s ease-out;
@@ -330,10 +330,10 @@ button{font:inherit;color:inherit}
 .t-btns .btn{padding-inline:8px;letter-spacing:.08em;white-space:nowrap}
 .t-foil{
   position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(115deg,transparent 32%,rgba(255,232,170,.55) 45%,rgba(255,255,255,.35) 50%,transparent 62%);
+  background:linear-gradient(115deg,transparent 34%,rgba(255,236,190,.16) 45%,rgba(255,250,235,.12) 50%,transparent 60%);
   background-size:260% 260%;
   background-position:calc(50% + var(--fx,0) * 55%) calc(50% + var(--fy,0) * 55%);
-  mix-blend-mode:soft-light;transition:background-position .25s ease-out;
+  transition:background-position .25s ease-out;   /* plain overlay: a blend mode here broke into bright tiles on Android */
 }
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:12px 16px;
@@ -600,11 +600,9 @@ button{font:inherit;color:inherit}
 .js .reveal.in{opacity:1;transform:none;filter:none;
   transition:opacity .9s ease,transform 1s cubic-bezier(.16,.84,.24,1),filter .9s ease;
   transition-delay:var(--rd,0s)}
-/* tall screens: headings sit at one height on every page instead of jumping as pages turn */
+/* tall screens: the photos use the height these screens have */
 @media (min-height:741px){
-  .js .screen:not(.hero){justify-content:flex-start;padding-top:clamp(64px,9vh,96px)}
-  .js .screen:not(.hero) > .fit-box{margin-block:0 auto}
-  .deck{width:clamp(190px,min(84vw,calc((100svh - 330px) * .8)),400px)}   /* the photos use the height these screens have */
+  .deck{width:clamp(190px,min(84vw,calc((100svh - 330px) * .8)),400px)}
 }
 /* tab labels: as large as the bar allows (a seven-tab bar needs a little less) */
 .tabs a{font-size:clamp(10.5px,3vw,12px)}

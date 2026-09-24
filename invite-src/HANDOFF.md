@@ -93,9 +93,11 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 
 ## Polish from the design/QA review (Sept 2026)
-- **Headings sit at one height on every page** on tall screens (≥741px): pages top-align (`.fit-box{margin-block:0 auto}`),
-  the small label above each heading takes one fixed 25px line, and a page without one (Us) keeps that space. Blessings
-  sits lower by design (its toranam). The photo deck grows with the screen height there (up to 400px).
+- Pages stay **vertically centred**. Top-aligning them (so headings sat at one height) left the Wedding and Reception
+  cards at different heights with uneven space below; the couple saw it as misaligned, so it was reverted. The small
+  label above each heading still takes one fixed 25px line. The photo deck grows with tall screens (up to 400px).
+- The ticket's foil sheen is a plain overlay: with `mix-blend-mode:soft-light` inside the tilting card, Android Chrome
+  drew it in hard-edged bright tiles (seen across the Save date button in the Jewel theme).
 - Ganesha hangs in the Blessings toranam's gap too; that toranam is 460px wide on wide screens.
 - Photo deck: swipe left = next photo, swipe right = back (the previous one slides in from the left); tap = next.
 - Telugu labels 15.5px (were 13.5px) and marked `lang="te"`. Light gold `#826019` (≥4.6:1 on every page background);
