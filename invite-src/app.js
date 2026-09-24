@@ -275,6 +275,8 @@ var cover = (function opening(){
     }); });
   }
 
+  function shimmer(){ if(!tabs) return; tabs.classList.remove('shimmer'); void tabs.offsetWidth; tabs.classList.add('shimmer'); }
+  if(done) shimmer();                                            // arrived on a page from a shared link
   function finish(){
     root.classList.remove('locked');
     root.classList.add('opened');
@@ -282,7 +284,7 @@ var cover = (function opening(){
   }
   function open(){
     if(done) return; done = true;
-    buzz(12); enableTilt(); music.start();
+    buzz(12); enableTilt(); music.start(); shimmer();
     root.classList.add('ui');
     [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = false; });
     if(reduced){ finish(); return; }

@@ -84,7 +84,9 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - **Back to the cover:** ▲ or a swipe down (or wheel/arrow up) on the first page; ▼ or a swipe up on the last page. The cover slides back down over the invitation (which resets to its first page) and
   opens again as usual (`cover.close()` in the opening module).
 - **Cues:** on the cover, the arrow in "Open invitation" nudges and blinks and a gold ring pulses from the button
-  (tapping the photo opens it too). The rail's ▼ blinks. All of it stops under reduced motion.
+  (tapping the photo opens it too). The rail blinks gently. **Welcome shimmer:** when the invitation opens (or a shared
+  #page link lands), a soft gold light sweeps across the tab bar three times and then it rests; the couple chose this
+  over a tab bar that flashes all the time (too busy, pulls the eye off the details). All of it stops under reduced motion.
 - Modules listen for `pagechange` / `pagesettle` events instead of IntersectionObserver (stacked pages all intersect the viewport). The sea renders only while its page shows.
 - Tapping the sea floats a lamp only on a real tap; a swipe turns the page instead.
 

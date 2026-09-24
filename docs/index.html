@@ -157,6 +157,14 @@ button{font:inherit;color:inherit}
   pointer-events:none;
 }
 .js:not(.ui) .tabs{transform:translateY(140%)}
+/* welcome shimmer: once the invitation opens, a soft gold light sweeps across the tab bar three times, then rests */
+.tabs-in{position:relative;overflow:hidden}
+.tabs-in::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,transparent 28%,rgba(220,178,98,.42) 50%,transparent 72%);transform:translateX(-110%)}
+.tabs.shimmer .tabs-in::after{animation:tab-sweep 1.7s ease-in-out 1.2s 3}
+.tabs.shimmer .tabs-in{animation:tab-glow 1.7s ease-in-out 1.2s 3}
+@keyframes tab-sweep{0%{transform:translateX(-110%);opacity:1}100%{transform:translateX(110%);opacity:1}}
+@keyframes tab-glow{0%,100%{box-shadow:0 14px 34px -14px rgba(0,0,0,.35)}50%{box-shadow:0 14px 34px -14px rgba(0,0,0,.35),0 0 0 1px rgba(220,178,98,.55),0 0 18px 2px rgba(220,178,98,.35)}}
 /* side rail: up and down a page, a dot per page between. Slim enough to sit in the page margin beside the
    tickets and cards (never over them); each arrow's tap area is larger than it looks */
 .rail{
@@ -638,7 +646,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail,.rail svg,.mus .w{animation:none!important}
+  .seal,.seal.sp-a,.sp-a,.card-face,.card-in,.swipe-cue svg,.hint::before,.open-btn svg,.open-btn::after,.rail,.rail svg,.mus .w,.tabs-in,.tabs-in::after{animation:none!important}
   .splash,.tabs,.ticket,.deck,.seg-pill{transition:none!important}
   .screen,.edge{animation:none!important}
   .coming-list li,.done-flame,.crown .toranam{animation:none!important}
@@ -5496,6 +5504,8 @@ var cover = (function opening(){
     }); });
   }
 
+  function shimmer(){ if(!tabs) return; tabs.classList.remove('shimmer'); void tabs.offsetWidth; tabs.classList.add('shimmer'); }
+  if(done) shimmer();                                            // arrived on a page from a shared link
   function finish(){
     root.classList.remove('locked');
     root.classList.add('opened');
@@ -5503,7 +5513,7 @@ var cover = (function opening(){
   }
   function open(){
     if(done) return; done = true;
-    buzz(12); enableTilt(); music.start();
+    buzz(12); enableTilt(); music.start(); shimmer();
     root.classList.add('ui');
     [app, tabs, pal, rail].forEach(function(e){ if(e) e.inert = false; });
     if(reduced){ finish(); return; }
