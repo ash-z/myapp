@@ -1,7 +1,7 @@
 // RSVP backend for the Sai Susmita & Ashish invitation. Setup: invite-src/rsvp/SETUP.md.
 // Each guest answers the wedding and the reception separately, with a party size for each. The sheet keeps
 // full names; the invitation only receives per-event counts and "First L." names.
-// (Line comments only: a phone paste into the Apps Script editor mangles /** */ blocks.)
+// (Line comments only: pasted on a phone, the editor mangles block comments.)
 
 var SHEET = 'RSVPs';
 // The couple's spreadsheet. A script made from the sheet (Extensions -> Apps Script) uses that sheet; a script made
