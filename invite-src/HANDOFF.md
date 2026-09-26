@@ -183,4 +183,3 @@ also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 - RSVP — **connected**: the couple deployed `rsvp/Code.gs` from a phone as a standalone script (script.google.com; it
   opens their sheet by id) — `CONFIG.rsvp.endpoint` is its /exec URL. If they redeploy, use Manage deployments → Edit →
   New version so the URL stays the same.
-- Travel/stay for outstation guests — one placeholder line under the reception ticket.
