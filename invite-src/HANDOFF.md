@@ -114,7 +114,8 @@ Srinivasulu Gorantla"), the children's names sit on their own line, and the pare
 "Suresh Bhimanpalliwar" (the longest line) always fits. Checked identical line-for-line from 360px to desktop.
 
 ## Music
-The couple's song lives in **`docs/music/`** as `song.mp3` (or `song.m4a` / `song.wav`); see the README there.
+Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
+README there. Friends' song: "Ramasamyku thottam undu" clip, cut from 4 s, 1:14, faded in/out. Relatives' song: not yet.
 The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it
 (rebuild after adding one). It starts when a guest taps "Open invitation" (phones need a tap before sound), loops,
 pauses when the page is hidden, and the speaker button next to Ivory/Jewel pauses/resumes it (remembered per phone).
