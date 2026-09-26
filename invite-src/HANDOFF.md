@@ -72,7 +72,6 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - **Pages never scroll.** Every page fits one screen: layouts are compact, and the FIT module in app.js scales a page's
   content as a whole (like a slide) when a small phone can't fit it — measured: no scaling on 390×844, 412×915, 430×932;
   79–87% on 375×667 and 360×640. Below 62% (a phone held sideways) the page scrolls rather than shrinking further.
-- The RSVP guest list opens in a bottom sheet ("See who's coming"), the one place that scrolls; page turns pause while it's open.
 - A link to `#rsvp` (or any page id) while the invitation is open turns to that page.
 - The opening screen shows on every visit. Only a link that arrives with `#page` skips it (a deliberate deep link);
   the pager does not write the page into the address, so reloading always returns to the cover.
@@ -127,9 +126,10 @@ takedown; that's the couple's call.
 Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; until then the form says RSVPs open soon.
 - Guests give a full name (first + last required), then answer the wedding and the reception separately: Attending / Can't make it, with a separate party size (1–10) for each. Both must be answered.
 - Sheet columns: Updated, Token, Full name, Wedding, Wedding guests, Reception, Reception guests, Invite (Friends or Relatives: which link they answered from). Both versions share one sheet and one guest list.
-- The page shows a guest list per event (Wedding / Reception switch) with its own head count.
+- **No guest list on the page** (the couple's call): after sending, a guest sees only "Thank you, <first name> /
+  Your details are saved." with Change my RSVP / RSVP for someone else. Names and counts live only in the sheet.
 - Each phone keeps a token in localStorage; answering again updates the same sheet row.
-- The page only ever receives "First L." names and a head count; full names stay in the sheet.
+- The script answers only `{ok:true, akshi:N}`: no names or head counts ever leave the sheet, even via its /exec link.
 - Guards: honeypot field, token and length validation, names can't become sheet formulas, LockService around writes.
 - Tested by running Code.gs in Node with stand-ins for the Google services (upsert, validation, formula guard, honeypot) and a full browser flow against it. Not yet tested against a real Apps Script deployment.
 - The claude.ai artifact preview blocks outside requests, so RSVP only works on GitHub Pages.
@@ -139,7 +139,6 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - **Akshintalu is one shared count** for all guests: taps are sent in batches (≤50 per request) to the script, which keeps
   the total in Script Properties and in Totals!B11; the page shows "Akshintalu showered by everyone · N". With an old
   script or offline it falls back to this phone's own count.
-- The guest-list line shows both events: "34 coming to the wedding · 50 to the reception · See who".
 - While typing a name (phone keyboard up) the page keeps full size and scrolls, the tab bar and rail step aside,
   and pages don't turn (`html.typing`). The guest-list sheet keeps keyboard focus inside while open.
 - While `CONFIG.rsvp.endpoint` is null the card says "RSVPs open very soon — please check back." up front and the form

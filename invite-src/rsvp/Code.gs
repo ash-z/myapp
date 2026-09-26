@@ -1,6 +1,7 @@
 // RSVP backend for the Sai Susmita & Ashish invitation. Setup: invite-src/rsvp/SETUP.md.
-// Each guest answers the wedding and the reception separately, with a party size for each. The sheet keeps
-// full names; the invitation only receives per-event counts and "First L." names.
+// Each guest answers the wedding and the reception separately, with a party size for each. Everything stays in
+// the sheet: the invitation is only told that a reply was saved (and the shared akshintalu count), never any
+// names or numbers of guests, so opening this script's link shows nothing about who is coming.
 // (Line comments only: pasted on a phone, the editor mangles block comments.)
 
 var SHEET = 'RSVPs';
@@ -62,28 +63,9 @@ function akshi_() {
   return Number(PropertiesService.getScriptProperties().getProperty('akshi')) || 0;
 }
 
-// "Lakshmi Prasanna Reddy" -> "Lakshmi R."
-function short_(name) {
-  var parts = String(name).replace(/^'/, '').trim().split(/\s+/);
-  return parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.' : parts[0];
-}
-
-// Who is coming to one event: column `col` holds Yes/No, `col + 1` the party size.
-function side_(rows, col) {
-  var guests = [], people = 0;
-  rows.forEach(function (r) {
-    if (r[col] !== 'Yes') return;
-    var n = Number(r[col + 1]) || 1;
-    people += n;
-    guests.push({ name: short_(r[2]), party: n, t: new Date(r[0]).getTime() });
-  });
-  guests.sort(function (a, b) { return b.t - a.t; });
-  return { people: people, guests: guests.map(function (g) { return { name: g.name, party: g.party }; }) };
-}
-
-function summary_(sh) {
-  var rows = rows_(sh);
-  return { ok: true, wedding: side_(rows, 3), reception: side_(rows, 5), akshi: akshi_() };
+// What anyone may see: that it worked, and the shared akshintalu count
+function summary_() {
+  return { ok: true, akshi: akshi_() };
 }
 
 function json_(o) {
@@ -91,7 +73,8 @@ function json_(o) {
 }
 
 function doGet() {
-  return json_(summary_(sheet_()));
+  sheet_();
+  return json_(summary_());
 }
 
 function doPost(e) {
@@ -100,7 +83,7 @@ function doPost(e) {
   try {
     var d = {};
     try { d = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (err) {}
-    if (d.website) return json_(summary_(sheet_()));                            // bots fill the hidden field; store nothing
+    if (d.website) { sheet_(); return json_(summary_()); }                            // bots fill the hidden field; store nothing
 
     if (d.type === 'akshi') {                                                   // a guest showered akshintalu
       var add = Math.min(50, Math.max(1, parseInt(d.n, 10) || 1));
@@ -128,9 +111,7 @@ function doPost(e) {
     if (i >= 0) sh.getRange(i + 2, 1, 1, row.length).setValues([row]);         // same phone answering again
     else sh.appendRow(row);
 
-    var out = summary_(sh);
-    out.you = short_(name);
-    return json_(out);
+    return json_(summary_());
   } finally {
     lock.releaseLock();
   }

@@ -677,16 +677,15 @@ var refit = (function(){
   var form = $('#rsvpForm'); if(!form) return;
   var endpoint = CONFIG.rsvp && CONFIG.rsvp.endpoint;
   var nameI = $('#rsvpName'), hp = $('#rsvpHp'), send = $('#rsvpSend'), msg = $('#rsvpMsg');
-  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dList = $('#doneList'), dSub = $('#doneSub');
-  var link = $('#comingBtn'), linkText = $('#comingBtnText'), sheet = $('#comingSheet'), scrim = $('#sheetScrim');
-  var seg = $('#comingSeg'), cntW = $('#cntW'), cntR = $('#cntR');
-  var cN = $('#comingN'), cL = $('#comingL'), list = $('#comingList');
-  var KEY = 'sa-rsvp2', SUMKEY = 'sa-rsvp2-sum';
+  var done = $('#rsvpDone'), dTitle = $('#doneTitle'), dSub = $('#doneSub');
+  var KEY = 'sa-rsvp2';
+  // guests see only that their reply is saved: no guest list, no counts (an older version cached a list here)
+  try{ localStorage.removeItem('sa-rsvp2-sum'); }catch(e){}
   var EVENTS = [
     { key:'wedding',   label:'Wedding',   when:'Thu 29 Oct · Visakhapatnam' },
     { key:'reception', label:'Reception', when:'Sun 1 Nov · Hyderabad' }
   ];
-  var mine = null, summary = null, showing = 'wedding';
+  var mine = null;
   // until the RSVP sheet is connected, say so up front and rest the form, instead of after a guest fills it in
   if(!endpoint){ var soon = $('#rsvpSoon'); if(soon) soon.hidden = false; form.inert = true; form.classList.add('closed'); }
 
@@ -726,63 +725,6 @@ var refit = (function(){
     blocks[ev.key] = b;
   });
 
-  // guest lists, one per event
-  function renderList(){
-    if(summary && typeof summary.akshi === 'number') document.dispatchEvent(new CustomEvent('rsvpsummary', { detail:summary }));
-    if(!summary || !summary.ok || !summary.wedding){ link.hidden = true; return; }
-    var W = summary.wedding, R = summary.reception;
-    link.hidden = !(W.people > 0 || R.people > 0);
-    // "34 coming to the wedding · 50 to the reception · See who" (an event nobody has said yes to yet is left out)
-    linkText.innerHTML = '';
-    var parts = [];
-    if(W.people > 0) parts.push([W.people, 'the wedding']);
-    if(R.people > 0) parts.push([R.people, 'the reception']);
-    parts.forEach(function(x, k){
-      if(k) linkText.appendChild(document.createTextNode(' \u00b7 '));
-      var bn = document.createElement('b'); bn.textContent = x[0];
-      linkText.appendChild(bn);
-      linkText.appendChild(document.createTextNode((k ? ' to ' : ' coming to ') + x[1]));
-    });
-    linkText.appendChild(document.createTextNode(' \u00b7 See who'));
-    cntW.textContent = W.people; cntR.textContent = R.people;
-    var side = summary[showing];
-    cN.textContent = side.people;
-    cL.textContent = (side.people === 1 ? 'guest is coming to the ' : 'guests are coming to the ') + showing;
-    list.textContent = '';
-    side.guests.forEach(function(g, i){
-      var li = document.createElement('li');
-      li.style.setProperty('--i', Math.min(i, 30));
-      li.appendChild(document.createElement('i'));
-      li.appendChild(document.createTextNode(g.name));
-      if(g.party > 1){ var sm = document.createElement('small'); sm.textContent = '+' + (g.party - 1); li.appendChild(sm); }
-      if(mine && mine[showing] && mine[showing].coming && g.name === mine.short) li.classList.add('you');
-      list.appendChild(li);
-    });
-  }
-  var segBtns = [].slice.call(seg.querySelectorAll('button'));
-  segBtns.forEach(function(btn, i){
-    btn.addEventListener('click', function(){
-      showing = EVENTS[i].key;
-      seg.style.setProperty('--seg', i);
-      segBtns.forEach(function(x, k){ x.setAttribute('aria-selected', String(k === i)); });
-      renderList(); buzz(5);
-    });
-  });
-
-  function openSheet(){
-    root.classList.add('sheet-open');
-    scrim.hidden = false; sheet.hidden = false;
-    requestAnimationFrame(function(){ scrim.classList.add('on'); sheet.classList.add('on'); });
-    try{ $('#sheetClose').focus({ preventScroll:true }); }catch(e){}
-    buzz(6);
-  }
-  function closeSheet(){
-    if(sheet.hidden) return;
-    root.classList.remove('sheet-open');
-    scrim.classList.remove('on'); sheet.classList.remove('on');
-    setTimeout(function(){ scrim.hidden = true; sheet.hidden = true; }, 450);
-    try{ link.focus({ preventScroll:true }); }catch(e){}
-  }
   // while the name field has focus (the phone keyboard is up) the tab bar and rail step aside and the page keeps its
   // full size and scrolls, instead of shrinking to fit the half-screen that is left
   function typing(){
@@ -791,34 +733,11 @@ var refit = (function(){
   }
   form.addEventListener('focusin', typing);
   form.addEventListener('focusout', function(){ setTimeout(typing, 0); });
-  // the guest-list sheet keeps keyboard focus inside while it is open
-  sheet.addEventListener('keydown', function(e){
-    if(e.key !== 'Tab') return;
-    var f = [].slice.call(sheet.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])')).filter(function(x){ return !x.disabled && x.offsetParent !== null; });
-    if(!f.length) return;
-    if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
-    else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
-  });
-  link.addEventListener('click', openSheet);
-  $('#sheetClose').addEventListener('click', closeSheet);
-  scrim.addEventListener('click', closeSheet);
-  addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSheet(); });
-
   function showDone(r, fresh){
     form.hidden = true; done.hidden = false;
     dTitle.textContent = 'Thank you, ' + first(r.name);
-    dList.textContent = '';
-    var any = false;
-    EVENTS.forEach(function(ev){
-      var a = r[ev.key], li = document.createElement('li'), bEl = document.createElement('b'),
-          sm = document.createElement('small'), sp = document.createElement('span');
-      bEl.textContent = ev.label; sm.textContent = ev.when; bEl.appendChild(sm);
-      if(a.coming){ any = true; sp.textContent = a.party > 1 ? 'Attending · ' + a.party + ' of you' : 'Attending'; }
-      else { li.className = 'no'; sp.textContent = 'Can’t make it'; }
-      li.appendChild(bEl); li.appendChild(sp); dList.appendChild(li);
-    });
-    dSub.hidden = any;
-    dSub.textContent = any ? '' : 'We’ve noted that you can’t make it.';
+    dSub.hidden = false; dSub.textContent = 'Your details are saved.';
+    var any = EVENTS.some(function(ev){ return r[ev.key] && r[ev.key].coming; });
     done.classList.toggle('lit', any);
     if(fresh && any && !reduced){
       var bx = done.getBoundingClientRect();
@@ -869,10 +788,9 @@ var refit = (function(){
     post(body).then(function(sum){
       send.removeAttribute('aria-busy');
       if(!sum || !sum.ok){ say(sum && sum.error === 'answer both' ? 'Let us know for the wedding and the reception.' : 'That didn’t go through — please try again.'); return; }
-      mine = { token:tok, name:name, wedding:body.wedding, reception:body.reception, short:sum.you || '' };
-      summary = sum;
-      save(KEY, mine); save(SUMKEY, sum);
-      say(''); showDone(mine, true); renderList();
+      mine = { token:tok, name:name, wedding:body.wedding, reception:body.reception };
+      save(KEY, mine);
+      say(''); showDone(mine, true);
     }).catch(function(){
       send.removeAttribute('aria-busy');
       say('Couldn’t reach the RSVP list — check your connection and try again.');
@@ -883,14 +801,6 @@ var refit = (function(){
 
   mine = load(KEY);
   if(mine && mine.name && mine.wedding && mine.reception) showDone(mine, false); else mine = null;
-  summary = load(SUMKEY); renderList();
-  if(endpoint){
-    setTimeout(function(){
-      fetch(endpoint).then(function(r){ return r.json(); })
-        .then(function(sum){ if(sum && sum.ok && sum.wedding){ summary = sum; save(SUMKEY, sum); renderList(); } })
-        .catch(function(){});
-    }, 1200);
-  }
 })();
 
 /* ===================================================================
@@ -903,8 +813,11 @@ var refit = (function(){
   // everyone's handfuls add up to one shared count, kept by the RSVP script (this phone's own count when offline);
   // taps are sent in small batches a moment after the last one
   var ep = CONFIG.rsvp && CONFIG.rsvp.endpoint, total = null, pending = 0, sendT = 0;
-  try{ var cached = JSON.parse(localStorage.getItem('sa-rsvp2-sum') || 'null'); if(cached && typeof cached.akshi === 'number') total = cached.akshi; }catch(e){}
-  document.addEventListener('rsvpsummary', function(e){ if(typeof e.detail.akshi === 'number'){ total = Math.max(total || 0, e.detail.akshi + pending); say(); } });
+  if(ep) setTimeout(function(){
+    fetch(ep).then(function(r){ return r.json(); })
+      .then(function(o){ if(o && typeof o.akshi === 'number'){ total = Math.max(total || 0, o.akshi + pending); say(); } })
+      .catch(function(){});
+  }, 1500);
   function flush(keep){
     clearTimeout(sendT);
     if(!ep || !pending) return;
