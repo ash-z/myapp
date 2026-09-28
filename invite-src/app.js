@@ -10,7 +10,7 @@
 // friends' page; the relatives' page leaves it unset
 var INVITE = window.INVITE === 'friends' ? 'friends' : 'relatives';
 var CONFIG = {
-  shareUrl: "https://ash-z.github.io/myapp/" + (INVITE === 'friends' ? 'friends/' : ''),
+  shareUrl: "https://ash-z.github.io/susmita-weds-ashish/" + (INVITE === 'friends' ? 'friends/' : ''),
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
   rsvp: { endpoint: "https://script.google.com/macros/s/AKfycbzj1rTcoZJViDXlqlNKXT3YeDaFdZ-eB5_WGodyv8TqwVJTlLderG9BTnFoDCV5QlpZfg/exec" },

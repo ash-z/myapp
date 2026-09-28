@@ -1,8 +1,8 @@
 # Wedding invitation — handoff
 
 Live (GitHub Pages, branch **`golden`**, folder `/docs`), two versions of one invitation:
-- **Relatives:** https://ash-z.github.io/myapp/ (`docs/index.html`)
-- **Friends:** https://ash-z.github.io/myapp/friends/ (`docs/friends/index.html`): the same, plus the day-before page
+- **Relatives:** https://ash-z.github.io/susmita-weds-ashish/ (`docs/index.html`)
+- **Friends:** https://ash-z.github.io/susmita-weds-ashish/friends/ (`docs/friends/index.html`): the same, plus the day-before page
 
 Both pages are **generated**: edit the files here, then rebuild:
 
@@ -19,6 +19,8 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 | `three-entry.js` | the three.js symbols esbuild keeps; add to it if `app.js` needs more |
 
 ## Golden and dev
+- The GitHub repository was renamed `myapp` -> `susmita-weds-ashish` (Sept 2026) for a nicer link; the built-in
+  address (share button, link preview) lives in `build.py` (`url`) and `app.js` (`CONFIG.shareUrl`).
 - **`golden`** is what guests see. GitHub Pages serves it; nothing is committed to it directly.
   `golden-v1` (commit `4bcc0d7`) is the version first shared with guests.
 - **`claude/add-threejs-library-ogt1s7`** is where work happens. Its previews are the dev artifacts
