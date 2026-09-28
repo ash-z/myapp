@@ -115,7 +115,9 @@ Srinivasulu Gorantla"), the children's names sit on their own line, and the pare
 
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
-README there. Friends' song: "Ramasamyku thottam undu" clip, cut from 4 s, 1:14, faded in/out. Relatives' song: not yet.
+README there. Friends' song: "Pehli Nazar Mein" in a slow-lounge treatment made here with ffmpeg (10% slower via asetrate,
+light aecho reverb, +2.5 dB bass, 10.5 kHz low-pass, loudnorm -16 LUFS, 2.5 s fade-in / 3.5 s fade-out; 4:00, 3.8 MB).
+It replaced the earlier "Ramasamyku thottam undu" clip (still in git history, commit a76ad54). Relatives' song: not yet.
 The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it
 (rebuild after adding one). It starts when a guest taps "Open invitation" (phones need a tap before sound), loops,
 pauses when the page is hidden, and the speaker button next to Ivory/Jewel pauses/resumes it (remembered per phone).
