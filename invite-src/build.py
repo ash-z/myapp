@@ -121,6 +121,6 @@ for invite, sub in (("relatives", ""), ("friends", "friends/")):
         + "\n" + badge + "\n" + one + tail(invite))
     (root / "docs" / sub).mkdir(exist_ok=True)
     (root / "docs" / sub / "index.html").write_text(
-        '<!doctype html>\n<html lang="en">\n<head>\n' + head(url + sub) + style +
+        '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' + head(url + sub) + style +
         "\n</head>\n<body>\n" + page + tail(invite) + "</body>\n</html>\n")
 print("wrote docs/index.html, docs/friends/index.html and build/artifact{,-dev}{,-friends}.html")

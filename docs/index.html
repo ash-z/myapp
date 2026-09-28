@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -339,6 +339,7 @@ button{font:inherit;color:inherit}
 }
 .t-bot{padding:18px 26px 26px}
 .t-venue{margin:0;font-family:"Marcellus",Georgia,serif;font-size:clamp(19px,5vw,22px);line-height:1.3}
+.t-hall{margin:2px 0 0;font-family:"Marcellus",Georgia,serif;font-size:15.5px;line-height:1.3;color:var(--gold)}   /* the hall, under the hotel */
 .t-addr{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
 .t-count{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:20px;padding:14px 8px;border-radius:14px;background:var(--card)}
 .t-count div{text-align:center}
@@ -814,8 +815,9 @@ button{font:inherit;color:inherit}
         </div>
         <div class="t-perf" aria-hidden="true"></div>
         <div class="t-bot">
-          <p class="t-venue">&lsquo;Marina&rsquo; Banquet Hall</p>
-          <p class="t-addr">Hotel Ambica Sea Green, Beach Road, Visakhapatnam</p>
+          <p class="t-venue">Hotel Ambica Sea Green</p>
+          <p class="t-hall">&lsquo;Marina&rsquo; Banquet Hall</p>
+          <p class="t-addr">Beach Road, Visakhapatnam</p>
           <div class="t-count" data-countdown="2026-10-29T19:31:00+05:30" data-past="Married on 29 October 2026" aria-label="Time until the sumuhurtam">
             <div><b data-u="d">—</b><span>Days</span></div>
             <div><b data-u="h">—</b><span>Hours</span></div>
@@ -5303,7 +5305,7 @@ function buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
   }
   var start = null;
   try{ start = localStorage.getItem('sa-pal'); }catch(e){}
-  if(!start) start = matchMedia('(prefers-color-scheme: dark)').matches ? 'jewel' : 'ivory';
+  if(start !== 'jewel') start = 'ivory';   // Ivory unless the guest chose Jewel (not the phone's dark mode)
   apply(start, false);
   bI.addEventListener('click', function(){ apply('ivory', true); buzz(6); });
   bJ.addEventListener('click', function(){ apply('jewel', true); buzz(6); });

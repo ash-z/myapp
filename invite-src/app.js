@@ -52,7 +52,7 @@ function buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
   }
   var start = null;
   try{ start = localStorage.getItem('sa-pal'); }catch(e){}
-  if(!start) start = matchMedia('(prefers-color-scheme: dark)').matches ? 'jewel' : 'ivory';
+  if(start !== 'jewel') start = 'ivory';   // Ivory unless the guest chose Jewel (not the phone's dark mode)
   apply(start, false);
   bI.addEventListener('click', function(){ apply('ivory', true); buzz(6); });
   bJ.addEventListener('click', function(){ apply('jewel', true); buzz(6); });
