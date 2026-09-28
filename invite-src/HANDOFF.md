@@ -118,10 +118,13 @@ Srinivasulu Gorantla"), the children's names sit on their own line, and the pare
 
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
-README there. Friends' song: "Pehli Nazar Mein" in a slow-lounge treatment made here. The vocals were split from the music with
-audio-separator (UVR-MDX-NET-Inst_HQ_3) and mixed back 13 dB down (6 kHz low-pass, light echo), so the music leads;
-then ffmpeg: 10% slower via asetrate, light aecho reverb, +2.5 dB bass, 10.5 kHz low-pass, loudnorm -14 LUFS,
-2.5 s fade-in / 3.5 s fade-out; 4:00, 3.8 MB.
+README there. Friends' song: "Pehli Nazar Mein" with the singing replaced by a small violin section playing the melody (in key,
+A major), over the original music, in a slow-lounge treatment. How it was made, with the scripts:
+`invite-src/music-tools/README.md`. Final mix (ins.wav = music stem, violin.wav from violin.py):
+`ffmpeg -i ins.wav -i violin.wav -filter_complex "[1:a]volume=-3dB,aecho=0.8:0.85:60|130|220|340:0.3|0.22|0.15|0.09[g];
+[0:a][g]amix=inputs=2:normalize=0,asetrate=44100*0.9,aresample=44100,aecho=0.85:0.75:45|95|160:0.22|0.14|0.08,
+bass=g=2.5:f=110,lowpass=f=10500,loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=2.5,afade=t=out:st=236.5:d=3.5"
+-t 240 -b:a 128k friends.mp3` (4:00, 3.8 MB). Earlier takes (vocals turned down; flute, guitar, piano) were not kept.
 It replaced the earlier "Ramasamyku thottam undu" clip (still in git history, commit a76ad54). Relatives' song: not yet.
 The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it
 (rebuild after adding one). It starts when a guest taps "Open invitation" (phones need a tap before sound), loops,
