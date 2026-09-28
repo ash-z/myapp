@@ -41,7 +41,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
   https://maps.app.goo.gl/AhTU2qBLJbRZLm4s6.
 - **Friends only**, Wed 28 Oct 2026: Haldi & Pellikuturu 9 AM onwards · Mehendi 5 PM onwards (changed 28 Sep from
   Haldi 9:30 · Pellikuturu 11:30 · Mehendi & Sangeet 5:30 onwards; the couple's update named only Mehendi for the evening).
-  All at Home, near Sivaji Park, MVP Colony, Vizag. These must never appear in the relatives' version. It is the only difference between the two.
+  All at Home, 9-6-93/3, Sivajipalem, Opp. Sivaji Park, Visakhapatnam. These must never appear in the relatives' version. It is the only difference between the two.
 - Type: **Alex Brush** (the couple's names only) / **Tiro Telugu** (headings, ticket dates, the closing line; its Latin is
   drawn to sit with Telugu script) / Marcellus (times, venues) / Karla (body, labels) / Noto Sans Telugu (Telugu labels).
   The couple chose this pairing from six traditional options; generic serifs (Cormorant, Playfair, Cinzel, Lora…) were rejected
@@ -64,7 +64,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 The friends' version adds a seventh, **Haldi** ("The day before"), between Us and Wedding: one ticket with the day's
-events at **Home, near Sivaji Park, MVP Colony, Vizag**, a countdown to the haldi, Directions (the couple's pin for
+events at **Home, 9-6-93/3, Sivajipalem, Opp. Sivaji Park, Visakhapatnam**, a countdown to the haldi, Directions (the couple's pin for
 the house, https://maps.app.goo.gl/4jKmVR2unpEwwRWNA) and an all-day "Save date". A toranam hangs
 along the ticket's top edge with Ganesha in its gap.
 
