@@ -124,7 +124,7 @@ A major), over the original music, in a slow-lounge treatment. How it was made, 
 `ffmpeg -i ins.wav -i violin.wav -filter_complex "[1:a]volume=-3dB,aecho=0.8:0.85:60|130|220|340:0.3|0.22|0.15|0.09[g];
 [0:a][g]amix=inputs=2:normalize=0,asetrate=44100*0.9,aresample=44100,aecho=0.85:0.75:45|95|160:0.22|0.14|0.08,
 bass=g=2.5:f=110,lowpass=f=10500,loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=2.5,afade=t=out:st=236.5:d=3.5"
--t 240 -b:a 128k friends.mp3` (4:00, 3.8 MB). Earlier takes (vocals turned down; flute, guitar, piano) were not kept.
+-t 240 -b:a 128k friends.mp3` (4:00, 3.8 MB). The vocals-turned-down take is in git history; the flute, guitar and piano try-outs were not kept.
 It replaced the earlier "Ramasamyku thottam undu" clip (still in git history, commit a76ad54). Relatives' song: not yet.
 The pages point at that folder, so a file uploaded there plays without a rebuild; the artifact previews embed it
 (rebuild after adding one). It starts when a guest taps "Open invitation" (phones need a tap before sound), loops,
