@@ -100,6 +100,7 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
 - The ticket's foil sheen is a plain overlay: with `mix-blend-mode:soft-light` inside the tilting card, Android Chrome
   drew it in hard-edged bright tiles (seen across the Save date button in the Jewel theme).
 - Ganesha hangs in the Blessings toranam's gap too; that toranam is 460px wide on wide screens.
+- On screens wider than the toranam (900px; 620px on Blessings) the same art repeats outward to both edges as a `.crown::before` background (`--toranam-img`, set in app.js), masked off behind the centre one so its sway never doubles. Phones are unchanged.
 - Photo deck: swipe left = next photo, swipe right = back (the previous one slides in from the left); tap = next.
 - Telugu labels 15.5px (were 13.5px) and marked `lang="te"`. Light gold `#826019` (≥4.6:1 on every page background);
   Jewel accent `#D0707A` (5.6:1).

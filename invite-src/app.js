@@ -23,6 +23,8 @@ var CONFIG = {
   var src = window.ART && window.ART[img.dataset.art];
   if(src) img.src = src;
 });
+// the toranam also continues along the top on wide screens, as a CSS background (see .crown::before)
+if(window.ART && window.ART.toranam) document.documentElement.style.setProperty('--toranam-img', 'url("' + window.ART.toranam + '")');
 
 var reduced = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 var T = window.THREE;

@@ -575,6 +575,19 @@ button{font:inherit;color:inherit}
 @media (min-width:700px){#blessings{--tw:460px}}
 .crown-page .toranam{width:var(--tw)}
 .crown-page .ganesha{top:calc(var(--tw) * .028);width:calc(var(--tw) * .105)}
+/* wide screens: the garland runs on to both edges, the same toranam repeated outward from the one in the centre.
+   The repeats sit behind it and are masked off where it hangs, so its gentle sway never shows a double. */
+.crown:not(.crown-page){--tw:min(100vw,900px)}
+.crown::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--tw) * .3536);pointer-events:none;
+  background:var(--toranam-img,none) center top / var(--tw) auto repeat-x;
+  -webkit-mask:linear-gradient(to right,#000 calc(50% - var(--tw) / 2 + 2px),transparent calc(50% - var(--tw) / 2 + 2px),
+               transparent calc(50% + var(--tw) / 2 - 2px),#000 calc(50% + var(--tw) / 2 - 2px));
+          mask:linear-gradient(to right,#000 calc(50% - var(--tw) / 2 + 2px),transparent calc(50% - var(--tw) / 2 + 2px),
+               transparent calc(50% + var(--tw) / 2 - 2px),#000 calc(50% + var(--tw) / 2 - 2px));
+}
+@media (max-width:900px){.crown:not(.crown-page)::before{display:none}}   /* the garland already spans a phone */
+@media (max-width:620px){.crown-page::before{display:none}}
 /* opening screen */
 .sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
 .sp-corner-l{left:0}
@@ -5304,6 +5317,8 @@ var CONFIG = {
   var src = window.ART && window.ART[img.dataset.art];
   if(src) img.src = src;
 });
+// the toranam also continues along the top on wide screens, as a CSS background (see .crown::before)
+if(window.ART && window.ART.toranam) document.documentElement.style.setProperty('--toranam-img', 'url("' + window.ART.toranam + '")');
 
 var reduced = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 var T = window.THREE;
