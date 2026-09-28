@@ -558,8 +558,9 @@ button{font:inherit;color:inherit}
 .crown .ganesha{position:absolute;left:50%;top:calc(var(--tw) * .028);width:clamp(40px,calc(var(--tw) * .105),72px);transform:translateX(-50%)}
 .hero .crown .ganesha{background:#F5D79B}
 .hero .plate{padding-top:calc(var(--crown) * .12)}
-#blessings{--tw:min(100vw,620px);padding-top:calc(var(--tw) * .23 + 14px)}
-@media (min-width:700px){#blessings{--tw:460px}}
+/* every content page hangs the same toranam along its top (the friends' day-before page hangs one on its ticket) */
+.screen.garland{--tw:min(100vw,620px);padding-top:calc(var(--tw) * .23 + 14px)}
+@media (min-width:700px){.screen.garland{--tw:460px}}
 .crown-page .toranam{width:var(--tw)}
 .crown-page .ganesha{top:calc(var(--tw) * .028);width:calc(var(--tw) * .105)}
 /* wide screens: the garland runs on to both edges, the same toranam repeated outward from the one in the centre.
@@ -585,10 +586,11 @@ button{font:inherit;color:inherit}
   position:absolute;left:50%;top:0;height:clamp(96px,27vw,128px);width:auto;
   transform:translate(-50%,-84%);pointer-events:none;filter:drop-shadow(0 6px 10px rgba(80,40,10,.14));
 }
-/* reception: florals frame the ticket's top corners */
+/* florals on the cards: all four corners on reception; the bottom two on wedding and RSVP (gopuram and diya crown their tops) */
 .t-flora{position:absolute;top:-24px;width:clamp(82px,23vw,110px);height:auto;pointer-events:none}
 .t-flora-l{left:-20px;transform:scaleY(-1)}
 .t-flora-r{right:-20px;transform:scaleY(-1)}
+.t-flora-b{top:auto;bottom:-24px;transform:none}
 /* a hung ticket: a toranam along its top edge, and a schedule list */
 .ticket.hung{margin-top:clamp(40px,11vw,52px)}
 .head:has(+ .ticket.hung) .eyebrow{display:block;text-wrap:balance}
@@ -661,7 +663,8 @@ button{font:inherit;color:inherit}
   .rsvp-soon:not([hidden]) ~ .rsvp-form .ev-rsvp{padding:8px 12px}
   .ev-rsvp{padding:10px 12px}
   .pill span{min-height:40px;padding:6px}
-  #blessings{padding-top:calc(min(100vw,620px) * .2 + 6px)}
+  .screen.garland{padding-top:calc(var(--tw) * .2 + 6px)}
+  .t-flora-b{bottom:-18px}
   .fams{column-gap:20px}
   .close{margin-top:14px}
   .blessing{line-height:1.3}

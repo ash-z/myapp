@@ -101,7 +101,11 @@ The invitation is a **pager**: pages are stacked full-screen layers and only the
   label above each heading still takes one fixed 25px line. The photo deck grows with tall screens (up to 400px).
 - The ticket's foil sheen is a plain overlay: with `mix-blend-mode:soft-light` inside the tilting card, Android Chrome
   drew it in hard-edged bright tiles (seen across the Save date button in the Jewel theme).
-- Ganesha hangs in the Blessings toranam's gap too; that toranam is 460px wide on wide screens.
+- Every content page (Us, Wedding, Reception, RSVP, Blessings: class `garland` on the section) hangs the same toranam
+  along its top, Ganesha in its gap, 460px wide on wide screens. The friends' day-before page is the exception: it
+  already hangs one across its ticket. Corner florals (`.t-flora`, the corner art): all four corners of the reception
+  ticket; only the bottom two on the wedding ticket and the RSVP card, whose tops carry the gopuram and the diya
+  (four corners there looked crowded).
 - From 700px wide, every top toranam (opening screen, first page, Blessings) is 460px and the same art repeats outward to both edges as a `.crown::before` background (`--toranam-img`, set in app.js), masked off behind the centre one so its sway never doubles. (It was one 900px garland on the first two, which looked stretched on laptops.) `--crown` sets that width: 100vw on phones, 460px from 700px. Phones are unchanged.
 - Photo deck: swipe left = next photo, swipe right = back (the previous one slides in from the left); tap = next.
 - Telugu labels 15.5px (were 13.5px) and marked `lang="te"`. Light gold `#826019` (≥4.6:1 on every page background);
