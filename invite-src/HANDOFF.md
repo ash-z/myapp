@@ -116,6 +116,14 @@ across the columns (CSS subgrid), both sides break at the same places ("Parents 
 Srinivasulu Gorantla"), the children's names sit on their own line, and the parents' names scale with the screen so
 "Suresh Bhimanpalliwar" (the longest line) always fits. Checked identical line-for-line from 360px to desktop.
 
+## Address: susmitawedsashish.in
+The invitations live at **https://susmitawedsashish.in/** (relatives) and **https://susmitawedsashish.in/friends/**.
+The domain was bought at Hostinger and points at GitHub Pages with Hostinger DNS records: four A records for `@`
+(185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and a CNAME `www` -> `ash-z.github.io`.
+`docs/CNAME` (one line: the domain) tells Pages to serve it there, and the old github.io address redirects to it.
+Keep that file on golden; without it, Pages drops the domain. The share button (`CONFIG.shareUrl` in app.js) and
+the link preview (`url` in build.py: og:url, og:image) use this address.
+
 ## Cloudflare (second address, no "github" in it)
 The same site is also served by Cloudflare Workers from `golden`: `wrangler.jsonc` at the repo root tells
 `npx wrangler deploy` to publish `docs/` as static assets. In the Cloudflare project (name `susmita-weds-ashish`):

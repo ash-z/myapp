@@ -50,7 +50,7 @@ def tail(invite):
         art += f'var INVITE="{invite}";'
     return "\n<script>" + art + "</script>\n<script>" + three + "</script>\n<script>" + app + "</script>\n"
 
-url  = "https://ash-z.github.io/susmita-weds-ashish/"
+url  = "https://susmitawedsashish.in/"
 name = "Sai Susmita weds Ashish"
 desc = "Thursday, 29 October 2026 · Visakhapatnam. We ask for your presence, and for your blessings."
 favicon = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E"
