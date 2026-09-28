@@ -125,11 +125,13 @@ Keep that file on golden; without it, Pages drops the domain. Live since 28 Sep 
 Enforce HTTPS is on (the first hour showed a certificate warning until GitHub issued it). The share button (`CONFIG.shareUrl` in app.js) and
 the link preview (`url` in build.py: og:url, og:image) use this address.
 
-## Cloudflare (second address, no "github" in it)
+## Cloudflare (backup address)
 The same site is also served by Cloudflare Workers from `golden`: `wrangler.jsonc` at the repo root tells
 `npx wrangler deploy` to publish `docs/` as static assets. In the Cloudflare project (name `susmita-weds-ashish`):
 production branch `golden`, build command none, deploy command `npx wrangler deploy`, root `/`. Every promote to
-golden redeploys it. GitHub Pages keeps serving the github.io address as before.
+golden redeploys it. Keep it: it is the backup for guests whose office filter blocks the new domain (corporate
+filters block newly registered domains for about 30 days). Confirmed working 28 Sep 2026:
+https://susmita-weds-ashish.ashishbhimanpalliwar.workers.dev/ and .../friends/.
 
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
