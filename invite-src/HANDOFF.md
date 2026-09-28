@@ -120,8 +120,8 @@ Srinivasulu Gorantla"), the children's names sit on their own line, and the pare
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
 README there. Friends' song: "Pehli Nazar Mein" with the singing replaced by a small violin section playing the melody (in key,
 A major), over the original music, in a slow-lounge treatment. How it was made, with the scripts:
-`invite-src/music-tools/README.md`. Final mix (ins.wav = music stem, violin.wav from violin.py):
-`ffmpeg -i ins.wav -i violin.wav -filter_complex "[1:a]volume=-3dB,aecho=0.8:0.85:60|130|220|340:0.3|0.22|0.15|0.09[g];
+`invite-src/music-tools/README.md`. Final mix (ins.wav = music stem, violin2.wav from music-tools/violin.py):
+`ffmpeg -i ins.wav -i violin2.wav -filter_complex "[1:a]volume=-2.5dB,aecho=0.8:0.85:60|130|220|340:0.3|0.22|0.15|0.09[g];
 [0:a][g]amix=inputs=2:normalize=0,asetrate=44100*0.9,aresample=44100,aecho=0.85:0.75:45|95|160:0.22|0.14|0.08,
 bass=g=2.5:f=110,lowpass=f=10500,loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=2.5,afade=t=out:st=236.5:d=3.5"
 -t 240 -b:a 128k friends.mp3` (4:00, 3.8 MB). The vocals-turned-down take is in git history; the flute, guitar and piano try-outs were not kept.

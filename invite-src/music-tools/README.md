@@ -10,7 +10,9 @@ section playing the same melody. None of this runs at build time; it is here so 
 3. `guitar.py`: split the melody into notes (`notes.pkl`); it also renders a guitar take, not used.
 4. `snap.py`: pitch each note from its steady middle and snap it to A major (the song's key, read from the held
    sung notes); very short passing notes join the one before (`notes_snap.pkl`).
-5. `violin.py`: four slightly detuned violins an octave up, gliding between the snapped notes, with a little of the
-   singer's own expression and a violin body EQ (`violin.wav`).
+5. `violin.py`: the violin part, played the way a violinist would: notes under 150 ms folded into their neighbours,
+   notes closer than 250 ms bowed as one smooth phrase (the singer's loudness, heavily smoothed), vibrato that comes in
+   after ~0.2 s and varies, three players drifting slightly in timing, tuning and volume, a brighter tone when louder,
+   a little bow scrape at phrase starts, an octave above the singer, violin body EQ (`violin2.wav`).
 6. Mix with ffmpeg: violin 3 LU under the music with echo, then the lounge treatment (10% slower, reverb, bass,
    low-pass, -14 LUFS, fades), 4:00, 128 kbps. The full command is in HANDOFF.md ("Music").
