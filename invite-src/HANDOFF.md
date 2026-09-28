@@ -121,7 +121,8 @@ The invitations live at **https://susmitawedsashish.in/** (relatives) and **http
 The domain was bought at Hostinger and points at GitHub Pages with Hostinger DNS records: four A records for `@`
 (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and a CNAME `www` -> `ash-z.github.io`.
 `docs/CNAME` (one line: the domain) tells Pages to serve it there, and the old github.io address redirects to it.
-Keep that file on golden; without it, Pages drops the domain. The share button (`CONFIG.shareUrl` in app.js) and
+Keep that file on golden; without it, Pages drops the domain. Live since 28 Sep 2026: DNS check passed and
+Enforce HTTPS is on (the first hour showed a certificate warning until GitHub issued it). The share button (`CONFIG.shareUrl` in app.js) and
 the link preview (`url` in build.py: og:url, og:image) use this address.
 
 ## Cloudflare (second address, no "github" in it)
@@ -206,4 +207,6 @@ also junk from generation: `DAHV9DpqFrs`, `DAHV9AoBxNs`, `DAHV9IZyYZ4`.
 - The "forgot him for a couple of days" joke — never confirmed as family-safe; not on the page.
 - RSVP — **connected**: the couple deployed `rsvp/Code.gs` from a phone as a standalone script (script.google.com; it
   opens their sheet by id) — `CONFIG.rsvp.endpoint` is its /exec URL. If they redeploy, use Manage deployments → Edit →
-  New version so the URL stays the same.
+  New version so the URL stays the same. The current script (Code.gs with the India-time line, on golden) is deployed:
+  the /exec GET returns only {"ok":true,"akshi":N}, the Totals tab exists, and RSVPs from the live domain land in the
+  sheet (checked 28 Sep 2026).
