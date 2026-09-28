@@ -116,6 +116,12 @@ across the columns (CSS subgrid), both sides break at the same places ("Parents 
 Srinivasulu Gorantla"), the children's names sit on their own line, and the parents' names scale with the screen so
 "Suresh Bhimanpalliwar" (the longest line) always fits. Checked identical line-for-line from 360px to desktop.
 
+## Cloudflare (second address, no "github" in it)
+The same site is also served by Cloudflare Workers from `golden`: `wrangler.jsonc` at the repo root tells
+`npx wrangler deploy` to publish `docs/` as static assets. In the Cloudflare project (name `susmita-weds-ashish`):
+production branch `golden`, build command none, deploy command `npx wrangler deploy`, root `/`. Every promote to
+golden redeploys it. GitHub Pages keeps serving the github.io address as before.
+
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
 README there. **Both invitations now play the same song** (two identical files; git stores it once): the flute version
