@@ -119,9 +119,9 @@ Srinivasulu Gorantla"), the children's names sit on their own line, and the pare
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
 README there. **Both invitations now play the same song** (two identical files; git stores it once): the flute version
-of "Moh Moh Ke Dhaage" (Dum Laga Ke Haisha), from 0:56 to its natural end, as is: 1.5 s fade-in, 4 s fade-out,
-loudnorm -14 LUFS, 128 kbps mp3 (4:26, 4.3 MB). Command: `ffmpeg -ss 56 -i <upload>.opus -af
-"loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=1.5,afade=t=out:st=261.95:d=4" -ar 44100 -b:a 128k friends.mp3`.
+of "Moh Moh Ke Dhaage" (Dum Laga Ke Haisha), from 0:56 to 1:43, as is: 1.5 s fade-in, 3 s fade-out (so the loop
+flows), loudnorm -14 LUFS, 128 kbps mp3 (0:47, 0.8 MB). Command: `ffmpeg -ss 56 -to 103 -i <upload>.opus -af
+"loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=1.5,afade=t=out:st=44:d=3" -ar 44100 -b:a 128k friends.mp3`.
 Earlier friends' songs, all in git history: "Ramasamyku thottam undu" (a76ad54), then "Pehli Nazar Mein" in a
 slow-lounge treatment, with the vocals turned down, then with the singing replaced by synthesised violins
 (scripts in `invite-src/music-tools/`).
