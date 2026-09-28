@@ -18,6 +18,8 @@ function book_() {
 
 function sheet_() {
   var ss = book_();
+  // times in the Updated column show in India time (a new sheet can default to US Pacific)
+  if (ss.getSpreadsheetTimeZone() !== 'Asia/Kolkata') ss.setSpreadsheetTimeZone('Asia/Kolkata');
   var sh = ss.getSheetByName(SHEET);
   if (!sh) {
     sh = ss.insertSheet(SHEET);
