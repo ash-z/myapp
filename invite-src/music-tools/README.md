@@ -1,6 +1,6 @@
-# How the friends' song was made
+# How the violin take of "Pehli Nazar Mein" was made
 
-The friends' song (`docs/music/friends.mp3`) is "Pehli Nazar Mein" with the singing replaced by a small violin
+How an earlier friends' song was made: "Pehli Nazar Mein" with the singing replaced by a small violin
 section playing the same melody. None of this runs at build time; it is here so the song can be remade or changed.
 
 1. Separate the singing from the music (Python venv with `audio-separator[cpu]`; its model downloads from GitHub):
