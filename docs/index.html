@@ -82,7 +82,7 @@ button{font:inherit;color:inherit}
 }
 .js.opened .splash{display:none}
 .splash.gone{transform:translateY(-102%)}
-.sp-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.5vh,12px);max-width:520px;margin:auto;padding-top:min(calc(min(100vw,900px) * .2),11vh)}
+.sp-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.5vh,12px);max-width:520px;margin:auto;padding-top:min(calc(var(--crown) * .2),11vh)}
 .sp-inner .invocation{margin:0;font-size:13px;color:var(--accent)}
 .seal{
   position:relative;width:min(58vw,236px,30vh);aspect-ratio:1;margin:4px 0 clamp(8px,1.8vh,14px);
@@ -563,23 +563,26 @@ button{font:inherit;color:inherit}
   -webkit-mask:var(--ganesha-img) center/contain no-repeat;
           mask:var(--ganesha-img) center/contain no-repeat;
 }
-/* a toranam hung across the top edge, Ganesha in its centre */
+/* a toranam hung across the top edge, Ganesha in its centre. On phones it spans the screen; on wider screens it is
+   the same size as on Blessings (460px), repeated out to both edges (.crown::before), rather than one big one */
+:root{--crown:100vw}
+@media (min-width:700px){:root{--crown:460px}}
 .crown{position:absolute;left:0;right:0;top:0;height:0;z-index:2;pointer-events:none}
 .crown .toranam{
-  position:absolute;top:0;left:50%;width:min(100%,900px);height:auto;
+  position:absolute;top:0;left:50%;width:var(--tw);height:auto;
   transform:translateX(-50%);transform-origin:50% 0;animation:toranam-sway 8s ease-in-out infinite;
 }
 @keyframes toranam-sway{0%,100%{transform:translateX(-50%) rotate(-.35deg)}50%{transform:translateX(-50%) rotate(.35deg)}}
-.crown .ganesha{position:absolute;left:50%;top:calc(min(100vw,900px) * .028);transform:translateX(-50%)}
+.crown .ganesha{position:absolute;left:50%;top:calc(var(--tw) * .028);width:clamp(40px,calc(var(--tw) * .105),72px);transform:translateX(-50%)}
 .hero .crown .ganesha{background:#F5D79B}
-.hero .plate{padding-top:calc(min(100vw,900px) * .12)}
+.hero .plate{padding-top:calc(var(--crown) * .12)}
 #blessings{--tw:min(100vw,620px);padding-top:calc(var(--tw) * .23 + 14px)}
 @media (min-width:700px){#blessings{--tw:460px}}
 .crown-page .toranam{width:var(--tw)}
 .crown-page .ganesha{top:calc(var(--tw) * .028);width:calc(var(--tw) * .105)}
 /* wide screens: the garland runs on to both edges, the same toranam repeated outward from the one in the centre.
    The repeats sit behind it and are masked off where it hangs, so its gentle sway never shows a double. */
-.crown:not(.crown-page){--tw:min(100vw,900px)}
+.crown:not(.crown-page){--tw:var(--crown)}
 .crown::before{
   content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--tw) * .3536);pointer-events:none;
   background:var(--toranam-img,none) center top / var(--tw) auto repeat-x;
@@ -588,7 +591,7 @@ button{font:inherit;color:inherit}
           mask:linear-gradient(to right,#000 calc(50% - var(--tw) / 2 + 2px),transparent calc(50% - var(--tw) / 2 + 2px),
                transparent calc(50% + var(--tw) / 2 - 2px),#000 calc(50% + var(--tw) / 2 - 2px));
 }
-@media (max-width:900px){.crown:not(.crown-page)::before{display:none}}   /* the garland already spans a phone */
+@media (max-width:699px){.crown:not(.crown-page)::before{display:none}}   /* the garland already spans a phone */
 @media (max-width:620px){.crown-page::before{display:none}}
 /* opening screen */
 .sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
