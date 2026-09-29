@@ -173,7 +173,7 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
   can't make it, replies per link, and the shared akshintalu count. Formulas count on their own; delete the tab to
   rebuild it. Don't rename the RSVPs tab (the script would start a new one).
 - **Akshintalu is one shared count** for all guests: taps are sent in batches (≤50 per request) to the script, which keeps
-  the total in Script Properties and in Totals!B11; the page shows "Akshintalu showered by everyone · N". With an old
+  the total in Script Properties and in Totals!B11; the page shows "Blessings from everyone so far · N" (this phone's own count, "Your blessings · n", when the script can't be reached). With an old
   script or offline it falls back to this phone's own count.
 - While typing a name (phone keyboard up) the page keeps full size and scrolls, the tab bar and rail step aside,
   and pages don't turn (`html.typing`). The guest-list sheet keeps keyboard focus inside while open.

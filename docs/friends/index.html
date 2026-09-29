@@ -390,7 +390,6 @@ button{font:inherit;color:inherit}
 .acts{display:grid;gap:10px;flex:0 1 230px}
 .acts .btn{padding-inline:12px;letter-spacing:.06em;white-space:nowrap}
 .akshi{margin:10px auto 0;max-width:28em;font-size:13px;color:var(--muted)}
-.akshi .telugu{color:var(--accent)}
 .shower-note{margin:8px 0 0;min-height:1.5em;font-size:12px;letter-spacing:.06em;color:var(--gold)}
 .foot{margin:clamp(34px,6vh,50px) 0 0;text-align:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
@@ -1046,7 +1045,7 @@ button{font:inherit;color:inherit}
           </div>
           <img class="pk pk-r" data-art="peacock" alt="" aria-hidden="true" decoding="async">
         </div>
-        <p class="akshi"><span class="telugu" lang="te">అక్షింతలు</span> &mdash; the turmeric rice guests shower on the couple as a blessing.</p>
+        <p class="akshi">Akshintalu are the turmeric rice guests shower on the couple as a blessing.</p>
         <p class="shower-note" id="showerNote" aria-live="polite"></p>
       </div>
     </div>
@@ -6152,8 +6151,8 @@ var refit = (function(){
   document.addEventListener('visibilitychange', function(){ if(document.hidden) flush(true); });
   function say(){
     if(!note) return;
-    note.textContent = total != null ? 'Akshintalu showered by everyone \u00b7 ' + total.toLocaleString('en-IN')
-                                     : (n ? 'Akshintalu showered \u00b7 ' + n : '');
+    note.textContent = total != null ? 'Blessings from everyone so far \u00b7 ' + total.toLocaleString('en-IN')
+                                     : (n ? 'Your blessings \u00b7 ' + n : '');
   }
   function flash(t){ if(!note) return; note.textContent = t; clearTimeout(ft); ft = setTimeout(say, 3400); }
   say();

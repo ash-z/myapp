@@ -833,8 +833,8 @@ var refit = (function(){
   document.addEventListener('visibilitychange', function(){ if(document.hidden) flush(true); });
   function say(){
     if(!note) return;
-    note.textContent = total != null ? 'Akshintalu showered by everyone \u00b7 ' + total.toLocaleString('en-IN')
-                                     : (n ? 'Akshintalu showered \u00b7 ' + n : '');
+    note.textContent = total != null ? 'Blessings from everyone so far \u00b7 ' + total.toLocaleString('en-IN')
+                                     : (n ? 'Your blessings \u00b7 ' + n : '');
   }
   function flash(t){ if(!note) return; note.textContent = t; clearTimeout(ft); ft = setTimeout(say, 3400); }
   say();
