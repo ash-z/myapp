@@ -39,6 +39,8 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
   (hall name not known yet; add it next to the floor when the couple sends it). Directions: the couple's pin
   https://maps.app.goo.gl/9DuCbhDxaaxrSeXr5. Wedding Directions: the couple's pin for Marina Banquet Hall,
   https://maps.app.goo.gl/AhTU2qBLJbRZLm4s6.
+- English invitation wording (the couple chose it, 29 Sep): cover shows "Wedding Invitation" under శుభలేఖ; the first
+  page reads "Together with our families, we invite you to celebrate the wedding of" above the names.
 - **Friends only**, Wed 28 Oct 2026: Haldi & Pellikuturu 9 AM onwards · Mehendi 5 PM onwards (changed 28 Sep from
   Haldi 9:30 · Pellikuturu 11:30 · Mehendi & Sangeet 5:30 onwards; the couple's update named only Mehendi for the evening).
   All at Home, 9-6-93/3, Sivajipalem, Opp. Sivaji Park, Visakhapatnam. These must never appear in the relatives' version. It is the only difference between the two.
