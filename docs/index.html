@@ -6098,7 +6098,8 @@ var refit = (function(){
     fetch(ep, { method:'POST', body:JSON.stringify({ type:'akshi', n:k }), keepalive: !!keep })
       .then(function(r){ return r.json(); })
       .then(function(o){ if(o && o.ok && typeof o.akshi === 'number'){ total = o.akshi + pending; say(); } })
-      .catch(function(){ pending += k; });
+      .catch(function(){});   // never re-send: the script may already have counted it (the phone just couldn't read
+                              // the reply, e.g. when the guest switched apps), and a re-send counted it twice
     if(pending) sendT = setTimeout(flush, 1500);
   }
   document.addEventListener('visibilitychange', function(){ if(document.hidden) flush(true); });

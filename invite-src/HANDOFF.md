@@ -175,6 +175,10 @@ Put the deployed `/exec` URL in `CONFIG.rsvp.endpoint` (app.js) and rebuild; unt
 - **Akshintalu is one shared count** for all guests: taps are sent in batches (≤50 per request) to the script, which keeps
   the total in Script Properties and in Totals!B11; the page shows "Blessings from everyone so far · N" (this phone's own count, "Your blessings · n", when the script can't be reached). With an old
   script or offline it falls back to this phone's own count.
+  A batch is never re-sent (fixed 29 Sep): before, a batch whose reply the phone couldn't read (the guest switched
+  apps, or the connection dropped) was sent again although the script had already counted it, so the total ran ahead
+  of the real taps (a test: 12 taps counted as 17). Now a truly lost batch is simply not counted. Every tap still
+  counts, with no per-phone limit (the couple's choice).
 - While typing a name (phone keyboard up) the page keeps full size and scrolls, the tab bar and rail step aside,
   and pages don't turn (`html.typing`). The guest-list sheet keeps keyboard focus inside while open.
 - While `CONFIG.rsvp.endpoint` is null the card says "RSVPs open very soon — please check back." up front and the form
