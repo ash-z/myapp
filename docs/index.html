@@ -610,6 +610,7 @@ button{font:inherit;color:inherit}
 .t-flora-l{left:-20px;transform:scaleY(-1)}
 .t-flora-r{right:-20px;transform:scaleY(-1)}
 .t-flora-b{top:auto;bottom:-24px;transform:none}
+.wrap:has(.t-flora-b){padding-bottom:30px}   /* room under the card for its bottom florals, clear of the tab bar */
 /* a hung ticket: a toranam along its top edge, and a schedule list */
 .ticket.hung{margin-top:clamp(40px,11vw,52px)}
 .head:has(+ .ticket.hung) .eyebrow{display:block;text-wrap:balance}
@@ -683,7 +684,8 @@ button{font:inherit;color:inherit}
   .ev-rsvp{padding:10px 12px}
   .pill span{min-height:40px;padding:6px}
   .screen.garland{padding-top:calc(var(--tw) * .2 + 6px)}
-  .t-flora-b{bottom:-18px}
+  .t-flora-b{top:auto;bottom:-18px}   /* top:auto again: the .t-flora line above would pull these back to the top */
+  .wrap:has(.t-flora-b){padding-bottom:22px}
   .fams{column-gap:20px}
   .close{margin-top:14px}
   .blessing{line-height:1.3}
