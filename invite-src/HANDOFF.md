@@ -141,10 +141,11 @@ https://susmita-weds-ashish.ashishbhimanpalliwar.workers.dev/ and .../friends/.
 
 ## Music
 Each invitation has **its own song** in **`docs/music/`**: `relatives.mp3` and `friends.mp3` (or `.m4a` / `.wav`); see the
-README there. **Both invitations now play the same song** (two identical files; git stores it once): the flute version
-of "Moh Moh Ke Dhaage" (Dum Laga Ke Haisha), from 0:56 to 1:43, as is: 1.5 s fade-in, 3 s fade-out (so the loop
-flows), loudnorm -14 LUFS, 128 kbps mp3 (0:47, 0.8 MB). Command: `ffmpeg -ss 56 -to 103 -i <upload>.opus -af
-"loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=1.5,afade=t=out:st=44:d=3" -ar 44100 -b:a 128k friends.mp3`.
+README there. **Both invitations now play the same song** (two identical files; git stores it once): an audio clip
+the couple sent on 29 Sep (an Instagram export, 0:54), whole, as is: loudnorm -14 LUFS, 1.5 s fade-in, 3 s fade-out so
+the loop flows, 128 kbps mp3 (0.9 MB). Command: `ffmpeg -i <upload>.mp3 -af
+"loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=1.5,afade=t=out:st=51.5:d=3" -ar 44100 -b:a 128k friends.mp3`.
+Before it: the flute version of "Moh Moh Ke Dhaage" (Dum Laga Ke Haisha), 0:56 to 1:43, same treatment.
 Earlier friends' songs, all in git history: "Ramasamyku thottam undu" (a76ad54), then "Pehli Nazar Mein" in a
 slow-lounge treatment, with the vocals turned down, then with the singing replaced by synthesised violins
 (scripts in `invite-src/music-tools/`).
