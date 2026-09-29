@@ -597,7 +597,7 @@ button{font:inherit;color:inherit}
 @media (max-width:699px){.crown:not(.crown-page)::before{display:none}}   /* the garland already spans a phone */
 @media (max-width:620px){.crown-page::before{display:none}}
 /* opening screen */
-.sp-corner{position:absolute;bottom:0;width:clamp(92px,28vw,200px);height:auto;pointer-events:none}
+.sp-corner{position:absolute;bottom:0;width:clamp(56px,calc((100vw - 236px) / 2),200px);height:auto;pointer-events:none}   /* sized to the space beside the Open invitation button (212px), so the two never meet */
 .sp-corner-l{left:0}
 .sp-corner-r{right:0}
 /* wedding: the gopuram rises from the ticket */
@@ -655,7 +655,7 @@ button{font:inherit;color:inherit}
   .screen{padding-block:58px calc(var(--tab-h) + 22px + env(safe-area-inset-bottom,0px))}
   .head{margin-bottom:12px}
   .sp-names .n{font-size:1.12em;line-height:1}
-  .sp-corner{width:74px}
+  .sp-corner{width:clamp(56px,calc((100vw - 236px) / 2),74px)}
   .sp-inner{gap:5px}
   .sp-inner .eyebrow.telugu{font-size:14px}
   .head h2{margin-top:4px;font-size:clamp(28px,7.4vw,36px)}
