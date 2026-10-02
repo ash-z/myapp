@@ -24,7 +24,7 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - **`golden`** is what guests see. GitHub Pages serves it; nothing is committed to it directly.
   `golden-v1` (commit `4bcc0d7`) is the version first shared with guests.
 - **`claude/add-threejs-library-ogt1s7`** is where work happens. Its previews are the dev artifacts
-  (`build/artifact-dev.html` and `build/artifact-dev-friends.html`, marked DEV); the golden preview artifact is `build/artifact.html`.
+  (`build/artifact-dev.html`, `build/artifact-dev-friends.html` and `build/artifact-dev-groom.html` (https://claude.ai/artifact/3h5V4rixSjAEg7Jpar1VW3), marked DEV); the golden preview artifact is `build/artifact.html`.
 - **Promote** only when the couple says so, after checking the dev preview on a phone:
   ```sh
   git checkout golden && git merge --ff-only claude/add-threejs-library-ogt1s7 && git push origin golden
