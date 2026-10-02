@@ -11,7 +11,7 @@
 var INVITE = window.INVITE === 'friends' || window.INVITE === 'groom' ? window.INVITE : 'relatives';
 var COUPLE = INVITE === 'groom' ? 'Ashish weds Sai Susmita' : 'Sai Susmita weds Ashish';
 var CONFIG = {
-  shareUrl: "https://susmitawedsashish.in/" + ({ friends: 'friends/', groom: 'Bhimanpalliwar/' }[INVITE] || ''),
+  shareUrl: "https://susmitawedsashish.in/" + ({ friends: 'friends/', groom: 'bhimanpalliwar/' }[INVITE] || ''),
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
   rsvp: { endpoint: "https://script.google.com/macros/s/AKfycbzj1rTcoZJViDXlqlNKXT3YeDaFdZ-eB5_WGodyv8TqwVJTlLderG9BTnFoDCV5QlpZfg/exec" },

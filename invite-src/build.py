@@ -4,7 +4,7 @@
 
 Builds three invitations from the same files: the relatives' one, the
 friends' one (which adds the day-before page) and the groom's side's one
-(/Bhimanpalliwar/: the relatives' one with the groom named first throughout). For each it writes the page
+(/bhimanpalliwar/: the relatives' one with the groom named first throughout). For each it writes the page
 GitHub Pages serves (docs/index.html, docs/friends/index.html), the same page
 without <head> for a Claude artifact (build/artifact[-friends].html), and that
 with a DEV badge for the dev preview (build/artifact-dev[-friends].html).
@@ -41,7 +41,7 @@ three = (build / "three.min.js").read_text()
 FRIENDS = re.compile(r"<!--friends-->\n(.*?)<!--/friends-->\n", re.S)
 bodies = {"relatives": FRIENDS.sub("", src), "friends": FRIENDS.sub(r"\1", src)}
 
-# the groom's side (/Bhimanpalliwar/): the relatives' invitation, groom first throughout
+# the groom's side (/bhimanpalliwar/): the relatives' invitation, groom first throughout
 # (names, photo order, captions, calendar titles, and the groom's parents before the bride's)
 def groom_first(body):
     def swap(text, old, new, count=1):
@@ -68,7 +68,7 @@ def groom_first(body):
     assert 'Sai Susmita</span>\n' not in body.split('<h1 class="names">')[1][:120], "groom variant: hero names not swapped"
     return body
 bodies["groom"] = groom_first(bodies["relatives"])
-PATH = {"relatives": "", "friends": "friends/", "groom": "Bhimanpalliwar/"}
+PATH = {"relatives": "", "friends": "friends/", "groom": "bhimanpalliwar/"}
 TITLE = {"groom": "Ashish weds Sai Susmita"}       # page title and link preview; the others use `name`
 SONG = {"groom": "relatives"}                      # the groom's side plays the relatives' song
 
@@ -160,11 +160,11 @@ for invite, sub in PATH.items():
     (root / "docs" / sub / "index.html").write_text(
         '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' + head(url + sub, title) + styled +
         "\n</head>\n<body>\n" + page + tail(invite) + "</body>\n</html>\n")
-# the address is /Bhimanpalliwar/ (capital B, as the couple wrote it); GitHub Pages is case-sensitive,
-# so the all-lowercase spelling forwards there
-(root / "docs" / "bhimanpalliwar").mkdir(exist_ok=True)
-(root / "docs" / "bhimanpalliwar" / "index.html").write_text(
+# the address is /bhimanpalliwar/ (all lowercase, the couple's choice); GitHub Pages is case-sensitive,
+# so the capitalised spelling forwards there
+(root / "docs" / "Bhimanpalliwar").mkdir(exist_ok=True)
+(root / "docs" / "Bhimanpalliwar" / "index.html").write_text(
     '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Ashish weds Sai Susmita</title>\n'
-    f'<link rel="canonical" href="{url}Bhimanpalliwar/">\n<meta http-equiv="refresh" content="0;url=../Bhimanpalliwar/">\n'
-    '<script>location.replace("../Bhimanpalliwar/" + location.hash)</script>\n</head>\n<body></body>\n</html>\n')
-print("wrote docs/index.html, docs/friends/index.html, docs/Bhimanpalliwar/index.html and build/artifact{,-dev}{,-friends,-groom}.html")
+    f'<link rel="canonical" href="{url}bhimanpalliwar/">\n<meta http-equiv="refresh" content="0;url=../bhimanpalliwar/">\n'
+    '<script>location.replace("../bhimanpalliwar/" + location.hash)</script>\n</head>\n<body></body>\n</html>\n')
+print("wrote docs/index.html, docs/friends/index.html, docs/bhimanpalliwar/index.html and build/artifact{,-dev}{,-friends,-groom}.html")
