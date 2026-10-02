@@ -2,8 +2,9 @@
 
     cd invite-src && npm install && python3 build.py
 
-Builds two invitations from the same files: the relatives' one and the
-friends' one (which adds the day-before page). For each it writes the page
+Builds three invitations from the same files: the relatives' one, the
+friends' one (which adds the day-before page) and the groom's side's one
+(/Bhimanpalliwar/: the relatives' one with the groom named first throughout). For each it writes the page
 GitHub Pages serves (docs/index.html, docs/friends/index.html), the same page
 without <head> for a Claude artifact (build/artifact[-friends].html), and that
 with a DEV badge for the dev preview (build/artifact-dev[-friends].html).
@@ -40,6 +41,37 @@ three = (build / "three.min.js").read_text()
 FRIENDS = re.compile(r"<!--friends-->\n(.*?)<!--/friends-->\n", re.S)
 bodies = {"relatives": FRIENDS.sub("", src), "friends": FRIENDS.sub(r"\1", src)}
 
+# the groom's side (/Bhimanpalliwar/): the relatives' invitation, groom first throughout
+# (names, photo order, captions, calendar titles, and the groom's parents before the bride's)
+def groom_first(body):
+    def swap(text, old, new, count=1):
+        assert text.count(old) == count, ("groom variant: expected", count, old)
+        return text.replace(old, new)
+    body = swap(body, '<span class="n">Sai Susmita</span><span class="amp">&amp;</span><span class="n">Ashish</span>',
+                      '<span class="n">Ashish</span><span class="amp">&amp;</span><span class="n">Sai Susmita</span>')
+    body = re.sub(r'(<span class="nm">)Sai Susmita(</span>\s*<span class="weds">weds</span>\s*<span class="nm">)Ashish(</span>)',
+                  r'\1Ashish\2Sai Susmita\3', body)
+    # photos: his card before hers
+    her = re.search(r'\n\s*<figure class="card" data-mood="her".*?</figure>', body, re.S)
+    him = re.search(r'\n\s*<figure class="card" data-mood="him".*?</figure>', body, re.S)
+    assert her and him and her.end() <= him.start(), "groom variant: photo cards not found in order"
+    body = body[:her.start()] + him.group(0) + body[her.end():him.start()] + her.group(0) + body[him.end():]
+    body = body.replace('aria-label="Susmita and Ashish"', 'aria-label="Ashish and Susmita"')
+    body = swap(body, '<span class="cap-name">Susmita &amp; Ashish</span>', '<span class="cap-name">Ashish &amp; Susmita</span>')
+    body = swap(body, 'text=Susmita%20weds%20Ashish', 'text=Ashish%20weds%20Susmita')
+    body = body.replace('text=Susmita%20%26%20Ashish', 'text=Ashish%20%26%20Susmita')
+    # Blessings: the groom's parents first
+    fams = re.search(r'(<div class="fams reveal">\s*)(<div class="fam">.*?</div>)(\s*)(<div class="fam">.*?</div>)', body, re.S)
+    assert fams and 'the bride' in fams.group(2) and 'the groom' in fams.group(4), "groom variant: families not found"
+    body = body[:fams.start()] + fams.group(1) + fams.group(4) + fams.group(3) + fams.group(2) + body[fams.end():]
+    body = swap(body, '<p class="sig-en">Sai Susmita &amp; Ashish</p>', '<p class="sig-en">Ashish &amp; Sai Susmita</p>')
+    assert 'Sai Susmita</span>\n' not in body.split('<h1 class="names">')[1][:120], "groom variant: hero names not swapped"
+    return body
+bodies["groom"] = groom_first(bodies["relatives"])
+PATH = {"relatives": "", "friends": "friends/", "groom": "Bhimanpalliwar/"}
+TITLE = {"groom": "Ashish weds Sai Susmita"}       # page title and link preview; the others use `name`
+SONG = {"groom": "relatives"}                      # the groom's side plays the relatives' song
+
 def tail(invite):
     body = bodies[invite]
     used = sorted(set(re.findall(r'data-art="([a-z0-9-]+)"', body)))
@@ -56,7 +88,8 @@ desc = "Thursday, 29 October 2026 · Visakhapatnam. We ask for your presence, an
 favicon = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E"
            "%3Ccircle cx='32' cy='32' r='30' fill='%23F7F2E8'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' "
            "stroke='%23A97C2B' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%239A3A32'/%3E%3C/svg%3E")
-def head(page_url):
+def head(page_url, title=None):
+    title = title or name
     return f"""<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="{desc}">
@@ -65,7 +98,7 @@ def head(page_url):
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{name}">
+<meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{url}og.jpg">
@@ -96,9 +129,11 @@ badge = ('<div aria-hidden="true" style="position:fixed;top:calc(env(safe-area-i
 # file, so they embed it (if there is one)
 music_dir = root / "docs" / "music"
 def song_for(invite):
+    invite = SONG.get(invite, invite)
     return next((music_dir / f"{invite}.{e}" for e in ("mp3", "m4a", "wav") if (music_dir / f"{invite}.{e}").exists()), None)
 AUDIO = re.compile(r'<audio id="song"[^>]*>.*?</audio>', re.S)
 def music_src(up, invite):
+    invite = SONG.get(invite, invite)
     return lambda m: f'src="{up}music/{invite}.{m.group(1)}"'
 def music_inline(body, invite):
     song = song_for(invite)
@@ -108,19 +143,28 @@ def music_inline(body, invite):
     data = base64.b64encode(song.read_bytes()).decode()
     return AUDIO.sub(f'<audio id="song" loop preload="none"><source src="data:{kind};base64,{data}" type="{kind}"></audio>', body)
 
-for invite, sub in (("relatives", ""), ("friends", "friends/")):
+for invite, sub in PATH.items():
+    title = TITLE.get(invite, name)
+    styled = style.replace(f"<title>{name}</title>", f"<title>{title}</title>")
     body, suffix = bodies[invite], "" if invite == "relatives" else "-" + invite
     up = "../" * sub.count("/")
     page = re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(False, up), body)
     page = re.sub(r'data-music="([a-z0-9]+)"', music_src(up, invite), page)
     one  = music_inline(re.sub(r'data-photo="([a-z0-9-]+)"', photo_src(True), body), invite)
-    (build / f"artifact{suffix}.html").write_text(style + "\n" + one + tail(invite))
+    (build / f"artifact{suffix}.html").write_text(styled + "\n" + one + tail(invite))
     # the dev previews: same pages, marked so they are never mistaken for the ones guests see
     (build / f"artifact-dev{suffix}.html").write_text(
-        style.replace(f"<title>{name}</title>", f"<title>{name} (dev{', ' + invite if suffix else ''})</title>")
+        style.replace(f"<title>{name}</title>", f"<title>{title} (dev{', ' + invite if suffix else ''})</title>")
         + "\n" + badge + "\n" + one + tail(invite))
     (root / "docs" / sub).mkdir(exist_ok=True)
     (root / "docs" / sub / "index.html").write_text(
-        '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' + head(url + sub) + style +
+        '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' + head(url + sub, title) + styled +
         "\n</head>\n<body>\n" + page + tail(invite) + "</body>\n</html>\n")
-print("wrote docs/index.html, docs/friends/index.html and build/artifact{,-dev}{,-friends}.html")
+# the address is /Bhimanpalliwar/ (capital B, as the couple wrote it); GitHub Pages is case-sensitive,
+# so the all-lowercase spelling forwards there
+(root / "docs" / "bhimanpalliwar").mkdir(exist_ok=True)
+(root / "docs" / "bhimanpalliwar" / "index.html").write_text(
+    '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Ashish weds Sai Susmita</title>\n'
+    f'<link rel="canonical" href="{url}Bhimanpalliwar/">\n<meta http-equiv="refresh" content="0;url=../Bhimanpalliwar/">\n'
+    '<script>location.replace("../Bhimanpalliwar/" + location.hash)</script>\n</head>\n<body></body>\n</html>\n')
+print("wrote docs/index.html, docs/friends/index.html, docs/Bhimanpalliwar/index.html and build/artifact{,-dev}{,-friends,-groom}.html")

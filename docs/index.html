@@ -5277,15 +5277,16 @@ void main() {
    Photographs live in invite-src/photos (cropped by photos_process.py)
    and are placed in the deck in body.html.
    =================================================================== */
-// which invitation this is: build.py writes window.INVITE = "friends" into the
-// friends' page; the relatives' page leaves it unset
-var INVITE = window.INVITE === 'friends' ? 'friends' : 'relatives';
+// which invitation this is: build.py writes window.INVITE = "friends" or "groom" (the groom's side, groom named
+// first) into those pages; the relatives' page leaves it unset
+var INVITE = window.INVITE === 'friends' || window.INVITE === 'groom' ? window.INVITE : 'relatives';
+var COUPLE = INVITE === 'groom' ? 'Ashish weds Sai Susmita' : 'Sai Susmita weds Ashish';
 var CONFIG = {
-  shareUrl: "https://susmitawedsashish.in/" + (INVITE === 'friends' ? 'friends/' : ''),
+  shareUrl: "https://susmitawedsashish.in/" + ({ friends: 'friends/', groom: 'Bhimanpalliwar/' }[INVITE] || ''),
   // RSVP backend: the Web app URL of the Google Apps Script in
   // invite-src/rsvp/Code.gs (ends in /exec). null = RSVPs not open yet.
   rsvp: { endpoint: "https://script.google.com/macros/s/AKfycbzj1rTcoZJViDXlqlNKXT3YeDaFdZ-eB5_WGodyv8TqwVJTlLderG9BTnFoDCV5QlpZfg/exec" },
-  shareText: "Sai Susmita weds Ashish — Thursday, 29 October 2026, Visakhapatnam."
+  shareText: COUPLE + " — Thursday, 29 October 2026, Visakhapatnam."
 };
 
 /* illustrations are embedded once (window.ART, written by build.py) and
@@ -6131,7 +6132,7 @@ var refit = (function(){
   }
   if(share) share.addEventListener('click', function(){
     buzz(6);
-    var data = { title:'Sai Susmita weds Ashish', text:CONFIG.shareText, url:CONFIG.shareUrl };
+    var data = { title:COUPLE, text:CONFIG.shareText, url:CONFIG.shareUrl };
     if(navigator.share){
       navigator.share(data).catch(function(err){ if(!err || err.name !== 'AbortError') copy(); });
     } else copy();

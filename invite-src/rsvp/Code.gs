@@ -107,7 +107,7 @@ function doPost(e) {
 
     var sh = sheet_();
     var row = [new Date(), token, name, w.coming ? 'Yes' : 'No', party(w), r.coming ? 'Yes' : 'No', party(r),
-               d.invite === 'friends' ? 'Friends' : 'Relatives'];                // which link they answered from
+               d.invite === 'friends' ? 'Friends' : d.invite === 'groom' ? 'Groom side' : 'Relatives'];   // which link they answered from
     var tokens = rows_(sh).map(function (existing) { return existing[1]; });
     var i = tokens.indexOf(token);
     if (i >= 0) sh.getRange(i + 2, 1, 1, row.length).setValues([row]);         // same phone answering again

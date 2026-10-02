@@ -63,6 +63,16 @@ node og.mjs "$PWD/../docs/index.html" /tmp/og.png         # link-preview image; 
 - No framed oval portraits side by side — in India that reads as a memorial photo. Photos live in the swipeable deck.
 - No algorithmic line-art or posterised portraits (tried twice, rejected).
 
+## Three invitations
+- **Relatives** `/`, **Friends** `/friends/` (adds the 28 Oct page), and **Groom's side** `/Bhimanpalliwar/` (added 2 Oct
+  for the groom's family): the relatives' invitation with Ashish named first everywhere: cover and first-page names,
+  page title and link preview, share text and link, his photo before hers, captions, calendar titles, the groom's
+  parents before the bride's on Blessings, and the closing names. build.py makes it from the relatives' page with
+  `groom_first()` (each swap asserts it found its text, so a wording change there fails the build loudly instead of
+  leaving a half-swapped page). It plays the relatives' song. `/bhimanpalliwar/` (lowercase) forwards to it.
+  Its RSVPs send `invite: "groom"`; the script writes "Groom side" in the Invite column (Code.gs from 2 Oct; an older
+  deployed script writes "Relatives"). The Totals tab's per-link rows count only Relatives and Friends.
+
 ## Screens
 Invite (the sea) · Us (photo deck) · Wedding · Reception · RSVP · Blessings — six tabs, each its own full screen. Both tickets carry the same days/hours/mins/secs countdown.
 The friends' version adds a seventh, **Haldi** ("The day before"), between Us and Wedding: one ticket with the day's
